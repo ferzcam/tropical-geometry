@@ -33,6 +33,7 @@ library
       Polynomial.Prelude
       Polynomial.Numeric
       Arithmetic.Numbers
+      Arithmetic.Matrix
       Core
   other-modules:
       Paths_Tropical

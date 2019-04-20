@@ -17,7 +17,7 @@ import Prelude hiding (lex)
 
 -- | Monomial is defined as an array of exponents
 data Monomial ord = Monomial {getMonomial :: [Int]} deriving(Eq)
-
+                    
 ------------------------------------------
 showMonomial :: [Int] -> Int -> String
 showMonomial [] _ = ""
@@ -36,8 +36,8 @@ class IsMonomialOrder ord where
     compareMonomial :: Monomial ord -> Monomial ord -> Ordering
 -----------------------------
 
-data Lex = Lex -- ^Just the datatype for Lex ordering
-data Revlex = Revlex -- ^Just the datatype for Revlex ordering
+data Lex = Lex -- ^ Just the datatype for Lex ordering
+data Revlex = Revlex -- ^ Just the datatype for Revlex ordering
 
 lex :: [Int] -> [Int] -> Ordering
 lex [] [] = EQ

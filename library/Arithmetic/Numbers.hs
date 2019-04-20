@@ -1,9 +1,11 @@
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
 module Arithmetic.Numbers (Tropical(..)) where
 
 import Data.Function
-import Numeric.Algebra.Class
+import Numeric.Algebra hiding (negate)
+import Numeric.Algebra.Class as AC
+import Numeric.Algebra.Commutative
 import Numeric.Algebra.Unital
 import Numeric.Additive.Class
 
@@ -28,24 +30,41 @@ t .*. Inf = Inf
 Inf .*. t = Inf
 t1 .*. t2 = Tropical $ ((Prelude.+) `on` value) t1 t2 
 
-instance (Real a) => Monoid (Tropical a) where
-  mempty = Inf
 
 instance (Num a) => Unital (Tropical a) where
   one = Tropical 0
 
+
+instance (Num a, Ord a, Rig a) => LeftModule Natural (Tropical a) where
+  a .* t1 = Tropical (fromNatural a) AC.* t1
+
+instance (Num a, Ord a, Rig a) => RightModule Natural (Tropical a) where
+  (*.) = flip (.*)
+  
+
+instance (Num a, Ord a, Rig a) => Monoidal (Tropical a) where
+  zero = Inf
+
 instance (Num a) => Multiplicative (Tropical a) where 
   (*) = (.*.)
 
-instance Additive (Tropical a)
-instance Abelian (Tropical a)
-instance (Num a) => Semiring (Tropical a) 
+instance (Num a) => Commutative (Tropical a)
 
-instance Num (Tropical Integer) where
+instance (Rig a, Num a, Ord a) => Rig (Tropical a) where
+  fromNatural a = Tropical $ fromNatural a
+
+instance (Ord a) => Additive (Tropical a) where
+  (+) = (.+.)
+instance (Ord a) => Abelian (Tropical a)
+instance (Ord a, Num a) => Semiring (Tropical a) 
+
+instance (Ord a, Num a) => Num (Tropical a) where
   (+) = (.+.)
   (*) = (.*.)
-  fromInteger a = Tropical a
+  fromInteger a = Tropical $ Prelude.fromInteger a
   negate = fmap negate
 
+instance (Num a, Ord a, Rig a) => DecidableZero (Tropical a) -- ^ Not neccesary to implement since it is already defined
+  
 instance Functor Tropical where
   fmap f (Tropical a) = Tropical (f a)
