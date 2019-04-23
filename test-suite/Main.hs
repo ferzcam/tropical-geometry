@@ -7,6 +7,7 @@ import TPolynomial.TMonomial
 import TPolynomial.TPrelude
 import TPolynomial.TNumeric
 import TArithmetic.TNumbers
+import TArithmetic.TMatrix
 
 main :: IO ()
 main = do
@@ -17,6 +18,6 @@ main = do
 allTests ::   TestTree
 allTests = testGroup "Tasty tests" [
 
-        testGroup "Monomial" [testsNumbers ,testsMonomial, testsPrelude, testsNumeric]
+        testGroup "List of tests:" [testsNumbers, testsMatrices, testsMonomial, testsPrelude, testsNumeric]
     ]
 

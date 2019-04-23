@@ -38,7 +38,7 @@ module TArithmetic.TNumbers (testsNumbers) where
 
 
     testsNumbers :: TestTree
-    testsNumbers = testGroup "Test for monomials" [testSumTropical, testProdTropical]
+    testsNumbers = testGroup "Test for tropical numbers" [testSumTropical, testProdTropical]
     
     
     

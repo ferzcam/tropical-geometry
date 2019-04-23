@@ -1,6 +1,11 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE UndecidableInstances #-}
 
-module Arithmetic.Numbers (Tropical(..)) where
+module Arithmetic.Numbers 
+(
+  -- * Types
+  Tropical(..)
+) where
 
 import Data.Function
 import Numeric.Algebra hiding (negate)
@@ -8,6 +13,8 @@ import Numeric.Algebra.Class as AC
 import Numeric.Algebra.Commutative
 import Numeric.Algebra.Unital
 import Numeric.Additive.Class
+
+
 
 
 --The set includes all the real numbers and the inifinity
