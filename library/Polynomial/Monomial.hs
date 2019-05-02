@@ -13,6 +13,7 @@ module Polynomial.Monomial
 where
 
 import Data.Function
+import Numeric.Algebra hiding (negate,(+),(>))
 import Prelude hiding (lex)
 
 -- | Monomial is defined as an array of exponents
@@ -41,6 +42,8 @@ data Revlex = Revlex -- ^ Just the datatype for Revlex ordering
 
 lex :: [Int] -> [Int] -> Ordering
 lex [] [] = EQ
+lex [] _ = LT
+lex _ [] = GT
 lex (x:xs) (y:ys)
     | (x == 0 && y == 0) || x==y = lex xs ys
     | x > y = GT
@@ -48,6 +51,8 @@ lex (x:xs) (y:ys)
 
 revlex :: [Int] -> [Int] -> Ordering
 revlex [] [] = EQ
+revlex [] _ = LT
+revlex _ [] = GT
 revlex x y
     | (xr == 0 && yr == 0) || xr==yr = revlex (reverse xrs) (reverse yrs)
     | xr > yr = GT 
@@ -55,6 +60,10 @@ revlex x y
     where 
         (xr:xrs) = reverse x
         (yr:yrs) = reverse y
+
+
+fromList :: (IsMonomialOrder ord) => [Int] -> Monomial ord
+fromList = Monomial
 
 instance IsMonomialOrder Lex where
     compareMonomial m n = (lex `on` getMonomial) m n
@@ -64,4 +73,16 @@ instance IsMonomialOrder Revlex where
 
 instance (IsMonomialOrder ord) => Ord (Monomial ord) where
     compare = compareMonomial
+
+instance (IsMonomialOrder ord) => Unital (Monomial ord) where
+  one = fromList []
+
+instance (IsMonomialOrder ord) => Multiplicative (Monomial ord) where 
+    (*) = prodMon
+  
+prodMon :: (IsMonomialOrder ord) => Monomial ord -> Monomial ord -> Monomial ord
+prodMon mon1 mon2
+    | mon1 == one = mon2
+    | mon2 == one = mon1
+    | otherwise = Monomial $ (zipWith (+) `on` getMonomial) mon1 mon2
 

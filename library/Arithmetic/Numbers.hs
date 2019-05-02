@@ -10,9 +10,6 @@ module Arithmetic.Numbers
 import Data.Function
 import Numeric.Algebra hiding (negate)
 import Numeric.Algebra.Class as AC
-import Numeric.Algebra.Commutative
-import Numeric.Algebra.Unital
-import Numeric.Additive.Class
 
 
 
@@ -20,6 +17,7 @@ import Numeric.Additive.Class
 --The set includes all the real numbers and the inifinity
 data Tropical a = Tropical {value :: a} | Inf 
   deriving (Eq)
+
 
 instance (Show a) => Show (Tropical a) where
   show Inf = "Inf"

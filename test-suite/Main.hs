@@ -5,7 +5,6 @@ import Test.Tasty
 
 import TPolynomial.TMonomial
 import TPolynomial.TPrelude
-import TPolynomial.TNumeric
 import TArithmetic.TNumbers
 import TArithmetic.TMatrix
 
@@ -18,6 +17,6 @@ main = do
 allTests ::   TestTree
 allTests = testGroup "Tasty tests" [
 
-        testGroup "List of tests:" [testsNumbers, testsMatrices, testsMonomial, testsPrelude, testsNumeric]
+        testGroup "List of tests:" [testsNumbers, testsMatrices, testsMonomial, testsPrelude]
     ]
 

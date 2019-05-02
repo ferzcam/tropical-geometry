@@ -1,31 +1,25 @@
 {-# LANGUAGE TypeFamilies, FlexibleContexts, FlexibleInstances #-}
-{-# LANGUAGE ConstrainedClassMethods, UndecidableInstances #-}
+{-# LANGUAGE ConstrainedClassMethods, UndecidableInstances, MultiParamTypeClasses #-}
 
 
 module Polynomial.Prelude (
     -- * Types
     Polynomial(..),
-    variable,
+
+    -- * Classes
     IsPolynomial(..)
 ) where 
 
-import Prelude hiding (negate)
+import Prelude as P 
 import qualified Data.Map.Strict as MS
 import Polynomial.Monomial
-import Data.List
-import GHC.Natural
-import Numeric.Algebra hiding ((<), (>), (-))
-import Numeric.Algebra.Class
-import Numeric.Algebra.Unital
-import Numeric.Additive.Class
-
-import Numeric.Decidable.Zero
-import Numeric.Ring.Class
-import Numeric.Algebra.Commutative
+import Arithmetic.Numbers
+import Numeric.Algebra as NA hiding ((<), (>), (-))
+import qualified Numeric.Additive.Class as AD
+import Debug.Trace
 
 type Index = Int
 type Arity = Int
-
 
 class    (DecidableZero r, Rig r, Commutative r, Eq r) => CoeffRig r
 instance (DecidableZero r, Rig r, Commutative r, Eq r) => CoeffRig r -- ^ Synoym for instances. 
@@ -46,6 +40,9 @@ reverseMon (Monomial mon, a) = (Monomial $ reverse mon, a)
 
 
 dropPlusSign :: String -> String
+dropPlusSign [] = error "String too short in dropPlusSign function"
+dropPlusSign [_] = error "String too short in dropPlusSign function"
+dropPlusSign [_,_] = error "String too short in dropPlusSign function"
 dropPlusSign s@(x:y:z:a)
     | (x:y:[z]) == " + " = a
     | otherwise = s
@@ -81,3 +78,28 @@ instance (IsMonomialOrder ord, CoeffRig k) => IsPolynomial (Polynomial k ord) wh
 
 
 
+instance (IsMonomialOrder ord) => Num (Polynomial (Tropical Integer) ord) where 
+    (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith (P.+) terms1 terms2
+    (*) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.fromListWith (P.+) [ prodTerm t1 t2 | t1 <- MS.toList terms1, t2 <- MS.toList terms2]
+    fromInteger x = Polynomial $ MS.singleton one (Tropical x)
+    negate poly =  Polynomial $ MS.map P.negate $ terms poly
+
+instance (Num k, IsMonomialOrder ord) => AD.Additive (Polynomial k ord) where 
+    (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith (P.+) terms1 terms2
+
+
+instance (AD.Additive (Polynomial k ord), Semiring k, Num k) => LeftModule k (Polynomial k ord) where
+    num .* poly = num !* poly
+
+instance (AD.Additive (Polynomial k ord), Semiring k, Num k) => RightModule k (Polynomial k ord) where
+    poly *. num = num !* poly
+
+
+
+-- | Aux functions
+
+prodTerm :: (Num k, IsMonomialOrder ord) => (Monomial ord, k) -> (Monomial ord, k) -> (Monomial ord, k)
+prodTerm (mon1, coeff1) (mon2, coeff2) = (mon1 NA.* mon2, coeff1 P.* coeff2)
+
+(!*) :: (Num k) => k -> Polynomial k ord -> Polynomial k ord 
+num !* poly = Polynomial $ MS.map (P.* num) (terms poly)

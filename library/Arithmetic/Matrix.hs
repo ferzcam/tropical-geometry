@@ -1,6 +1,5 @@
 module Arithmetic.Matrix where
 
-import Arithmetic.Numbers
 import Numeric.Algebra hiding ((+), (*))
 import Data.List
 import Data.Function (on)

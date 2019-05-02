@@ -1,5 +1,9 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
 
+{-# LANGUAGE TypeFamilies, FlexibleContexts, FlexibleInstances #-}
+{-# LANGUAGE ConstrainedClassMethods, UndecidableInstances, MultiParamTypeClasses #-}
+
+
 module TPolynomial.TPrelude (testsPrelude) where 
 
 
@@ -81,7 +85,34 @@ testsSumProdPolynomial :: TestTree
 testsSumProdPolynomial = testGroup "Test for some addition and multiplication between polynomials" [testSumProdPolynomial1, testSumProdPolynomial2]
 
 
+testSumPolys1 :: TestTree
+testSumPolys1 =   HU.testCase "Sum 3x + x" $ do
+        3*x + x @?= x
 
+testSumPolys2 :: TestTree
+testSumPolys2 =   HU.testCase "Sum 3y^2 + y^2" $ do
+        3*y^2 + y^2 @?= y^2
+
+testSumPolys3 :: TestTree
+testSumPolys3 =   HU.testCase "Sum 3y^2 + x + y^2" $ do
+        3*y^2 + x + y^2 @?= x + y^2
+
+
+testProdPolys1 :: TestTree
+testProdPolys1 = HU.testCase "Prod (3y^2 + x)^2" $ do
+        (3*y^2 + x)^2 + 2 @?= 6*y^4 + 3*x*y^2 + x^2 + 2
+ 
+
+testProdPolys2 :: TestTree
+testProdPolys2 =   HU.testCase "Prod 3x(x+y+z)^2" $ do
+        3*x*(x+y+z)^2 @?= 3*x^3 + 3*x^2*z + 3*x^2*y + 3*x*y^2 + 3*x*y*z + 3*x*z^2
+
+
+testSumPolys :: TestTree
+testSumPolys = testGroup "Test for summing polynomials" [testSumPolys1, testSumPolys2, testSumPolys3]
+
+testProdPolys :: TestTree
+testProdPolys = testGroup "Test for multiplying polynomials" [testProdPolys1, testProdPolys2]
 
 testsPrelude :: TestTree
-testsPrelude = testGroup "Test for Prelude of Polynomials" [testVariables, testsShowPolynomial, testsSumProdPolynomial]
+testsPrelude = testGroup "Test for Prelude of Polynomials" [testVariables, testsShowPolynomial, testsSumProdPolynomial, testSumPolys, testProdPolys]
