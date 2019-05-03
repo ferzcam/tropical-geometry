@@ -1,12 +1,12 @@
 module Polynomial.Monomial 
 (
-    -- * Types
-    Monomial(..),
-    Lex,
-    Revlex,
+    -- -- * Types
+    -- Monomial(..),
+    -- Lex,
+    -- Revlex,
     
-    -- * Classes
-    IsMonomialOrder,
+    -- -- * Classes
+    -- IsMonomialOrder,
     
 )
 

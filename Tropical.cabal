@@ -29,8 +29,8 @@ source-repository head
 library
   exposed-modules:
       Example
-      Polynomial.Monomial
-      Polynomial.Prelude
+      Polynomial.Monomial1
+      Polynomial.Prelude1
       Arithmetic.Numbers
       Arithmetic.Matrix
       Core
@@ -41,7 +41,7 @@ library
   ghc-options:  -Wall,
                 -freverse-errors
   build-depends:
-      base , containers, numeric-prelude, semiring-simple, algebra
+      base , containers, numeric-prelude, semiring-simple, algebra, sized, singletons, type-natural
   default-language: Haskell2010
 
 

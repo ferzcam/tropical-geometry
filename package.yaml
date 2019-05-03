@@ -27,6 +27,7 @@ library:
   - numeric-prelude
   - semiring-simple
   - algebra
+  - singletons
   extra-deps:
   source-dirs: library
 

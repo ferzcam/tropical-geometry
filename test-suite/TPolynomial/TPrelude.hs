@@ -31,7 +31,7 @@ testVariables :: TestTree
 testVariables = testGroup "Tests for creation of variables" [testVariable1, testVariable2, testVariable3]
 
 
-x, y, z :: Polynomial (Tropical Integer) Lex
+x, y, z :: Polynomial (Tropical Integer) Lex 3
 
 x = variable 1 3
 y = variable 2 3
