@@ -77,36 +77,17 @@ module TArithmetic.TMatrix (testsMatrices) where
       
 
 
-    testSumMatrix1 :: TestTree
-    testSumMatrix1 =   HU.testCase "a+b" $ do
+    testSumMatrix :: TestTree
+    testSumMatrix =   HU.testCase "Sum of matrices" $ do
             a+b  @?= aPb
-
-    testSumMatrix2 :: TestTree
-    testSumMatrix2 =   HU.testCase "c+d'" $ do
             c + (transp d) @?= cPd'
 
-    testProdMatrix1 :: TestTree
-    testProdMatrix1 =   HU.testCase "ab" $ do
-            a*b  @?= aTb
-
-    testProdMatrix2 :: TestTree
-    testProdMatrix2 =   HU.testCase "ca" $ do
-            c*a  @?= cTa
-    
-    testProdMatrix3 :: TestTree
-    testProdMatrix3 =   HU.testCase "cd" $ do
-            c*d  @?= cTd
-        
-    testProdMatrix4 :: TestTree
-    testProdMatrix4 =   HU.testCase "dc" $ do
-            d*c  @?= dTc
-        
-    testSumMatrix :: TestTree
-    testSumMatrix = testGroup "Test for summing tropical matrices" [testSumMatrix1, testSumMatrix2]
-
     testProdMatrix :: TestTree
-    testProdMatrix = testGroup "Test for multiplying tropical matrices" [testProdMatrix1, testProdMatrix2, testProdMatrix3, testProdMatrix4]
-
+    testProdMatrix =   HU.testCase "Product of matrices" $ do
+            a*b  @?= aTb
+            c*a  @?= cTa
+            c*d  @?= cTd
+            d*c  @?= dTc
 
     testsMatrices :: TestTree
     testsMatrices = testGroup "Test for tropical matrices" [testSumMatrix, testProdMatrix]

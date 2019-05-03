@@ -28,6 +28,7 @@ library:
   - semiring-simple
   - algebra
   - singletons
+  - lens
   extra-deps:
   source-dirs: library
 
