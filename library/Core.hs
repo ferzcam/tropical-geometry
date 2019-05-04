@@ -9,6 +9,6 @@ module Core (
 where
 
     import Polynomial.Prelude
-    import Polynomial.Monomial
     import Arithmetic.Numbers
     import Arithmetic.Matrix
+    import Polynomial.Monomial
