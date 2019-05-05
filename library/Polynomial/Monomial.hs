@@ -57,7 +57,7 @@ instance Show (Monomial ord n) where
 ------------------------------------------
 
 -- | Definition of what a monomial order must meet
-class IsMonomialOrder ord n where
+class IsMonomialOrder (ord :: *) where
     compareMonomial :: Monomial ord n -> Monomial ord n -> Ordering
 -----------------------------
 
@@ -97,25 +97,25 @@ revlex' x y
 fromList :: SNat n -> [Int] -> Mon n
 fromList len = DS.fromListWithDefault len 0
 
-toMonomial :: (IsMonomialOrder ord n, KnownNat n) => [Int] -> Monomial ord n
+toMonomial :: (IsMonomialOrder ord, KnownNat n) => [Int] -> Monomial ord n
 toMonomial a = Monomial $ fromList sing a
 
-instance IsMonomialOrder Lex n where
+instance IsMonomialOrder Lex where
     compareMonomial m n = lex m n
 
-instance IsMonomialOrder Revlex n where
+instance IsMonomialOrder Revlex where
     compareMonomial m n = revlex m n
 
-instance (IsMonomialOrder ord n) => Ord (Monomial ord n) where
+instance (IsMonomialOrder ord) => Ord (Monomial ord n) where
     compare = compareMonomial
 
-instance (IsMonomialOrder ord n, KnownNat n) => Unital (Monomial ord n) where
+instance (IsMonomialOrder ord, KnownNat n) => Unital (Monomial ord n) where
   one = toMonomial []
 
-instance (IsMonomialOrder ord n, KnownNat n) => Multiplicative (Monomial ord n) where 
+instance (IsMonomialOrder ord, KnownNat n) => Multiplicative (Monomial ord n) where 
     (*) = prodMon
   
-prodMon :: (IsMonomialOrder ord n, KnownNat n) => Monomial ord n -> Monomial ord n -> Monomial ord n
+prodMon :: (IsMonomialOrder ord, KnownNat n) => Monomial ord n -> Monomial ord n -> Monomial ord n
 prodMon mon1 mon2
     | mon1 == one = mon2
     | mon2 == one = mon1

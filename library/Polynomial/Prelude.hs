@@ -1,13 +1,15 @@
 {-# LANGUAGE DataKinds, TypeFamilies, FlexibleContexts, FlexibleInstances, PolyKinds #-}
-{-# LANGUAGE ConstrainedClassMethods, UndecidableInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE UndecidableInstances, MultiParamTypeClasses #-}
 
 
+--ConstrainedClassMethods, 
 module Polynomial.Prelude (
     -- * Types
     Polynomial(..),
 
     -- * Classes
-    IsPolynomial(..)
+    IsPolynomial(..),
+    IsOrderedPolynomial(..)
 ) where 
 
 import Control.Lens
@@ -32,15 +34,15 @@ instance (DecidableZero r, Rig r, Commutative r, Eq r) => CoeffRig r -- ^ Synoym
 
 -- | Polynomial requires just the type of the coefficient and the monomial ordering. 
 -- | Arity is given when defining variables with 'variable' function
-data Polynomial k ord n = Polynomial { terms :: (MS.Map (Monomial ord n) k)} deriving(Eq)
+data Polynomial k ord n = Polynomial { getTerms :: (MS.Map (Monomial ord n) k)} deriving(Eq)
 
 instance (Unital k, Show k, Eq k) => Show (Polynomial k Lex n) where 
-    show = dropPlusSign .  showTerms . reverse . MS.toList . terms 
+    show = dropPlusSign .  showTerms . reverse . MS.toList . getTerms 
 
 instance (KnownNat n, Unital k, Show k, Eq k) => Show (Polynomial k Revlex n) where 
-    show = dropPlusSign .  showTerms . (map reverseMon) . reverse . MS.toList . terms 
+    show = dropPlusSign .  showTerms . (map reverseMon) . reverse . MS.toList . getTerms 
     
-reverseMon :: (KnownNat n, IsMonomialOrder ord n) => (Monomial ord n, a) -> (Monomial ord n, a)
+reverseMon :: (KnownNat n, IsMonomialOrder ord) => (Monomial ord n, a) -> (Monomial ord n, a)
 reverseMon (Monomial mon, a) = ((toMonomial . reverse . DS.toList) mon, a) 
 
 
@@ -67,7 +69,8 @@ class (CoeffRig (Coeff poly), KnownNat (Arity poly)) => IsPolynomial poly where
     type Coeff poly :: *
     type Arity poly :: Nat
     
---    arity :: poly -> SNat (Arity poly)
+    arity :: poly -> SNat (Arity poly)
+
     toPolynomial :: (Mon (Arity poly), Coeff poly) -> poly
     
     fromMonomial :: Mon (Arity poly) -> poly
@@ -77,9 +80,11 @@ class (CoeffRig (Coeff poly), KnownNat (Arity poly)) => IsPolynomial poly where
     variable idx = fromMonomial $ DS.replicate sing 0 & ix idx .~ 1  
     
 
-class (IsMonomialOrder (MonOrder poly) (Arity poly), IsPolynomial poly) => IsOrderedPolynomial poly where
+class (IsMonomialOrder (MonOrder poly), IsPolynomial poly) => IsOrderedPolynomial poly where
     type MonOrder poly :: *
     
+    terms :: poly -> MS.Map (Monomial (MonOrder poly) (Arity poly)) (Coeff poly)
+
     leadingTerm :: poly -> (Coeff poly, Monomial (MonOrder poly) (Arity poly))
     leadingTerm = (,) <$> leadingCoeff <*> leadingMonomial
     leadingMonomial :: poly -> Monomial (MonOrder poly) (Arity poly)
@@ -88,28 +93,30 @@ class (IsMonomialOrder (MonOrder poly) (Arity poly), IsPolynomial poly) => IsOrd
     leadingCoeff :: poly -> Coeff poly
     leadingCoeff = fst . leadingTerm
 
-instance (KnownNat n, IsMonomialOrder ord n, CoeffRig k) => IsPolynomial (Polynomial k ord n) where
+instance (KnownNat n, IsMonomialOrder ord, CoeffRig k) => IsPolynomial (Polynomial k ord n) where
     type Coeff (Polynomial k ord n) = k
     type Arity (Polynomial k ord n) = n
-
+    
+    arity = DS.sLength . getMonomial . leadingMonomial
     toPolynomial (mon, coeff) = Polynomial $ MS.singleton (Monomial mon) coeff
     
 
---instance (KnownNat n, CoeffRig k, IsMonomialOrder ord n) => IsOrderedPolynomial (Polynomial k ord n) where
---    type MonOrder (Polynomial k ord n) = ord
---    leadingTerm (Polynomial d) = case MS.lookupMax d of
---                                    Just (mon, coeff) -> (coeff, mon)
---                                    Nothing -> (one, one)
+instance (KnownNat n, CoeffRig k, IsMonomialOrder ord) => IsOrderedPolynomial (Polynomial k ord n) where
+   type MonOrder (Polynomial k ord n) = ord
+   terms = getTerms
+   leadingTerm (Polynomial d) = case MS.lookupMax d of
+                                   Just (mon, coeff) -> (coeff, mon)
+                                   Nothing -> (one, one)
 
 
 
-instance (IsMonomialOrder ord n, KnownNat n) => Num (Polynomial (Tropical Integer) ord n) where 
+instance (IsMonomialOrder ord, KnownNat n) => Num (Polynomial (Tropical Integer) ord n) where 
     (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith (P.+) terms1 terms2
     (*) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.fromListWith (P.+) [ prodTerm t1 t2 | t1 <- MS.toList terms1, t2 <- MS.toList terms2]
     fromInteger x = Polynomial $ MS.singleton one (Tropical x)
     negate poly =  Polynomial $ MS.map P.negate $ terms poly
 
-instance (Num k, IsMonomialOrder ord n) => AD.Additive (Polynomial k ord n) where 
+instance (Num k, IsMonomialOrder ord) => AD.Additive (Polynomial k ord n) where 
     (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith (P.+) terms1 terms2
 
 
@@ -123,8 +130,8 @@ instance (AD.Additive (Polynomial k ord n), Semiring k, Num k) => RightModule k 
 
 -- | Aux functions
 
-prodTerm :: (KnownNat n, Num k, IsMonomialOrder ord n) => (Monomial ord n, k) -> (Monomial ord n, k) -> (Monomial ord n, k)
+prodTerm :: (KnownNat n, Num k, IsMonomialOrder ord) => (Monomial ord n, k) -> (Monomial ord n, k) -> (Monomial ord n, k)
 prodTerm (mon1, coeff1) (mon2, coeff2) = (mon1 NA.* mon2, coeff1 P.* coeff2)
 
 (!*) :: (Num k) => k -> Polynomial k ord n -> Polynomial k ord n
-num !* poly = Polynomial $ MS.map (P.* num) (terms poly)
+num !* poly = Polynomial $ MS.map (P.* num) (getTerms poly)
