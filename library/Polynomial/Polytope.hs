@@ -1,15 +1,11 @@
 module Polynomial.Polytope where
 
 import Polynomial.Prelude
+import Polynomial.Monomial
 import Data.List
-
-
--- polytope  :: Polynomial k ord n -> [Monomial ord n]
--- polytope ::
-
-data Turn = LeftTurn | RightTurn
-
--- | Funcionts first, second and third are auxiliaty functions for permuting the positions of the columns of a matriz to find the determinant
+import qualified Data.Map.Strict as MS
+import qualified Data.Sized.Builtin as DS
+-- | Funcionts first, second and third are auxiliary functions for permuting the positions of the columns of a matrix to find the determinant
 
 first :: [a] -> a
 first [] = error "Empty list"
@@ -33,15 +29,16 @@ permutePositions :: [[[a] -> a]]
 permutePositions = permutations positions
 
 
-flipList :: [a] -> [a]
-flipList lst = firstPart ++ secondPart
+-- | Given a list [a,b,c,d,e,f], the resulting list is [a,b,d,c,e,f]
+fliptListAtCenter :: [a] -> [a]
+fliptListAtCenter lst = firstPart ++ secondPart
     where
         splitted = splitAt (div (length lst) 2) lst
         firstPart = (++) <$> (init . fst) <*> (return . head . snd) $ splitted
         secondPart = (++) <$> (return . last . fst) <*> (tail . snd) $ splitted
 
 determinant :: Num a => [[a]] -> a
-determinant lst = computeProds 1 $ flipList $ zipWith (zipWith ($)) permutePositions (repeat lst)
+determinant lst = computeProds 1 $ fliptListAtCenter $ zipWith (zipWith ($)) permutePositions (repeat lst)
 
 computeProds :: Num a => a -> [[a]] -> a
 computeProds _ [] = 0
@@ -64,13 +61,16 @@ Finally, we do: 45 - 72 + 84 - 105 + 96 - 48 = 0
 
 In this case, the determinant is 0.
 
-
 -}
 
 points :: (Fractional a) => [[a]]
 points = [[0,1],[1,3],[2,1],[3,4],[4,0],[5,2]]
 
-points1 = map (\[a,b] -> [a,b,1]) points
+complete :: Num a => [[a]] -> [[a]]
+complete = map (\[a,b] -> [a,b,1])
+
+dropExtraOne :: (Eq a, Num a) => [[a]] -> [[a]]
+dropExtraOne = map (\[a,b,1] -> [a,b])
 
 semiHullUp :: (Ord a, Num a) => [[a]] -> [[a]]
 semiHullUp [a] = [a]
@@ -89,10 +89,10 @@ semiHullDown (x:y:z:w) = case (determinant [y,x,z]) < 0 of
 
 
 leftMost :: (Ord a) => [[a]] -> [a]
-leftMost lst = foldl1 (\l1@(a:b:x) l2@(c:d:y) -> if c < a then l2 else l1) lst
+leftMost lst = foldl1 (\l1@(a:b) l2@(c:d) -> if c < a then l2 else l1) lst
 
 rightMost :: (Ord a) => [[a]] -> [a]
-rightMost lst = foldl1 (\l1@(a:b:x) l2@(c:d:y) -> if c > a then l2 else l1) lst
+rightMost lst = foldl1 (\l1@(a:b) l2@(c:d) -> if c > a then l2 else l1) lst
 
 isPointUp :: (Ord a, Fractional a) => [a] -> [a] -> [a] -> Bool
 isPointUp (l1:l2:x) (r1:r2:y) (p1:p2:z) = p2 >= (m*p1 + b)
@@ -108,9 +108,16 @@ isPointDown (l1:l2:x) (r1:r2:y) (p1:p2:z) = p2 <= (m*p1 + b)
         
 
 convexHull :: (Ord a, Eq a, Fractional a) => [[a]] -> [[a]]
-convexHull lst = union lowerHull upperHull
+convexHull lst = dropExtraOne $ union lowerHull upperHull
         where 
-            left = leftMost lst
-            right = rightMost lst
-            lowerHull = semiHullDown $ filter (\a -> isPointDown left right a) lst
-            upperHull = semiHullUp $ filter (\a -> isPointUp left right a) lst
+            lstC = complete lst
+            left = leftMost lstC
+            right = rightMost lstC
+            lowerHull = semiHullDown $ filter (\a -> isPointDown left right a) lstC
+            upperHull = semiHullUp $ filter (\a -> isPointUp left right a) lstC
+
+
+polytope :: (Ord a, Fractional a) => IsOrderedPolynomial poly => poly -> [[a]]
+polytope = convexHull . (map (map fromIntegral)) . sort . (map (DS.toList . getMonomial . fst)) . (MS.toList) . terms
+    -- | sNatToInt (arity poly) /= 2 = error "Algorithm works only for polynomials in 2 variables"
+    -- | otherwise = (convexHull . sort . (map (DS.toList . getMonomial . fst)) . (MS.toList) . terms) poly

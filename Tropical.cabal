@@ -31,6 +31,7 @@ library
       Example
       Polynomial.Monomial
       Polynomial.Prelude
+      Polynomial.Polytope
       Arithmetic.Numbers
       Arithmetic.Matrix
       Core
@@ -66,6 +67,7 @@ test-suite Tropical-test-suite
       Paths_Tropical
       TPolynomial.TMonomial
       TPolynomial.TPrelude
+      TPolynomial.TPolytope
   hs-source-dirs:
       test-suite
   ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors  -Wname-shadowing
