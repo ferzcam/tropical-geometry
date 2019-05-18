@@ -8,6 +8,7 @@ import TPolynomial.TPrelude
 import TArithmetic.TNumbers
 import TArithmetic.TMatrix
 import TPolynomial.TPolytope
+import TGeometry.TConvexHull
 
 main :: IO ()
 main = do
@@ -18,6 +19,6 @@ main = do
 allTests ::   TestTree
 allTests = testGroup "Tasty tests" [
 
-        testGroup "List of tests:" [testsNumbers, testsMatrices, testsMonomial, testsPrelude, testsPolytope]
+        testGroup "List of tests:" [testsNumbers, testsMatrices, testsMonomial, testsPrelude, testsConvexHull, testsPolytope]
     ]
 

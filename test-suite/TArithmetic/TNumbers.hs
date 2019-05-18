@@ -3,7 +3,9 @@ module TArithmetic.TNumbers (testsNumbers) where
     import Test.Tasty
     import Test.Tasty.HUnit as HU
     import Arithmetic.Numbers
-        
+
+
+
     testSumTropicals :: TestTree
     testSumTropicals =   HU.testCase "Sum tropical numbers" $ do
             (Tropical 3) + (Tropical 3)  @?= (Tropical 3 :: Tropical Integer)

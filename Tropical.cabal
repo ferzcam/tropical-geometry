@@ -34,6 +34,7 @@ library
       Polynomial.Polytope
       Arithmetic.Numbers
       Arithmetic.Matrix
+      Geometry.ConvexHull
       Core
   other-modules:
       Paths_Tropical
@@ -42,7 +43,7 @@ library
   ghc-options:  -Wall,
                 -freverse-errors
   build-depends:
-      base , containers, numeric-prelude, semiring-simple, algebra, sized, singletons, type-natural, lens
+      base , containers, numeric-prelude, semiring-simple, algebra, sized, singletons, type-natural, lens, matrix
   default-language: Haskell2010
 
 

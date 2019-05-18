@@ -29,6 +29,7 @@ library:
   - algebra
   - singletons
   - lens
+  - matrix
   extra-deps:
   source-dirs: library
 
