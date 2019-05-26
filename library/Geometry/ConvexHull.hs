@@ -42,7 +42,10 @@ newtype Facet = Facet {edges :: [Edge]}
 
 newtype ConvexHull = ConvexHull {facets :: [Facet]}
 
-data ConflictGraph = ConflictGraph (MS.Map Vertex [Facet]) (MS.Map Facet [Vertex])
+data ConflictGraph = ConflictGraph {
+    verticesF :: (MS.Map Vertex [Facet]),
+    facetsV ::  (MS.Map Facet [Vertex])
+    }
 
 
 
@@ -51,33 +54,69 @@ convexHull3D :: [Point3D] -> Maybe [Point3D]
 convexHull3D points
     | length points < 4 = Just points
     | tetraHedron == Nothing = Nothing
-    | otherwise = addPoints dcel (x:xs) conflictGraph
+    | otherwise = Just $ addPoints dcel (x:xs) conflictGraph
         where
             conflictGraph = startConflictGraph dcel (x:xs)
-            dcel = initializeCH . fromJust tetraHedron
+            dcel = (initializeCH . fromJust) tetraHedron
             tetraHedron = computeTetrahedron points
-            (x:xs) = points // tetraHedron
+            (x:xs) = points \\ (fromJust tetraHedron)
 
 -------------------------------------------------
 
 startConflictGraph :: ConvexHull -> [Point3D] -> ConflictGraph
-startConflictGraph convexHull points = map (\f -> map (\p -> if isInFrontOf f p then insert f p conflictGraph else conflictGraph) points) f
+startConflictGraph convexHull points = foldr (\f conflictGraph -> foldr (\p conflictGraph -> if isInFrontOf f p then insert f (Vertex p) conflictGraph else conflictGraph) (ConflictGraph MS.empty MS.empty) points) (ConflictGraph MS.empty MS.empty) facetsCH
     where
-        f = facets convexHull
-        conflictGraph = MS.empty MS.empty
-        insert f p (ConflictGraph vs fs) = ConflictGraph (MS.insertWith (++) p f) (insertWith (++) f p) 
+        facetsCH = facets convexHull
+--        conflictGraph = MS.empty MS.empty
+        insert f p (ConflictGraph vs fs) = ConflictGraph (MS.insertWith (++) p [f] vs) (MS.insertWith (++) f [p] fs) 
+
+
 initializeCH :: [Point3D] -> ConvexHull
 initializeCH [a,b,c,d] = ConvexHull $ map fromVertices [f1,f2,f3,f4]
     where 
-        f1 = [a,b,c]
+        f1 = [a,b,c] -- * Counterclockwise
         f2 = [a,c,d]
         f3 = [a,d,b]
         f4 = [b,d,c]
 
 
--- | Points must be ordered counterclockwise
-fromVertices :: Point3D -> Facet
-fromVertices (a,b,c) = [Edge (va,vb), Edge (va,vc), Edge (vb,vc)]
+addPoints :: ConvexHull -> [Point3D] -> ConflictGraph -> [Point3D]
+addPoints convexHull (p:ps) conflictGraph
+    | inside p convexHull = addPoints convexHull ps conflictGraph
+    | otherwise = p:(addPoints (ConvexHull ((facetsCH++newFacets) \\ visibleFaces)) ps newConflictGraph )
+        where
+            facetsCH = facets convexHull
+
+            conflictVertices = verticesF conflictGraph
+            conflictFacets = facetsV conflictGraph
+
+            visibleFaces = conflictVertices MS.! (Vertex p)
+            horizon = findHorizon visibleFaces
+            newFacets = map (fromVertices . (++ [p]) . (\(a,b) -> map coordinates [a,b]) . vertices) horizon
+
+            dropFacets = foldr (\f conflictFacets -> delete f conflictFacets) conflictFacets visibleFaces
+            dropVertex = delete p conflictVertices
+            dropFacetInVertex = map (\v -> map (\f -> update (Just . (delete f)) v ) visibleFaces ) dropVertex
+
+            mapNewFacets = union dropFacets (MS.fromList $ map (\f -> (f,[])) newFacets)
+
+            newConflictGraph = foldr (\f conflictGraph -> foldr (\p conflictGraph -> if isInFrontOf f p then insert f (Vertex p) conflictGraph else conflictGraph) (ConflictGraph MS.empty MS.empty) dropFacetInVertex) (ConflictGraph MS.empty MS.empty) newFacets
+
+            insert f p (ConflictGraph vs fs) = ConflictGraph (MS.insertWith (++) p f) (insertWith (++) f p) 
+
+
+
+
+findHorizon :: [Facet] -> [Edge]
+findHorizon facets =  dropTwins $ concat $ map edges facets
+    where 
+        dropTwins edges@((v1,v2):es) = case elem (v2,v1) edges of
+                                        True -> dropTwins (edges\\[(v1,v2),(v2,v1)])
+                                        False -> (v1,v2):(dropTwins es)
+
+-- | Generates a facet from its vertices. Points must be ordered counterclockwise
+fromVertices :: [Point3D] -> Facet
+fromVertices (a,b,c) = [Edge (va,vb), Edge (vb,vc), Edge (vc,va)]
     where
         [va,vb,vc] = map (Vertex) [a,b,c]
 ---------------------------------------------------
@@ -154,9 +193,20 @@ isCoplanar [a,b,c] d =    let
                             res = detLU matrix
                         in res == 0
 
-isInFrontOf :: [Point3D] -> Point3D -> Bool
-isInFrontOf [a,b,c] d =    let 
+isInFrontOf :: Facet -> Point3D -> Bool
+isInFrontOf facet d =    let
+                            [a,b,c] = fromFacet facet
                             matrix = fromLists (map (\(x,y,z)->[x,y,z,1]) [a,b,c,d])
                             res = detLU matrix
                         in res < 0
+
+
+fromFacet :: Facet -> [Point3D]
+fromFacet =    let
+                    [(a,b),(c,d),(e,f)] = edges facet
+                in [a,b,d]
+
 ---------------------------------------------------------------------------------------------
+
+inside :: Point3D -> ConvexHull -> Bool
+inside p convexHull = and $ map (not (flip isInFrontOf) p) (facets convexHull)
