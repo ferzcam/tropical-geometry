@@ -34,13 +34,13 @@ type Point3D = (Ratio Int, Ratio Int, Ratio Int)
 --     | Null
 
 
-newtype Vertex = Vertex {coordinates :: Point3D}
+newtype Vertex = Vertex {coordinates :: Point3D} deriving (Eq)
 
-newtype Edge = Edge {vertices :: (Vertex, Vertex)}
+newtype Edge = Edge {vertices :: (Vertex, Vertex)} deriving (Show, Eq)
 
-newtype Facet = Facet {edges :: [Edge]}
+newtype Facet = Facet {edges :: [Edge]} deriving (Show, Eq)
 
-newtype ConvexHull = ConvexHull {facets :: [Facet]}
+newtype ConvexHull = ConvexHull {facets :: [Facet]} deriving (Show, Eq)
 
 data ConflictGraph = ConflictGraph {
     verticesF :: (MS.Map Vertex [Facet]),
@@ -49,17 +49,32 @@ data ConflictGraph = ConflictGraph {
 
 
 
+instance Ord Vertex where
+    compare (Vertex v1) (Vertex v2) = compare v1 v2
+
+instance Show Vertex where 
+    show (Vertex v) = show v
+
+instance Ord Edge where
+    compare (Edge e1) (Edge e2) = compare e1 e2
+
+instance Ord Facet where
+    compare (Facet f1) (Facet f2) = compare f1 f2
+
+
+
+
 -- | Assume every point is different
 convexHull3D :: [Point3D] -> Maybe [Point3D]
 convexHull3D points
-    | length points < 4 = Just points
+    | length points < 4 = Just $ sort points
     | tetraHedron == Nothing = Nothing
-    | otherwise = Just $ addPoints dcel (x:xs) conflictGraph
+    | otherwise = Just $ sort $ fromConvexHull $ addPoints dcel afterTetrahedron conflictGraph
         where
-            conflictGraph = startConflictGraph dcel (x:xs)
+            conflictGraph = startConflictGraph dcel afterTetrahedron
             dcel = (initializeCH . fromJust) tetraHedron
             tetraHedron = computeTetrahedron points
-            (x:xs) = points \\ (fromJust tetraHedron)
+            afterTetrahedron = points \\ (fromJust tetraHedron)
 
 -------------------------------------------------
 
@@ -80,10 +95,11 @@ initializeCH [a,b,c,d] = ConvexHull $ map fromVertices [f1,f2,f3,f4]
         f4 = [b,d,c]
 
 
-addPoints :: ConvexHull -> [Point3D] -> ConflictGraph -> [Point3D]
+addPoints :: ConvexHull -> [Point3D] -> ConflictGraph -> ConvexHull
+addPoints convexHull [] _ = convexHull
 addPoints convexHull (p:ps) conflictGraph
     | inside p convexHull = addPoints convexHull ps conflictGraph
-    | otherwise = p:(addPoints (ConvexHull ((facetsCH++newFacets) \\ visibleFaces)) ps newConflictGraph )
+    | otherwise = addPoints (ConvexHull ((facetsCH++newFacets) \\ visibleFaces)) ps newConflictGraph
         where
             facetsCH = facets convexHull
 
@@ -94,15 +110,17 @@ addPoints convexHull (p:ps) conflictGraph
             horizon = findHorizon visibleFaces
             newFacets = map (fromVertices . (++ [p]) . (\(a,b) -> map coordinates [a,b]) . vertices) horizon
 
-            dropFacets = foldr (\f conflictFacets -> delete f conflictFacets) conflictFacets visibleFaces
-            dropVertex = delete p conflictVertices
-            dropFacetInVertex = map (\v -> map (\f -> update (Just . (delete f)) v ) visibleFaces ) dropVertex
+            dropFacets = foldr (\f conflictFacets -> MS.delete f conflictFacets) conflictFacets visibleFaces
+            dropVertex = MS.delete (Vertex p) conflictVertices
+            -- dropFacetInVertex = map (\f -> MS.update (Just . (delete f)) dropVertex ) visibleFaces
+            --dropFacetInVertex = MS.map (\v -> map (\f -> MS.update (Just . (delete f)) v dropVertex) visibleFaces ) dropVertex
+            dropFacetInVertex = MS.map (\\visibleFaces) dropVertex
 
-            mapNewFacets = union dropFacets (MS.fromList $ map (\f -> (f,[])) newFacets)
+            mapNewFacets = MS.union dropFacets (MS.fromList $ map (\f -> (f,[])) newFacets)
 
-            newConflictGraph = foldr (\f conflictGraph -> foldr (\p conflictGraph -> if isInFrontOf f p then insert f (Vertex p) conflictGraph else conflictGraph) (ConflictGraph MS.empty MS.empty) dropFacetInVertex) (ConflictGraph MS.empty MS.empty) newFacets
+            newConflictGraph = foldr (\f conflictGraph -> foldr (\p conflictGraph -> if isInFrontOf f p then insert f (Vertex p) conflictGraph else conflictGraph) (ConflictGraph MS.empty MS.empty) ps) (ConflictGraph MS.empty MS.empty) newFacets
 
-            insert f p (ConflictGraph vs fs) = ConflictGraph (MS.insertWith (++) p f) (insertWith (++) f p) 
+            insert f p (ConflictGraph vs fs) = ConflictGraph (MS.insertWith (++) p [f] vs) (MS.insertWith (++) f [p] fs) 
 
 
 
@@ -110,17 +128,24 @@ addPoints convexHull (p:ps) conflictGraph
 findHorizon :: [Facet] -> [Edge]
 findHorizon facets =  dropTwins $ concat $ map edges facets
     where 
-        dropTwins edges@((v1,v2):es) = case elem (v2,v1) edges of
-                                        True -> dropTwins (edges\\[(v1,v2),(v2,v1)])
-                                        False -> (v1,v2):(dropTwins es)
+        dropTwins edges@((Edge (v1,v2)):es) = case elem (Edge (v2,v1)) edges of
+                                        True -> dropTwins (edges\\[Edge (v1,v2),Edge (v2,v1)])
+                                        False -> (Edge (v1,v2)):(dropTwins es)
 
 -- | Generates a facet from its vertices. Points must be ordered counterclockwise
 fromVertices :: [Point3D] -> Facet
-fromVertices (a,b,c) = [Edge (va,vb), Edge (vb,vc), Edge (vc,va)]
+fromVertices [a,b,c] = Facet [Edge (va,vb), Edge (vb,vc), Edge (vc,va)]
     where
         [va,vb,vc] = map (Vertex) [a,b,c]
 ---------------------------------------------------
 
+fromConvexHull :: ConvexHull -> [Point3D]
+fromConvexHull convexHull =  map coordinates $ concat $ map (\(Edge (v1,v2)) -> [v1,v2]) $ dropTwins $ concat $ map edges (facets convexHull)     
+    where 
+        dropTwins [] = []
+        dropTwins edges@((Edge (v1,v2)):es) = case elem (Edge (v2,v1)) edges of
+                                        True -> dropTwins (edges\\[Edge (v2,v1)])
+                                        False -> (Edge (v1,v2)):(dropTwins es)
 --
 --
 --
@@ -202,11 +227,11 @@ isInFrontOf facet d =    let
 
 
 fromFacet :: Facet -> [Point3D]
-fromFacet =    let
-                    [(a,b),(c,d),(e,f)] = edges facet
-                in [a,b,d]
+fromFacet facet =   let
+                        [(a,b),(c,d),(e,f)] = map vertices $ edges facet
+                    in map coordinates [a,b,d]
 
 ---------------------------------------------------------------------------------------------
 
 inside :: Point3D -> ConvexHull -> Bool
-inside p convexHull = and $ map (not (flip isInFrontOf) p) (facets convexHull)
+inside p convexHull = and $ map (not.(flip isInFrontOf) p) (facets convexHull)
