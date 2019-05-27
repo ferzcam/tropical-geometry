@@ -8,7 +8,7 @@ import Data.Ratio
 import Debug.Trace
 
 
-type Point3D = (Ratio Int, Ratio Int, Ratio Int)
+type Point3D = (Int, Int, Int)
 
 -- newtype Vertex = Vertex 
 --     {
@@ -45,7 +45,7 @@ newtype ConvexHull = ConvexHull {facets :: [Facet]} deriving (Show, Eq)
 data ConflictGraph = ConflictGraph {
     verticesF :: (MS.Map Vertex [Facet]),
     facetsV ::  (MS.Map Facet [Vertex])
-    }
+    } deriving (Show)
 
 
 
@@ -67,10 +67,13 @@ instance Ord Facet where
 -- | Assume every point is different
 convexHull3D :: [Point3D] -> Maybe [Point3D]
 convexHull3D points
-    | length points < 4 = Just $ sort points
+    | length points < 4 = Just $ sort $ nub points
     | tetraHedron == Nothing = Nothing
-    | otherwise = Just $ sort $ fromConvexHull $ addPoints dcel afterTetrahedron conflictGraph
+    | otherwise = Just $ sort $ pointsConvexHull
         where
+            convexHull =  addPoints dcel afterTetrahedron conflictGraph
+            pointsConvexHull = fromConvexHull convexHull
+         --   properPoints = filter (\p -> not $ inside p convexHull) pointsConvexHull
             conflictGraph = startConflictGraph dcel afterTetrahedron
             dcel = (initializeCH . fromJust) tetraHedron
             tetraHedron = computeTetrahedron points
@@ -79,12 +82,15 @@ convexHull3D points
 -------------------------------------------------
 
 startConflictGraph :: ConvexHull -> [Point3D] -> ConflictGraph
-startConflictGraph convexHull points = foldr (\f conflictGraph -> foldr (\p conflictGraph -> if isInFrontOf f p then insert f (Vertex p) conflictGraph else conflictGraph) (ConflictGraph MS.empty MS.empty) points) (ConflictGraph MS.empty MS.empty) facetsCH
+startConflictGraph convexHull points = matchFacetsPoints facetsCH points
     where
-        facetsCH = facets convexHull
---        conflictGraph = MS.empty MS.empty
+       facetsCH = facets convexHull
+        
+matchFacetsPoints :: [Facet] -> [Point3D] -> ConflictGraph
+matchFacetsPoints facets points = foldr (\(f,p) conflictGraph -> insert f (Vertex p) conflictGraph) (ConflictGraph MS.empty MS.empty) pairsFacetPoint
+    where
+        pairsFacetPoint = [(f,p) | f <- facets, p <- points, isInFrontOf f p]
         insert f p (ConflictGraph vs fs) = ConflictGraph (MS.insertWith (++) p [f] vs) (MS.insertWith (++) f [p] fs) 
-
 
 initializeCH :: [Point3D] -> ConvexHull
 initializeCH [a,b,c,d] = ConvexHull $ map fromVertices [f1,f2,f3,f4]
@@ -98,15 +104,15 @@ initializeCH [a,b,c,d] = ConvexHull $ map fromVertices [f1,f2,f3,f4]
 addPoints :: ConvexHull -> [Point3D] -> ConflictGraph -> ConvexHull
 addPoints convexHull [] _ = convexHull
 addPoints convexHull (p:ps) conflictGraph
-    | inside p convexHull = addPoints convexHull ps conflictGraph
-    | otherwise = addPoints (ConvexHull ((facetsCH++newFacets) \\ visibleFaces)) ps newConflictGraph
+    | inside p convexHull || isCoplanarCH p convexHull = trace ("p is: " ++ show p) addPoints convexHull ps conflictGraph
+    | otherwise = trace ("p is: " ++ show p) addPoints (ConvexHull nextFacets) ps newConflictGraph
         where
             facetsCH = facets convexHull
 
             conflictVertices = verticesF conflictGraph
             conflictFacets = facetsV conflictGraph
 
-            visibleFaces = conflictVertices MS.! (Vertex p)
+            visibleFaces = trace ("finding vertex " ++ show p) conflictVertices MS.! (Vertex p)
             horizon = findHorizon visibleFaces
             newFacets = map (fromVertices . (++ [p]) . (\(a,b) -> map coordinates [a,b]) . vertices) horizon
 
@@ -118,16 +124,16 @@ addPoints convexHull (p:ps) conflictGraph
 
             mapNewFacets = MS.union dropFacets (MS.fromList $ map (\f -> (f,[])) newFacets)
 
-            newConflictGraph = foldr (\f conflictGraph -> foldr (\p conflictGraph -> if isInFrontOf f p then insert f (Vertex p) conflictGraph else conflictGraph) (ConflictGraph MS.empty MS.empty) ps) (ConflictGraph MS.empty MS.empty) newFacets
-
-            insert f p (ConflictGraph vs fs) = ConflictGraph (MS.insertWith (++) p [f] vs) (MS.insertWith (++) f [p] fs) 
-
+            nextFacets = nub $ (nub (facetsCH\\visibleFaces)) ++newFacets
+            newConflictGraph = matchFacetsPoints nextFacets ps
+            
 
 
 
 findHorizon :: [Facet] -> [Edge]
 findHorizon facets =  dropTwins $ concat $ map edges facets
     where 
+        dropTwins [] = []
         dropTwins edges@((Edge (v1,v2)):es) = case elem (Edge (v2,v1)) edges of
                                         True -> dropTwins (edges\\[Edge (v1,v2),Edge (v2,v1)])
                                         False -> (Edge (v1,v2)):(dropTwins es)
@@ -185,14 +191,14 @@ computeTetrahedron points
 isColinearIn3D :: [Point3D] -> Point3D -> Bool -- * Not able to use determinant algorithm because the matrix is not square
 isColinearIn3D [a,b] c =    let 
                             distanceXYZ = \(a,b,c) (d,e,f) -> [abs (a-d), abs (b-e), abs (c-f)]
-                            ab = distanceXYZ a b
-                            ac = distanceXYZ a c
+                            ab = map toRational $ distanceXYZ a b
+                            ac = map toRational $ distanceXYZ a c
                             ratio = checkRatio ab ac
                             in case ratio of
                                 Nothing -> trace "In case Nothing isColinear3D" False
                                 Just ls -> trace "In case Just isColinear3D" and $ map (== head ls) (tail ls) 
 
-checkRatio :: [Ratio Int] -> [Ratio Int] -> Maybe [Ratio Int]
+checkRatio :: [Rational] -> [Rational] -> Maybe [Rational]
 checkRatio l1 l2
     | l1 == [0,0,0] = trace "Case 1 checkRatio" Just [0,0,0]
     | l2 == [0,0,0] = trace "Case 2 checkRatio" Just [0,0,0]
@@ -203,7 +209,7 @@ checkRatio l1 l2
         (l1', l2') = filterZeros l1 l2
 
 
-filterZeros :: [Ratio Int] -> [Ratio Int] -> ([Ratio Int], [Ratio Int])
+filterZeros :: [Rational] -> [Rational] -> ([Rational], [Rational])
 filterZeros [] [] = ([],[])
 filterZeros (x:xs) (y:ys)
         | x == 0 && y == 0 = newXs
@@ -214,14 +220,14 @@ filterZeros (x:xs) (y:ys)
 
 isCoplanar :: [Point3D] -> Point3D -> Bool
 isCoplanar [a,b,c] d =    let 
-                            matrix = fromLists (map (\(x,y,z)->[x,y,z,1]) [a,b,c,d])
+                            matrix = fromLists (map (\(x,y,z)-> map toRational [x,y,z,1]) [a,b,c,d])
                             res = detLU matrix
                         in res == 0
 
 isInFrontOf :: Facet -> Point3D -> Bool
 isInFrontOf facet d =    let
                             [a,b,c] = fromFacet facet
-                            matrix = fromLists (map (\(x,y,z)->[x,y,z,1]) [a,b,c,d])
+                            matrix = fromLists (map (\(x,y,z)-> map toRational [x,y,z,1]) [a,b,c,d])
                             res = detLU matrix
                         in res < 0
 
@@ -235,3 +241,6 @@ fromFacet facet =   let
 
 inside :: Point3D -> ConvexHull -> Bool
 inside p convexHull = and $ map (not.(flip isInFrontOf) p) (facets convexHull)
+
+isCoplanarCH :: Point3D -> ConvexHull -> Bool
+isCoplanarCH p convexHull = or $ map ((flip isCoplanar) p) (map fromFacet $ facets convexHull)
