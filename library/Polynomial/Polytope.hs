@@ -119,5 +119,4 @@ convexHull lst = dropExtraOne $ union lowerHull upperHull
 
 polytope :: (Ord a, Fractional a) => IsOrderedPolynomial poly => poly -> [[a]]
 polytope = convexHull . (map (map fromIntegral)) . sort . (map (DS.toList . getMonomial . fst)) . (MS.toList) . terms
-    -- | sNatToInt (arity poly) /= 2 = error "Algorithm works only for polynomials in 2 variables"
-    -- | otherwise = (convexHull . sort . (map (DS.toList . getMonomial . fst)) . (MS.toList) . terms) poly
+    

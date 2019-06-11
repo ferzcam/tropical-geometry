@@ -69,7 +69,7 @@ instance (Ord a, Num a) => Num (Tropical a) where
   fromInteger a = Tropical $ Prelude.fromInteger a
   negate = fmap negate
 
-instance (Num a, Ord a, Rig a) => DecidableZero (Tropical a) -- ^ Not neccesary to implement since it is already defined
-  
+-- | Not neccesary to implement since it is already defined  
+instance (Num a, Ord a, Rig a) => DecidableZero (Tropical a) 
 instance Functor Tropical where
   fmap f (Tropical a) = Tropical (f a)

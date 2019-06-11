@@ -46,6 +46,15 @@ extra-deps:
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
+haddock: true
+haddock-arguments:
+  haddock-args:     # Additional arguments passed to haddock, --haddock-arguments
+    - "--latex"
+  # haddock-args:
+  # - "--css=/home/user/my-css"
+open-haddocks: false    # --open
+haddock-deps: true     # if unspecified, defaults to true if haddock is set
+haddock-internal: true
 
 # Extra package databases containing global packages
 # extra-package-dbs: []

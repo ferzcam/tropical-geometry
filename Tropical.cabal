@@ -70,6 +70,10 @@ test-suite Tropical-test-suite
       TPolynomial.TMonomial
       TPolynomial.TPrelude
       TPolynomial.TPolytope
+      TArithmetic.TMatrix
+      TArithmetic.TNumbers
+      TGeometry.TConvexHull
+
   hs-source-dirs:
       test-suite
   ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors  -Wname-shadowing

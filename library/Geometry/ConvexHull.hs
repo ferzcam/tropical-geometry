@@ -5,10 +5,20 @@ import Data.Maybe
 import qualified Data.Map.Strict as MS
 import Data.Matrix hiding (trace)
 import Data.Ratio
+import Data.Function
 import Debug.Trace
 
 
+
 type Point3D = (Int, Int, Int)
+
+getX,getY,getZ :: Point3D -> Int
+
+getX (x,_,_) = x
+getY (_,y,_) = y
+getZ (_,_,z) = z
+
+
 
 -- newtype Vertex = Vertex 
 --     {
@@ -36,11 +46,12 @@ type Point3D = (Int, Int, Int)
 
 newtype Vertex = Vertex {coordinates :: Point3D} deriving (Eq)
 
+
 newtype Edge = Edge {vertices :: (Vertex, Vertex)} deriving (Show, Eq)
 
-newtype Facet = Facet {edges :: [Edge]} deriving (Show, Eq)
+newtype Facet = Facet {edges :: [Edge]}
 
-newtype ConvexHull = ConvexHull {facets :: [Facet]} deriving (Show, Eq)
+newtype ConvexHull = ConvexHull {facets :: [Facet]} deriving (Eq)
 
 data ConflictGraph = ConflictGraph {
     verticesF :: (MS.Map Vertex [Facet]),
@@ -48,6 +59,14 @@ data ConflictGraph = ConflictGraph {
     } deriving (Show)
 
 
+instance Show ConvexHull where
+    show = show.sort.facets
+
+instance Eq Facet where
+    f1 == f2 = ((==) `on` (sort.fromFacet)) f1 f2 
+
+instance Show Facet where
+    show = show.sort.fromFacet
 
 instance Ord Vertex where
     compare (Vertex v1) (Vertex v2) = compare v1 v2
@@ -92,10 +111,10 @@ matchFacetsPoints facets points = foldr (\(f,p) conflictGraph -> insert f (Verte
         pairsFacetPoint = [(f,p) | f <- facets, p <- points, isInFrontOf f p]
         insert f p (ConflictGraph vs fs) = ConflictGraph (MS.insertWith (++) p [f] vs) (MS.insertWith (++) f [p] fs) 
 
-initializeCH :: [Point3D] -> ConvexHull
+initializeCH :: [Point3D] -> ConvexHull -- ^ Counterclockwise
 initializeCH [a,b,c,d] = ConvexHull $ map fromVertices [f1,f2,f3,f4]
     where 
-        f1 = [a,b,c] -- * Counterclockwise
+        f1 = [a,b,c] 
         f2 = [a,c,d]
         f3 = [a,d,b]
         f4 = [b,d,c]
@@ -104,31 +123,45 @@ initializeCH [a,b,c,d] = ConvexHull $ map fromVertices [f1,f2,f3,f4]
 addPoints :: ConvexHull -> [Point3D] -> ConflictGraph -> ConvexHull
 addPoints convexHull [] _ = convexHull
 addPoints convexHull (p:ps) conflictGraph
-    | inside p convexHull || isCoplanarCH p convexHull = trace ("p is: " ++ show p) addPoints convexHull ps conflictGraph
-    | otherwise = trace ("p is: " ++ show p) addPoints (ConvexHull nextFacets) ps newConflictGraph
+    | inside p convexHull = addPoints convexHull ps conflictGraph
+    | otherwise = trace ("NEXT FACETS: " ++ show nextFacets) addPoints (ConvexHull nextFacets) ps newConflictGraph
         where
             facetsCH = facets convexHull
 
             conflictVertices = verticesF conflictGraph
             conflictFacets = facetsV conflictGraph
 
-            visibleFaces = trace ("finding vertex " ++ show p) conflictVertices MS.! (Vertex p)
+            visibleFaces = conflictVertices MS.! (Vertex p)
             horizon = findHorizon visibleFaces
             newFacets = map (fromVertices . (++ [p]) . (\(a,b) -> map coordinates [a,b]) . vertices) horizon
 
             dropFacets = foldr (\f conflictFacets -> MS.delete f conflictFacets) conflictFacets visibleFaces
             dropVertex = MS.delete (Vertex p) conflictVertices
-            -- dropFacetInVertex = map (\f -> MS.update (Just . (delete f)) dropVertex ) visibleFaces
-            --dropFacetInVertex = MS.map (\v -> map (\f -> MS.update (Just . (delete f)) v dropVertex) visibleFaces ) dropVertex
             dropFacetInVertex = MS.map (\\visibleFaces) dropVertex
 
-            mapNewFacets = MS.union dropFacets (MS.fromList $ map (\f -> (f,[])) newFacets)
-
-            nextFacets = nub $ (nub (facetsCH\\visibleFaces)) ++newFacets
+--            mapNewFacets = MS.union dropFacets (MS.fromList $ map (\f -> (f,[])) newFacets)
+            nextFacets = filter (/= (Facet [])) $ checkCoplanarity (facetsCH\\visibleFaces) newFacets
             newConflictGraph = matchFacetsPoints nextFacets ps
             
 
+checkCoplanarity :: [Facet] -> [Facet] -> [Facet]
+checkCoplanarity facets1 facets2 = foldr (\(merged,fs) acc -> (acc \\ fs)++merged) (facets1++facets2) coplanarFaces
+            where
+                mergeCoplanar f1 f2
+                    | length ((pointsFromGinF `on` fromFacet) f1 f2) < 2 = ([],[])
+                    | areCoplanarFacets f1 f2 = ([fromVertices $ (mergePoints `on` fromFacet) f1 f2],[f1,f2])
+                    | otherwise = ([],[])
 
+                coplanarFaces = map (uncurry mergeCoplanar) [(f1,f2) | f1 <- facets1, f2 <- facets2] 
+                pointsFromGinF f g = filter ((flip elem) f) g
+                
+
+
+areCoplanarFacets :: Facet -> Facet -> Bool
+areCoplanarFacets f1 f2  = isCoplanar (fromFacet f1) (nicePoint f2 f1)
+    where
+        nicePoint f g = 
+            head $ ((\\) `on` fromFacet) f g
 
 findHorizon :: [Facet] -> [Edge]
 findHorizon facets =  dropTwins $ concat $ map edges facets
@@ -140,9 +173,14 @@ findHorizon facets =  dropTwins $ concat $ map edges facets
 
 -- | Generates a facet from its vertices. Points must be ordered counterclockwise
 fromVertices :: [Point3D] -> Facet
-fromVertices [a,b,c] = Facet [Edge (va,vb), Edge (vb,vc), Edge (vc,va)]
+fromVertices points@(p:ps) = Facet edges
     where
-        [va,vb,vc] = map (Vertex) [a,b,c]
+        edges = getEdges $ map Vertex (points++[p])
+        getEdges [a] = []
+        getEdges (x:y:z) = (Edge (x,y)):(getEdges (y:z))
+-- fromVertices [a,b,c] = Facet [Edge (va,vb), Edge (vb,vc), Edge (vc,va)]
+--     where
+--         [va,vb,vc] = map (Vertex) [a,b,c]
 ---------------------------------------------------
 
 fromConvexHull :: ConvexHull -> [Point3D]
@@ -152,17 +190,54 @@ fromConvexHull convexHull =  map coordinates $ concat $ map (\(Edge (v1,v2)) -> 
         dropTwins edges@((Edge (v1,v2)):es) = case elem (Edge (v2,v1)) edges of
                                         True -> dropTwins (edges\\[Edge (v2,v1)])
                                         False -> (Edge (v1,v2)):(dropTwins es)
---
---
---
---
---
 
+
+
+mergePoints :: [Point3D] -> [Point3D] -> [Point3D]
+mergePoints p1@(p:ps) p2@(x:y:xs)
+    | elem x p1 && elem y p1 = case last p1 == x of
+                                    True -> checkColinearity $ x:(init p1) ++ (xs)
+                                    False -> mergePoints (ps++[p]) p2
+    | otherwise = mergePoints p1 ((y:xs) ++ [x])
+
+-- [l1,l2] ++
+
+checkColinearity :: [Point3D] -> [Point3D]
+checkColinearity points@(p1:p2:p3:p) = points \\ midPoints
+    where
+        midPoints = map (\(_,p,_) -> p) nicePoints
+        nicePoints = [(p1,p2,p3) | p1 <- points, p2 <- points, p3 <- points, isColinearIn3D [p1,p3] p2, isBetween3D [p1,p3] p2, p1 /= p2, p2/=p3, p1/=p3]
+
+
+
+-- checkColinearity :: [Point3D] -> [Point3D]
+-- checkColinearity points@(p1:p2:p3:p)
+--     | isBetween3D [p1,p3] p2 =  nub $ checkColinearity' ( points ++ [p1,p2])
+--     | otherwise = checkColinearity ((p2:p3:p) ++ [p1])
+--         where 
+--             [l1,l2] = [last (init points), last points]
+
+checkColinearity' :: [Point3D] -> [Point3D]
+checkColinearity' [a,b] = []
+checkColinearity' points@(p1:p2:p3:p)
+    | isColinearIn3D [p1,p3] p2 = checkColinearity' (p1:p3:p)
+    | otherwise = p1:(checkColinearity' (p2:p3:p))
+
+isBetween3D :: [Point3D] -> Point3D -> Bool
+isBetween3D [p1,p3] p2
+    | (p2X-p1X)*(p3X-p2X) < 0 = False
+    | (p2Y-p1Y)*(p3Y-p2Y) < 0 = False
+    | (p2Z-p1Z)*(p3Z-p2Z) < 0 = False
+    | otherwise = True
+    where
+        [p1X, p2X, p3X] = map getX [p1,p2,p3]
+        [p1Y, p2Y, p3Y] = map getY [p1,p2,p3]
+        [p1Z, p2Z, p3Z] = map getZ [p1,p2,p3]
 
 
 ---------------------------------------------------------------------------------------------
 computeSegment :: [Point3D] -> Maybe [Point3D]
-computeSegment [] = Nothing -- * Not enough points or all points are equal
+computeSegment [] = Nothing -- Not enough points or all points are equal
 computeSegment (x:xs) = case find (/=x) xs of 
                                 Nothing -> Nothing
                                 Just y -> Just [x,y] 
@@ -172,7 +247,7 @@ computeTriangle [] = Nothing
 computeTriangle points
     | segment == Nothing = Nothing
     | nicePoint == Nothing = Nothing
-    | otherwise = (++) <$> segment <*> (fmap return nicePoint) -- * Applicative functors (<$>, <*>), simple functors (fmap) and monads (return) in action!
+    | otherwise = (++) <$> segment <*> (fmap return nicePoint) -- Applicative functors (<$>, <*>), simple functors (fmap) and monads (return) in action!
     where 
         segment = computeSegment points
         nicePoint = find (not . isColinearIn3D (fromJust segment)) points
@@ -182,29 +257,29 @@ computeTetrahedron [] = Nothing
 computeTetrahedron points
     | triangle == Nothing = Nothing
     | nicePoint == Nothing = Nothing
-    | otherwise = (++) <$> triangle <*> (fmap return nicePoint) -- * Applicative functors (<$>, <*>), simple functors (fmap) and monads (return) in action!
+    | otherwise = (++) <$> triangle <*> (fmap return nicePoint) -- Applicative functors (<$>, <*>), simple functors (fmap) and monads (return) in action!
     where 
         triangle = computeTriangle points
         nicePoint = find (not . isCoplanar (fromJust triangle)) points
 
 
-isColinearIn3D :: [Point3D] -> Point3D -> Bool -- * Not able to use determinant algorithm because the matrix is not square
+isColinearIn3D :: [Point3D] -> Point3D -> Bool -- ^ Not able to use determinant algorithm because the matrix is not square
 isColinearIn3D [a,b] c =    let 
-                            distanceXYZ = \(a,b,c) (d,e,f) -> [abs (a-d), abs (b-e), abs (c-f)]
+                            distanceXYZ = \(a,b,c) (d,e,f) -> [(a-d), (b-e), (c-f)]
                             ab = map toRational $ distanceXYZ a b
                             ac = map toRational $ distanceXYZ a c
                             ratio = checkRatio ab ac
                             in case ratio of
-                                Nothing -> trace "In case Nothing isColinear3D" False
-                                Just ls -> trace "In case Just isColinear3D" and $ map (== head ls) (tail ls) 
+                                Nothing -> False
+                                Just ls -> and $ map (== head ls) (tail ls) 
 
 checkRatio :: [Rational] -> [Rational] -> Maybe [Rational]
 checkRatio l1 l2
-    | l1 == [0,0,0] = trace "Case 1 checkRatio" Just [0,0,0]
-    | l2 == [0,0,0] = trace "Case 2 checkRatio" Just [0,0,0]
-    | elem 0 l1' && elem 0 l2' = trace "Case 3 checkRatio" Nothing
-    | elem 0 l1' = trace "Case 4 checkRatio" $ Just $ zipWith (/) l1' l2'
-    | otherwise = trace "Case 5 checkRatio" $ Just $ zipWith (/) l2' l1'
+    | l1 == [0,0,0] = Just [0,0,0]
+    | l2 == [0,0,0] = Just [0,0,0]
+    | elem 0 l1' && elem 0 l2' = Nothing
+    | elem 0 l1' = Just $ zipWith (/) l1' l2'
+    | otherwise = Just $ zipWith (/) l2' l1'
     where 
         (l1', l2') = filterZeros l1 l2
 
@@ -219,14 +294,14 @@ filterZeros (x:xs) (y:ys)
 
 
 isCoplanar :: [Point3D] -> Point3D -> Bool
-isCoplanar [a,b,c] d =    let 
+isCoplanar (a:b:c:s) d =    let 
                             matrix = fromLists (map (\(x,y,z)-> map toRational [x,y,z,1]) [a,b,c,d])
                             res = detLU matrix
                         in res == 0
 
 isInFrontOf :: Facet -> Point3D -> Bool
 isInFrontOf facet d =    let
-                            [a,b,c] = fromFacet facet
+                            (a:b:c:ps) = fromFacet facet
                             matrix = fromLists (map (\(x,y,z)-> map toRational [x,y,z,1]) [a,b,c,d])
                             res = detLU matrix
                         in res < 0
@@ -234,8 +309,10 @@ isInFrontOf facet d =    let
 
 fromFacet :: Facet -> [Point3D]
 fromFacet facet =   let
-                        [(a,b),(c,d),(e,f)] = map vertices $ edges facet
-                    in map coordinates [a,b,d]
+                        verticesPairs = map vertices $ edges facet
+                        verticesFromEdges = map fst verticesPairs
+--                        [(a,b),(c,d),(e,f)] = map vertices $ edges facet
+                    in map coordinates verticesFromEdges
 
 ---------------------------------------------------------------------------------------------
 

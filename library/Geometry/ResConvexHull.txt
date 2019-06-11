@@ -1,0 +1,640 @@
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(0,4,0))},
+        Edge {vertices = ((0,4,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(0,0,0))},
+        Edge {vertices = ((0,0,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(3,3,3))}]}]
+
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(0,0,0))},
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,4,0))},Ed
+ge {ver
+tices = (
+    (4,4,0),(4,0,0))}]},Facet {edges = [
+        Edge {vertices = ((0,4,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(4,4,0))},Ed
+ge {ver
+tices = (
+        (4,4,0),(0,4,0))}]},Facet {edges
+         = [Edge {vertices = ((3,3,3),(0,4,0
+         ))},Edge {vertices = ((0,4,0),(0,0,4))
+    },Edge 
+    {vertices
+     = ((0,0,4),(3,3,3))}]},Facet {edges
+      = [Edge {vertices = ((4,0,0),(0,4,0
+      ))},Edge {vertices = ((0,4,0),(4,4,0))
+      },Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(4,0,0))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(4,4,0))},
+        Edge {vertices = ((4,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,4,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,4,4))},
+        Edge {vertices = ((0,4,4),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,4),(3,3,3))},
+        Edge {vertices = ((3,3,3),(0,4,4))},
+        Edge {vertices = ((0,4,4),(0,0,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(3,3,3))}]},
+        Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(4,0,0))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(0,4,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,4,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,4),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,0,4))},
+        Edge {vertices = ((4,0,4),(0,0,4))}]},
+        Facet {edges = [Edge {vertices = ((3,3,3),(4,4,0))},Edge {vertices = ((4,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(3,3,3))}]},Facet {edges = [Edge {vertices = ((4,4,0),(0,4,0))},Edge {vertices = ((0,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(0,0,0))},Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(0,4,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,4),(4,4,0))},
+        Edge {vertices = ((4,4,0),(4,4,4))},
+        Edge {vertices = ((4,4,4),(4,0,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(4,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,4))},Ed
+ge {ver
+tices = (
+    (4,4,4),(0,4,4))}]},Facet {edges = [
+        Edge {vertices = ((0,4,4),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,4))},Ed
+        ge {vertices = ((4,0,4),(0,4,4))}]},Facet {edges = [Edge {vertices = ((4,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,4))},Edge {vertices = ((4,0,4),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,4),(4,0,0))},Edge {vertices = ((4,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,4,4))},Edge {vertices = ((4,4,4),(4,0,4))}]},Facet {edges = [Edge {vertices = ((0,0,4),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((4,4,0),(0,4,0))},Edge {vertices = ((0,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((4,4,0),(0,4,0))},Edge {vertices = ((0,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(4,4,4))},Edge {vertices = ((4,4,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(0,0,0))},Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((1,1,2),(3,3,3))},
+        Edge {vertices = ((3,3,3),(0,4,0))},
+        Edge {vertices = ((0,4,0),(1,1,2))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((1,1,2),(0,0,0))},
+        Edge {vertices = ((0,0,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(1,1,2))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(1,1,2))},
+        Edge {vertices = ((1,1,2),(4,0,0))},
+        Edge {vertices = ((4,0,0),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((1,1,2),(0,4,0))},
+        Edge {vertices = ((0,4,0),(0,0,0))},
+        Edge {vertices = ((0,0,0),(1,1,2))}]}]
+
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(0,4,0))},
+        Edge {vertices = ((0,4,0),(2,1,3))},
+        Edge {vertices = ((2,1,3),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(1,1,2))},
+        Edge {vertices = ((1,1,2),(2,1,3))},
+        Edge {vertices = ((2,1,3),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((1,1,2),(0,0,0))},
+        Edge {vertices = ((0,0,0),(2,1,3))},
+        Edge {vertices = ((2,1,3),(1,1,2))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(2,1,3))},
+        Edge {vertices = ((2,1,3),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(2,1,3))},
+        Edge {vertices = ((2,1,3),(4,0,0))}]},
+        Facet {edges = [Edge {vertices = ((0,4,0),(3,3,3))},Edge {vertices = ((3,3,3),(4,0,0))},Edge {vertices = ((4,0,0),(0,4,0))}]},Facet {edges = [Edge {vertices = ((1,1,2),(0,4,0))},Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(1,1,2))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(0,4,0))},
+        Edge {vertices = ((0,4,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((2,1,3),(3,3,3))},
+        Edge {vertices = ((3,3,3),(0,0,4))},
+        Edge {vertices = ((0,0,4),(2,1,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(2,1,3))},
+        Edge {vertices = ((2,1,3),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(0,0,0))},
+        Edge {vertices = ((0,0,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,4,0))}]},
+        Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(2,1,3))},Edge {vertices = ((2,1,3),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(3,3,3))},Edge {vertices = ((3,3,3),(4,0,0))},Edge {vertices = ((4,0,0),(0,4,0))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(4,4,0))},
+        Edge {vertices = ((4,4,0),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(0,0,0))},
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,4,0))},Ed
+ge {ver
+tices = (
+        (4,4,0),(4,0,0))}]},Facet {edges
+         = [Edge {vertices = ((3,3,3),(0,4,0
+         ))},Edge {vertices = ((0,4,0),(0,0,4))
+    },Edge 
+    {vertices
+     = ((0,0,4),(3,3,3))}]},Facet {edges
+      = [Edge {vertices = ((4,0,0),(0,4,0
+      ))},Edge {vertices = ((0,4,0),(4,4,0))
+      },Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((2,1,3),(3,3,3))},Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(2,1,3))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(2,1,3))},Edge {vertices = ((2,1,3),(0,0,4))},Edge {vertices = ((0,0,4),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(2,1,3))},Edge {vertices = ((2,1,3),(4,0,0))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(4,4,0))},
+        Edge {vertices = ((4,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,4,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,4,4))},
+        Edge {vertices = ((0,4,4),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,4),(3,3,3))},
+        Edge {vertices = ((3,3,3),(0,4,4))},
+        Edge {vertices = ((0,4,4),(0,0,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(3,3,3))}]},
+        Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((2,1,3),(3,3,3))},Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(2,1,3))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(2,1,3))},Edge {vertices = ((2,1,3),(0,0,4))},Edge {vertices = ((0,0,4),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(2,1,3))},Edge {vertices = ((2,1,3),(4,0,0))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(0,4,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,4,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,4),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,0,4))},
+        Edge {vertices = ((4,0,4),(0,0,4))}]},
+        Facet {edges = [Edge {vertices = ((3,3,3),(4,4,0))},Edge {vertices = ((4,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(3,3,3))}]},Facet {edges = [Edge {vertices = ((4,4,0),(0,4,0))},Edge {vertices = ((0,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(0,0,0))},Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(0,4,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,4),(4,4,0))},
+        Edge {vertices = ((4,4,0),(4,4,4))},
+        Edge {vertices = ((4,4,4),(4,0,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(4,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,4))},Ed
+ge {ver
+tices = (
+    (4,4,4),(0,4,4))}]},Facet {edges = [
+        Edge {vertices = ((0,4,4),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,4))},Ed
+        ge {vertices = ((4,0,4),(0,4,4))}]},Facet {edges = [Edge {vertices = ((4,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,4))},Edge {vertices = ((4,0,4),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,4),(4,0,0))},Edge {vertices = ((4,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,4,4))},Edge {vertices = ((4,4,4),(4,0,4))}]},Facet {edges = [Edge {vertices = ((0,0,4),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((4,4,0),(0,4,0))},Edge {vertices = ((0,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((4,4,0),(0,4,0))},Edge {vertices = ((0,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(4,4,4))},Edge {vertices = ((4,4,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(0,0,0))},Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((1,1,1),(0,0,0))},
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(1,1,1))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(0,0,0))},
+        Edge {vertices = ((0,0,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((1,1,1),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(1,1,1))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((1,1,1),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,0))},
+        Edge {vertices = ((0,0,0),(1,1,1))}]}]
+
+[Facet {
+    edges = [
+        Edge {vertices = ((1,1,1),(0,0,0))},
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(1,1,1))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(2,0,2))},
+        Edge {vertices = ((2,0,2),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(2,0,2))},
+        Edge {vertices = ((2,0,2),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(0,0,0))},
+        Edge {vertices = ((0,0,0),(2,0,2))},
+        Edge {vertices = ((2,0,2),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(0,0,0))},
+        Edge {vertices = ((0,0,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(0,4,0))}]},
+        Facet {edges = [Edge {vertices = ((3,3,3),(0,4,0))},Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(2,0,2))},Edge {vertices = ((2,0,2),(3,3,3))}]},Facet {edges = [Edge {vertices = ((1,1,1),(0,4,0))},Edge {vertices = ((0,4,0),(4,0,0))},Edge {vertices = ((4,0,0),(1,1,1))}]},Facet {edges = [Edge {vertices = ((1,1,1),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(1,1,1))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((1,1,1),(0,0,0))},
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(1,1,1))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(2,0,2))},
+        Edge {vertices = ((2,0,2),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((2,0,2),(3,3,3))},
+        Edge {vertices = ((3,3,3),(0,0,4))},
+        Edge {vertices = ((0,0,4),(2,0,2))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(0,0,0))},
+        Edge {vertices = ((0,0,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(0,4,0))},
+        Edge {vertices = ((0,4,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,0,0))}]},
+        Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(2,0,2))},Edge {vertices = ((2,0,2),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(2,0,2))},Edge {vertices = ((2,0,2),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(3,3,3))},Edge {vertices = ((3,3,3),(4,0,0))}]},Facet {edges = [Edge {vertices = ((1,1,1),(0,4,0))},Edge {vertices = ((0,4,0),(4,0,0))},Edge {vertices = ((4,0,0),(1,1,1))}]},Facet {edges = [Edge {vertices = ((1,1,1),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(1,1,1))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(2,0,2))},
+        Edge {vertices = ((2,0,2),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(1,1,1))},
+        Edge {vertices = ((1,1,1),(4,4,0))},
+        Edge {vertices = ((4,4,0),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(4,4,0))},
+        Edge {vertices = ((4,4,0),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(3,3,3))}]},
+        Facet {edges = [Edge {vertices = ((1,1,1),(4,0,0))},Edge {vertices = ((4,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(1,1,1))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((2,0,2),(3,3,3))},Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(2,0,2))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((3,3,3),(0,4,0))},Edge {vertices = ((0,4,0),(0,0,4))},Edge {vertices = ((0,0,4),(3,3,3))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(2,0,2))},Edge {vertices = ((2,0,2),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(2,0,2))},Edge {vertices = ((2,0,2),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(4,0,0))}]},Facet {edges = [Edge {vertices = ((1,1,1),(0,4,0))},Edge {vertices = ((0,4,0),(4,0,0))},Edge {vertices = ((4,0,0),(1,1,1))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(2,0,2))},
+        Edge {vertices = ((2,0,2),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,0),(1,1,1))},
+        Edge {vertices = ((1,1,1),(0,4,4))},
+        Edge {vertices = ((0,4,4),(0,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,4,0),(0,4,0))},
+        Edge {vertices = ((0,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(4,4,0))},
+        Edge {vertices = ((4,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((1,1,1),(4,0,0))},
+        Edge {vertices = ((4,0,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(1,1,1))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,0,0))}]},
+        Facet {edges = [Edge {vertices = ((0,4,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(3,3,3))},Edge {vertices = ((3,3,3),(0,4,4))},Edge {vertices = ((0,4,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((0,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((3,3,3),(4,0,0))},Edge {vertices = ((4,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(3,3,3))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((2,0,2),(3,3,3))},Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(2,0,2))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(2,0,2))},Edge {vertices = ((2,0,2),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(2,0,2))},Edge {vertices = ((2,0,2),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(4,0,0))}]},Facet {edges = [Edge {vertices = ((1,1,1),(0,4,0))},Edge {vertices = ((0,4,0),(4,0,0))},Edge {vertices = ((4,0,0),(1,1,1))}]}]
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(2,0,2))},
+        Edge {vertices = ((2,0,2),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((1,1,1),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,0,4))},
+        Edge {vertices = ((4,0,4),(1,1,1))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(1,1,1))},
+        Edge {vertices = ((1,1,1),(4,0,4))},
+        Edge {vertices = ((4,0,4),(0,4,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(3,3,3))}]},
+        Facet {edges = [Edge {vertices = ((0,4,4),(0,0,4))},Edge {vertices = ((0,0,4),(4,0,4))},Edge {vertices = ((4,0,4),(0,4,4))}]},Facet {edges = [Edge {vertices = ((4,4,0),(3,3,3))},Edge {vertices = ((3,3,3),(4,0,4))},Edge {vertices = ((4,0,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(0,0,0))},Edge {vertices = ((0,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((2,0,2),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(2,0,2))}]},Facet {edges = [Edge {vertices = ((4,0,0),(3,3,3))},Edge {vertices = ((3,3,3),(4,0,4))},Edge {vertices = ((4,0,4),(4,0,0))}]},Facet {edges = [Edge {vertices = ((3,3,3),(0,0,4))},Edge {vertices = ((0,0,4),(4,0,4))},Edge {vertices = ((4,0,4),(3,3,3))}]},Facet {edges = [Edge {vertices = ((0,0,4),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((0,4,0),(1,1,1))},Edge {vertices = ((1,1,1),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(2,0,2))},Edge {vertices = ((2,0,2),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((4,4,0),(0,4,0))},Edge {vertices = ((0,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((3,3,3),(4,4,0))},Edge {vertices = ((4,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(3,3,3))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(0,0,0))},Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(2,0,2))},Edge {vertices = ((2,0,2),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((1,1,1),(0,4,0))},Edge {vertices = ((0,4,0),(4,0,0))},Edge {vertices = ((4,0,0),(1,1,1))}]}]
+
+[Facet {
+    edges = [
+        Edge {vertices = ((0,0,0),(2,0,2))},
+        Edge {vertices = ((2,0,2),(0,0,4))},
+        Edge {vertices = ((0,0,4),(0,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,4,0),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(4,4,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(0,4,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,4),(4,4,0))},
+
+        Edge {vertices = ((4,4,0),(4,4,4))},
+        Edge {vertices = ((4,4,4),(4,0,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(3,3,3))},
+        Edge {vertices = ((3,3,3),(4,4,4))},
+        Edge {vertices = ((4,4,4),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,4),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,4,4))},
+        Edge {vertices = ((4,4,4),(4,0,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((3,3,3),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(3,3,3))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(0,0,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((1,1,1),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,0,4))},
+        Edge {vertices = ((4,0,4),(1,1,1))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(1,1,1))},
+        Edge {vertices = ((1,1,1),(4,0,4))},
+        Edge {vertices = ((4,0,4),(0,4,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,0,0))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((4,0,4),(4,0,0))},
+        Edge {vertices = ((4,0,0),(4,4,0))},
+        Edge {vertices = ((4,4,0),(4,4,4))},
+        Edge {vertices = ((4,4,4),(4,0,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(0,4,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,4,4),(0,0,4))},
+        Edge {vertices = ((0,0,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(0,4,4))}]},
+Facet {
+    edges = [
+        Edge {vertices = ((0,0,4),(4,0,4))},
+        Edge {vertices = ((4,0,4),(0,4,4))},
+        Edge {vertices = ((0,4,4),(4,4,4))},
+        Edge {vertices = ((4,4,4),(0,0,4))}]},
+Facet {
+    edges = [Edge {vertices = ((0,0,4),(0,0,0))},Edge {vertices = ((0,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((2,0,2),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(2,0,2))}]},Facet {edges = [Edge {vertices = ((0,0,4),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((0,4,0),(1,1,1))},Edge {vertices = ((1,1,1),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(2,0,2))},Edge {vertices = ((2,0,2),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((4,4,0),(0,4,0))},Edge {vertices = ((0,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(4,4,4))},Edge {vertices = ((4,4,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((4,4,0),(0,4,0))},Edge {vertices = ((0,4,0),(0,4,4))},Edge {vertices = ((0,4,4),(4,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(0,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,4,0))},Edge {vertices = ((0,4,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((4,0,0),(0,0,0))},Edge {vertices = ((0,0,0),(4,4,0))},Edge {vertices = ((4,4,0),(4,0,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,4,0),(0,0,0))},Edge {vertices = ((0,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,4,4))},Edge {vertices = ((0,4,4),(0,4,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(0,0,4))},Edge {vertices = ((0,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,4),(0,0,0))},Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,4))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(2,0,2))},Edge {vertices = ((2,0,2),(0,0,0))}]},Facet {edges = [Edge {vertices = ((0,0,0),(4,0,0))},Edge {vertices = ((4,0,0),(4,0,4))},Edge {vertices = ((4,0,4),(0,0,0))}]},Facet {edges = [Edge {vertices = ((1,1,1),(0,4,0))},Edge {vertices = ((0,4,0),(4,0,0))},Edge {vertices = ((4,0,0),(1,1,1))}]}]

@@ -29,7 +29,9 @@ import           Data.Singletons.Prelude
 type Index = Int
 
 class    (DecidableZero r, Rig r, Commutative r, Eq r) => CoeffRig r
-instance (DecidableZero r, Rig r, Commutative r, Eq r) => CoeffRig r -- ^ Synoym for instances. 
+
+-- | Synonym for instances.
+instance (DecidableZero r, Rig r, Commutative r, Eq r) => CoeffRig r  
 
 
 -- | Polynomial requires just the type of the coefficient and the monomial ordering. 
