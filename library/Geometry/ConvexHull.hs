@@ -66,7 +66,7 @@ instance Eq Facet where
     f1 == f2 = ((==) `on` (sort.fromFacet)) f1 f2 
 
 instance Show Facet where
-    show = show.sort.fromFacet
+    show = show.fromFacet
 
 instance Ord Vertex where
     compare (Vertex v1) (Vertex v2) = compare v1 v2
@@ -88,17 +88,17 @@ convexHull3D :: [Point3D] -> Maybe [Point3D]
 convexHull3D points
     | length points < 4 = Just $ sort $ nub points
     | tetraHedron == Nothing = Nothing
-    | otherwise = Just $ sort $ pointsConvexHull
+    | otherwise = trace ("Initial convexhull is: " ++  show initialCH) Just $ sort $ nub $ pointsConvexHull
         where
-            convexHull =  addPoints dcel afterTetrahedron conflictGraph
+            convexHull =  addPoints initialCH afterTetrahedron conflictGraph
             pointsConvexHull = fromConvexHull convexHull
-         --   properPoints = filter (\p -> not $ inside p convexHull) pointsConvexHull
-            conflictGraph = startConflictGraph dcel afterTetrahedron
-            dcel = (initializeCH . fromJust) tetraHedron
+            conflictGraph = startConflictGraph (initialCH) afterTetrahedron
+            initialCH = (initializeCH . fromJust) tetraHedron
             tetraHedron = computeTetrahedron points
             afterTetrahedron = points \\ (fromJust tetraHedron)
 
 -------------------------------------------------
+
 
 startConflictGraph :: ConvexHull -> [Point3D] -> ConflictGraph
 startConflictGraph convexHull points = matchFacetsPoints facetsCH points
@@ -109,22 +109,44 @@ matchFacetsPoints :: [Facet] -> [Point3D] -> ConflictGraph
 matchFacetsPoints facets points = foldr (\(f,p) conflictGraph -> insert f (Vertex p) conflictGraph) (ConflictGraph MS.empty MS.empty) pairsFacetPoint
     where
         pairsFacetPoint = [(f,p) | f <- facets, p <- points, isInFrontOf f p]
-        insert f p (ConflictGraph vs fs) = ConflictGraph (MS.insertWith (++) p [f] vs) (MS.insertWith (++) f [p] fs) 
+        insert f p (ConflictGraph vs fs)
+            | p == Vertex (3,3,3) = trace ("EN PUNTO INDICADO " ++ show f) ConflictGraph (MS.insertWith (++) p [f] vs) (MS.insertWith (++) f [p] fs) 
+            | otherwise = ConflictGraph (MS.insertWith (++) p [f] vs) (MS.insertWith (++) f [p] fs) 
 
 initializeCH :: [Point3D] -> ConvexHull -- ^ Counterclockwise
 initializeCH [a,b,c,d] = ConvexHull $ map fromVertices [f1,f2,f3,f4]
-    where 
-        f1 = [a,b,c] 
-        f2 = [a,c,d]
-        f3 = [a,d,b]
-        f4 = [b,d,c]
+    where
+        middlePoint = (xs,ys,zs) 
+        xs = ((/4).sum) $ map (toRational.getX) [a,b,c,d] 
+        ys = ((/4).sum) $ map (toRational.getY) [a,b,c,d] 
+        zs = ((/4).sum) $ map (toRational.getZ) [a,b,c,d] 
+        isInFront [p1,p2,p3] p4 =   let
+                                        completeVectors = map (\(x,y,z)-> map toRational [x,y,z,1]) [p1,p2,p3]
+                                        completePoint = (\(x,y,z) -> [x,y,z,1]) p4 
+                                        matrix = fromLists (completeVectors ++ [completePoint])
+                                        res = detLU matrix
+                                    in res < 0
+
+        f1 
+            | isInFront [a,b,c] middlePoint = [a,c,b]
+            | otherwise = [a,b,c]
+        f2 
+            | isInFront [a,c,d] middlePoint = [a,d,c]
+            | otherwise = [a,c,d]
+        f3 
+            | isInFront [a,d,b] middlePoint = [a,b,d] 
+            | otherwise = [a,d,b]
+        f4 
+            | isInFront [b,d,c] middlePoint = [b,c,d] 
+            | otherwise = [b,d,c]
+
 
 
 addPoints :: ConvexHull -> [Point3D] -> ConflictGraph -> ConvexHull
-addPoints convexHull [] _ = convexHull
+addPoints convexHull [] _ = trace ("P is nothing " ++  "Convexhull is: " ++ show convexHull) convexHull
 addPoints convexHull (p:ps) conflictGraph
-    | inside p convexHull = addPoints convexHull ps conflictGraph
-    | otherwise = trace ("NEXT FACETS: " ++ show nextFacets) addPoints (ConvexHull nextFacets) ps newConflictGraph
+    | inside p convexHull = trace ("P is: " ++ show p ++ " Convexhull is: " ++ show convexHull) addPoints convexHull ps conflictGraph
+    | otherwise = trace ("P is: " ++ show p ++ " Convexhull is: " ++ show (ConvexHull nextFacets) ++ "\n Visible faces are: " ++ show visibleFaces) addPoints (ConvexHull nextFacets) ps newConflictGraph
         where
             facetsCH = facets convexHull
 
@@ -184,10 +206,10 @@ fromVertices points@(p:ps) = Facet edges
 ---------------------------------------------------
 
 fromConvexHull :: ConvexHull -> [Point3D]
-fromConvexHull convexHull =  map coordinates $ concat $ map (\(Edge (v1,v2)) -> [v1,v2]) $ dropTwins $ concat $ map edges (facets convexHull)     
+fromConvexHull convexHull =  concat $ map fromFacet (facets convexHull)     
     where 
         dropTwins [] = []
-        dropTwins edges@((Edge (v1,v2)):es) = case elem (Edge (v2,v1)) edges of
+        dropTwins edges@((Edge (v1,v2)):es) = case elem (Edge (v2,v1)) es of
                                         True -> dropTwins (edges\\[Edge (v2,v1)])
                                         False -> (Edge (v1,v2)):(dropTwins es)
 
@@ -306,6 +328,7 @@ isInFrontOf facet d =    let
                             res = detLU matrix
                         in res < 0
 
+                        
 
 fromFacet :: Facet -> [Point3D]
 fromFacet facet =   let
