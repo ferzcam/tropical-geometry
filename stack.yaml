@@ -43,18 +43,11 @@ extra-deps:
 - equational-reasoning-0.6.0.0
 - ghc-typelits-presburger-0.2.0.5
 - type-natural-0.8.2.0
+- hlint-test-0.1.0.0
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
-haddock: true
-haddock-arguments:
-  haddock-args:     # Additional arguments passed to haddock, --haddock-arguments
-    - "--latex"
-  # haddock-args:
-  # - "--css=/home/user/my-css"
-open-haddocks: false    # --open
-haddock-deps: true     # if unspecified, defaults to true if haddock is set
-haddock-internal: true
+
 
 # Extra package databases containing global packages
 # extra-package-dbs: []

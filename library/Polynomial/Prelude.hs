@@ -36,13 +36,13 @@ instance (DecidableZero r, Rig r, Commutative r, Eq r) => CoeffRig r
 
 -- | Polynomial requires just the type of the coefficient and the monomial ordering. 
 -- | Arity is given when defining variables with 'variable' function
-data Polynomial k ord n = Polynomial { getTerms :: (MS.Map (Monomial ord n) k)} deriving(Eq)
+newtype Polynomial k ord n = Polynomial { getTerms :: MS.Map (Monomial ord n) k} deriving(Eq)
 
 instance (Unital k, Show k, Eq k) => Show (Polynomial k Lex n) where 
     show = dropPlusSign .  showTerms . reverse . MS.toList . getTerms 
 
 instance (KnownNat n, Unital k, Show k, Eq k) => Show (Polynomial k Revlex n) where 
-    show = dropPlusSign .  showTerms . (map reverseMon) . reverse . MS.toList . getTerms 
+    show = dropPlusSign .  showTerms . map reverseMon . reverse . MS.toList . getTerms 
     
 reverseMon :: (KnownNat n, IsMonomialOrder ord) => (Monomial ord n, a) -> (Monomial ord n, a)
 reverseMon (Monomial mon, a) = ((toMonomial . reverse . DS.toList) mon, a) 
@@ -56,7 +56,7 @@ dropPlusSign s@(x:y:z:a)
     | (x:y:[z]) == " + " = a
     | otherwise = s
 
-showTerms :: (Unital k, Eq k, Show k) =>  [((Monomial ord n), k)] -> String
+showTerms :: (Unital k, Eq k, Show k) =>  [(Monomial ord n, k)] -> String
 showTerms [] = ""
 showTerms (t:ts)
     | coeff == one = " + " ++ show mon ++ showTerms ts

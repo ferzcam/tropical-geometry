@@ -37,7 +37,7 @@ type Sized' n a = DS.Sized Seq.Seq n a
 type Mon n = Sized' n Int
 
 -- | Monomial is defined as an array of exponents
-data Monomial ord n = Monomial {getMonomial :: Mon n} deriving(Eq)
+newtype Monomial ord n = Monomial {getMonomial :: Mon n} deriving(Eq)
  
 
 ------------------------------------------
@@ -48,8 +48,8 @@ showMonomial :: [Int] -> Int -> String
 showMonomial [] _ = ""
 showMonomial (x:xs) var
     | x == 0 = showMonomial xs (var+1)
-    | x == 1 = "X_" ++  (show var) ++ showMonomial xs (var+1)
-    | otherwise = "X_" ++  (show var) ++ "^" ++ (show x) ++ showMonomial xs (var+1)
+    | x == 1 = "X_" ++  show var ++ showMonomial xs (var+1)
+    | otherwise = "X_" ++  show var ++ "^" ++ show x ++ showMonomial xs (var+1)
 
 
 instance Show (Monomial ord n) where
@@ -65,7 +65,7 @@ data Lex = Lex -- ^ Just the datatype for Lex ordering
 data Revlex = Revlex -- ^ Just the datatype for Revlex ordering
 
 lex :: Monomial ord n -> Monomial ord n -> Ordering
-lex m1 m2 = (lex' `on` (DS.toList . getMonomial)) m1 m2
+lex = lex' `on` (DS.toList . getMonomial)
 
 lex' :: [Int] -> [Int] -> Ordering
 lex' [] [] = EQ
@@ -78,8 +78,8 @@ lex' (x:xs) (y:ys)
 
 
 revlex :: Monomial ord n -> Monomial ord n -> Ordering
-revlex m1 m2 = (revlex' `on` (DS.toList . getMonomial)) m1 m2
-    
+revlex= revlex' `on` (DS.toList . getMonomial)
+ 
 revlex' :: [Int] -> [Int] -> Ordering
 revlex' [] [] = EQ
 revlex' [] _ = LT
@@ -101,10 +101,10 @@ toMonomial :: (IsMonomialOrder ord, KnownNat n) => [Int] -> Monomial ord n
 toMonomial a = Monomial $ fromList sing a
 
 instance IsMonomialOrder Lex where
-    compareMonomial m n = lex m n
+    compareMonomial = lex
 
 instance IsMonomialOrder Revlex where
-    compareMonomial m n = revlex m n
+    compareMonomial = revlex
 
 instance (IsMonomialOrder ord) => Ord (Monomial ord n) where
     compare = compareMonomial

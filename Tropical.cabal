@@ -76,7 +76,7 @@ test-suite Tropical-test-suite
 
   hs-source-dirs:
       test-suite
-  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors  -Wname-shadowing
+  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
   build-depends:
       Tropical
     , base
@@ -84,6 +84,7 @@ test-suite Tropical-test-suite
     , tasty-hspec
     , tasty-hunit
     , containers
+    , hlint-test
   default-language: Haskell2010
 
 benchmark Tropical-benchmarks

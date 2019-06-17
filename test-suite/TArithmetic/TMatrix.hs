@@ -80,7 +80,7 @@ module TArithmetic.TMatrix (testsMatrices) where
     testSumMatrix :: TestTree
     testSumMatrix =   HU.testCase "Sum of matrices" $ do
             a+b  @?= aPb
-            c + (transp d) @?= cPd'
+            c + transp d @?= cPd'
 
     testProdMatrix :: TestTree
     testProdMatrix =   HU.testCase "Product of matrices" $ do

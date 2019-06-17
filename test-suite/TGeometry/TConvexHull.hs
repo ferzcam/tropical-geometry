@@ -44,7 +44,7 @@ module TGeometry.TConvexHull (testsConvexHull) where
         isBetween3D [f,b] a @?= True
 
     testsMergePoints :: TestTree
-    testsMergePoints = HU.testCase "Merging points" $ do
+    testsMergePoints = HU.testCase "Merging points" $
         mergePoints [a,b,c,d] [a,d,e,f] @?= [b,c,e,f]
         
     testsConvexHull3D :: TestTree

@@ -38,11 +38,11 @@ fliptListAtCenter lst = firstPart ++ secondPart
         secondPart = (++) <$> (return . last . fst) <*> (tail . snd) $ splitted
 
 determinant :: Num a => [[a]] -> a
-determinant lst = computeProds 1 $ fliptListAtCenter $ zipWith (zipWith ($)) permutePositions (repeat lst)
+determinant lst = computeProds 1 $ fliptListAtCenter $ map (\ x -> zipWith ($) x lst) permutePositions
 
 computeProds :: Num a => a -> [[a]] -> a
 computeProds _ [] = 0
-computeProds num (x:xs) = num * (foldl1 (*) x) + computeProds (-num) xs
+computeProds num (x:xs) = num * product x + computeProds (-num) xs
 
 {-|
 
@@ -75,24 +75,22 @@ dropExtraOne = map (\[a,b,1] -> [a,b])
 semiHullUp :: (Ord a, Num a) => [[a]] -> [[a]]
 semiHullUp [a] = [a]
 semiHullUp [a,b] = [a,b]
-semiHullUp (x:y:z:w) = case (determinant [y,x,z]) > 0 of
-                    True -> x:(semiHullUp (y:z:w))
-                    False -> semiHullUp (x:z:w)
+semiHullUp (x:y:z:w) = if determinant [y,x,z] > 0 then x:semiHullUp (y:z:w)
+                        else semiHullUp (x:z:w)
 
 semiHullDown :: (Ord a, Num a) => [[a]] -> [[a]]
 semiHullDown [a] = [a]
 semiHullDown [a,b] = [a,b]
-semiHullDown (x:y:z:w) = case (determinant [y,x,z]) < 0 of
-                    True -> x:(semiHullDown (y:z:w))
-                    False -> semiHullDown (x:z:w)
+semiHullDown (x:y:z:w) = if determinant [y,x,z] < 0 then x:semiHullDown (y:z:w)
+                            else semiHullDown (x:z:w)
                     
 
 
 leftMost :: (Ord a) => [[a]] -> [a]
-leftMost lst = foldl1 (\l1@(a:b) l2@(c:d) -> if c < a then l2 else l1) lst
+leftMost = foldl1 (\l1@(a:b) l2@(c:d) -> if c < a then l2 else l1)
 
 rightMost :: (Ord a) => [[a]] -> [a]
-rightMost lst = foldl1 (\l1@(a:b) l2@(c:d) -> if c > a then l2 else l1) lst
+rightMost = foldl1 (\l1@(a:b) l2@(c:d) -> if c > a then l2 else l1)
 
 isPointUp :: (Ord a, Fractional a) => [a] -> [a] -> [a] -> Bool
 isPointUp (l1:l2:x) (r1:r2:y) (p1:p2:z) = p2 >= (m*p1 + b)
@@ -113,10 +111,10 @@ convexHull lst = dropExtraOne $ union lowerHull upperHull
             lstC = complete lst
             left = leftMost lstC
             right = rightMost lstC
-            lowerHull = semiHullDown $ filter (\a -> isPointDown left right a) lstC
-            upperHull = semiHullUp $ filter (\a -> isPointUp left right a) lstC
+            lowerHull = semiHullDown $ filter (isPointDown left right) lstC
+            upperHull = semiHullUp $ filter (isPointUp left right) lstC
 
 
 polytope :: (Ord a, Fractional a) => IsOrderedPolynomial poly => poly -> [[a]]
-polytope = convexHull . (map (map fromIntegral)) . sort . (map (DS.toList . getMonomial . fst)) . (MS.toList) . terms
+polytope = convexHull . map (map fromIntegral) . sort . map (DS.toList . getMonomial . fst) . MS.toList . terms
     
