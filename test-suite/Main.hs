@@ -12,6 +12,7 @@ import TArithmetic.TNumbers
 import TArithmetic.TMatrix
 import TPolynomial.TPolytope
 import TGeometry.TConvexHull
+import TGeometry.TMinkowski
 
 
 main :: IO ()
@@ -21,6 +22,6 @@ main = defaultMain allTests
 
 allTests ::   TestTree
 allTests = testGroup "Tasty tests" [
-        testGroup "List of tests:" [testsNumbers, testsMatrices, testsMonomial, testsPrelude, testsConvexHull, testsPolytope]
+        testGroup "List of tests:" [testsNumbers, testsMatrices, testsMonomial, testsPrelude, testsConvexHull, testsPolytope, testsMinkowski]
     ]
 

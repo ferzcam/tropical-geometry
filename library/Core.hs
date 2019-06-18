@@ -3,7 +3,9 @@ module Core (
     module Polynomial.Monomial,
     module Arithmetic.Numbers,
     module Arithmetic.Matrix,
-    module Polynomial.Polytope
+    module Polynomial.Polytope,
+    module Geometry.ConvexHull,
+    module Geometry.Minkowski
     
     )
 
@@ -14,3 +16,5 @@ where
     import Arithmetic.Numbers
     import Arithmetic.Matrix
     import Polynomial.Monomial
+    import Geometry.ConvexHull
+    import Geometry.Minkowski

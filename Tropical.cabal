@@ -35,6 +35,7 @@ library
       Arithmetic.Numbers
       Arithmetic.Matrix
       Geometry.ConvexHull
+      Geometry.Minkowski
       Core
   other-modules:
       Paths_Tropical

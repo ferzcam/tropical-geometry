@@ -218,15 +218,6 @@ checkColinearity points@(p1:p2:p3:_) = points \\ midPoints
         midPoints = map (\(_,p,_) -> p) nicePoints
         nicePoints = [(p1,p2,p3) | p1 <- points, p2 <- points, p3 <- points, isColinearIn3D [p1,p3] p2, isBetween3D [p1,p3] p2, p1 /= p2, p2/=p3, p1/=p3]
 
-
-
--- checkColinearity :: [Point3D] -> [Point3D]
--- checkColinearity points@(p1:p2:p3:p)
---     | isBetween3D [p1,p3] p2 =  nub $ checkColinearity' ( points ++ [p1,p2])
---     | otherwise = checkColinearity ((p2:p3:p) ++ [p1])
---         where 
---             [l1,l2] = [last (init points), last points]
-
 checkColinearity' :: [Point3D] -> [Point3D]
 checkColinearity' [a,b] = []
 checkColinearity' points@(p1:p2:p3:p)
@@ -322,10 +313,7 @@ fromFacet :: Facet -> [Point3D]
 fromFacet facet =   let
                         verticesPairs = map vertices $ edges facet
                         verticesFromEdges = map fst verticesPairs
---                        [(a,b),(c,d),(e,f)] = map vertices $ edges facet
                     in map coordinates verticesFromEdges
-
----------------------------------------------------------------------------------------------
 
 inside :: Point3D -> ConvexHull -> Bool
 inside p convexHull = all (not.flip isInFrontOf p) (facets convexHull)

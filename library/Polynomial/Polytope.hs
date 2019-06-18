@@ -51,11 +51,11 @@ Let a = [[1,2,3], [4,5,6], [7,8,9]]
 
 We take the permutations needed for calculating the determinant, those are:
 
-[[1,5,9],[2,4,9],[2,6,7],[3,5,7],[3,4,8],[1,6,8]]
+\[[1,5,9],[2,4,9],[2,6,7],[3,5,7],[3,4,8],[1,6,8]]
 
 After that multiply every sublist:
 
-[45,72,84,105,96,48]
+\[45,72,84,105,96,48]
 
 Finally, we do: 45 - 72 + 84 - 105 + 96 - 48 = 0
 
