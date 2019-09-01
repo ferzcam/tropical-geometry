@@ -1,4 +1,33 @@
-module Geometry.ConvexHull where
+module Geometry.ConvexHull
+
+(
+    -- * Data types
+    Point3D,
+    Vertex(..),
+    Edge(..),
+    Facet(..),
+    ConvexHull(..),
+    ConflictGraph,
+
+    -- * Convex hull
+    convexHull3D,
+    fromConvexHull,
+
+    -- * Computations of geometrical objects
+    computeSegment,
+    computeTriangle,
+    computeTetrahedron,
+    fromVertices,
+
+    -- * Operations with points
+    isBetween3D,
+    mergePoints,
+    fromFacet
+)
+
+where
+
+
 
 import Data.List
 import Data.Maybe
@@ -16,40 +45,18 @@ getY (_,y,_) = y
 getZ (_,_,z) = z
 
 
-
--- newtype Vertex = Vertex 
---     {
---         coordinates :: Point3D
---         --incidentEdge :: HalfEdge
---     }
-
--- data Facet = Facet
---     {
---         idFacet :: Int,
---         outerComponent :: HalfEdge
---     }
-
--- data HalfEdge = HalfEdge
---     {
---         origin :: Vertex,
---         twin :: HalfEdge,
---        -- incidentFace :: Facet,
---        -- prev :: HalfEdge,
---         next :: HalfEdge
---     }
-    
---     | Null
-
-
 newtype Vertex = Vertex {coordinates :: Point3D} deriving (Eq)
 
-
+-- | Edge as a pair of vertices. When constructing the initial tetrahedron, the order of the vertices must be counterclockwise.
 newtype Edge = Edge {vertices :: (Vertex, Vertex)} deriving (Show, Eq)
 
+-- | Facet in this case is a 2-face. It is stored as a collection of edges.
 newtype Facet = Facet {edges :: [Edge]}
 
+-- | The convex hull of a set is the collection of all the facets that conform that polyhedron.
 newtype ConvexHull = ConvexHull {facets :: [Facet]} deriving (Eq)
 
+-- | The conflict graph is a data structure that stores for each point the list of facets that points views. And for every facet the list of points that facet views.
 data ConflictGraph = ConflictGraph {
     verticesF :: MS.Map Vertex [Facet],
     facetsV ::  MS.Map Facet [Vertex]
@@ -81,14 +88,13 @@ instance Ord Facet where
 
 
 -- | Assume every point is different
-convexHull3D :: [Point3D] -> Maybe [Point3D]
+convexHull3D :: [Point3D] -> Maybe ConvexHull
 convexHull3D points
-    | length points < 4 = Just $ sort $ nub points
+    | length points < 4 = Nothing
     | isNothing tetraHedron = Nothing
-    | otherwise = Just $ sort $ nub pointsConvexHull
+    | otherwise = Just convexHull
         where
             convexHull =  addPoints initialCH afterTetrahedron conflictGraph
-            pointsConvexHull = fromConvexHull convexHull
             conflictGraph = startConflictGraph initialCH afterTetrahedron
             initialCH = (initializeCH . fromJust) tetraHedron
             tetraHedron = computeTetrahedron points
@@ -196,14 +202,14 @@ fromVertices points@(p:ps) = Facet edges
 ---------------------------------------------------
 
 fromConvexHull :: ConvexHull -> [Point3D]
-fromConvexHull convexHull =  concatMap fromFacet (facets convexHull)     
+fromConvexHull convexHull = sort.nub $ concatMap fromFacet (facets convexHull)     
     where 
         dropTwins [] = []
         dropTwins edges@(Edge (v1,v2):es) = if Edge (v2,v1) `elem` es then dropTwins (edges\\[Edge (v2,v1)])
                                                 else Edge (v1,v2):dropTwins es
 
 
-
+-- | Merges two lists of points ensuring that the counterclockwise orientation remains.
 mergePoints :: [Point3D] -> [Point3D] -> [Point3D]
 mergePoints p1@(p:ps) p2@(x:y:xs)
     | elem x p1 && elem y p1 = if last p1 == x then checkColinearity $ x:init p1 ++ xs

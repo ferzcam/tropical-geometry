@@ -6,5 +6,6 @@ module Example
 
 -- | An example function.
 
+
 main :: IO ()
 main = return ()

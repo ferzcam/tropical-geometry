@@ -3,6 +3,8 @@
 -- wrote in their libraries.
 import qualified Example
 
+data Day= Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday 
+    deriving(Eq, Ord, Show, Read, Bounded, Enum)
 
 
 main :: IO ()
