@@ -1,3 +1,5 @@
+{-#LANGUAGE FlexibleInstances#-}
+
 module Geometry.ConvexHull
 
 (
@@ -85,7 +87,9 @@ instance Ord Facet where
     compare (Facet f1) (Facet f2) = compare f1 f2
 
 
-
+instance Num (Int, Int, Int) where
+    (x1,y1,z1) + (x2,y2,z2) = (x1+x2, y1+y2, z1+z2)
+    negate (x,y,z) = (-x,-y,-z)
 
 -- | Assume every point is different
 convexHull3D :: [Point3D] -> Maybe ConvexHull
