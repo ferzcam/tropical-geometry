@@ -14,18 +14,18 @@ adjacentFacets p c = sortFacets p $ filter (isPointInFacet p) (facets c)
 -- | For each vertex of a polyhedron, the facets must be ordered clockwise since we need there normals to point inside the polyhedron
 
 isPointInFacet :: Point3D -> Facet -> Bool
-isPointInFacet p f = elem p (fromFacet f)
+isPointInFacet p f = p `elem` (fromFacet f)
 
 
 -- | Checks if two facets are adjacent with respect to a vertex in counterclockwise orientation.
 areFacetsAdjacent :: Point3D -> Facet -> Facet -> Bool
 areFacetsAdjacent p f1 f2 
-    | edge1 /= Nothing && edge2 /= Nothing = True
+    | isJust edge1 && isJust edge2 = True
     | otherwise = False
         where
             edge1, edge2 :: Maybe Edge
-            edge1 = find (\e -> ((coordinates.snd.vertices) e) == p) (edges f1)
-            edge2 = find (\e -> ((coordinates.fst.vertices) e) == p) (edges f2)
+            edge1 = find (\e -> (coordinates.snd.vertices) e == p) (edges f1)
+            edge2 = find (\e -> (coordinates.fst.vertices) e == p) (edges f2)
 
 
 -- | The facets are ordered counterclockwise with respect to a vertex. [Optimizable]
@@ -33,7 +33,7 @@ areFacetsAdjacent p f1 f2
 sortFacets :: Point3D -> [Facet] -> [Facet]
 sortFacets _ [a,b] = [a,b]
 sortFacets p (f:g:fs)
-    | areFacetsAdjacent p f g = f:(sortFacets p (g:fs))
+    | areFacetsAdjacent p f g = f:sortFacets p (g:fs)
     | otherwise = sortFacets p (f:fs)++[g]
 
 
@@ -56,4 +56,4 @@ normalCone v facets@(f:fs) = computeNormalCone normals
     where
         normals = map (normalVector v) (facets++[f])
         computeNormalCone [v1,v2] = [crossProduct v1 v2]
-        computeNormalCone (v1:v2:vs) = (crossProduct v1 v2):(computeNormalCone (v2:vs))
+        computeNormalCone (v1:v2:vs) = (crossProduct v1 v2):computeNormalCone (v2:vs)

@@ -24,7 +24,7 @@ testNormalVector = HU.testCase "Tests for normal vector" $ do
     normalVector (Vertex (4,4,4)) facet3 @?= (16,0,0)
 
 testNormalCone :: TestTree
-testNormalCone = HU.testCase "Tests for normal cone" $ do
+testNormalCone = HU.testCase "Tests for normal cone" $
     normalCone (Vertex (4,4,4)) [facet1, facet2, facet3] @?= [(256,0,0),(0,256,0),(0,0,256)]
 -- WORKS BUT THE RESULT IS WRONG BECAUSE ORDER NOT ALWAYS MATCHES
 -- testAdjacentFacets :: TestTree
