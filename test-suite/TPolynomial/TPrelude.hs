@@ -9,6 +9,7 @@ module TPolynomial.TPrelude (testsPrelude) where
 
 import Test.Tasty
 import Test.Tasty.HUnit as HU
+import Data.List
 import Core
 import Data.Map.Strict
 
@@ -55,5 +56,16 @@ testSumProdPolynomial = HU.testCase "Sum and product of polynomials" $ do
         (3*y^2 + x)^2 + 2 @?= 6*y^4 + 3*x*y^2 + x^2 + 2
         3*x*(x+y+z)^2 @?= 3*x^3 + 3*x^2*z + 3*x^2*y + 3*x*y^2 + 3*x*y*z + 3*x*z^2
 
+
+x2, y2 :: Polynomial (Tropical Integer) Lex 2
+x2 = variable 0
+y2 = variable 1
+p1 = 3*x2^2*y2 + 2*x2 + 3*y2 + 5 + 6*x2^3*y2^2 + 8*x2^3*y2^6 + 3*x2^7*y2^5
+
+testsPolytope :: TestTree
+testsPolytope = HU.testCase "Tests for polytopes of polynomials" $
+        sort (polytope2 p1) @?= sort [(0,0),(0,1),(1,0),(7,5),(3,6)]
+
+
 testsPrelude :: TestTree
-testsPrelude = testGroup "Test for Prelude of Polynomials" [testVariables, testShowPolynomialLex, testShowPolynomialRevlex, testSumProdPolynomial]
+testsPrelude = testGroup "Test for Prelude of Polynomials" [testVariables, testShowPolynomialLex, testShowPolynomialRevlex, testSumProdPolynomial, testsPolytope]

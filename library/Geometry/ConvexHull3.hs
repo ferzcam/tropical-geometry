@@ -1,6 +1,6 @@
 {-#LANGUAGE FlexibleInstances#-}
 
-module Geometry.ConvexHull
+module Geometry.ConvexHull3
 
 (
     -- * Data types
@@ -12,7 +12,7 @@ module Geometry.ConvexHull
     ConflictGraph,
 
     -- * Convex hull
-    convexHull3D,
+    convexHull3,
     fromConvexHull,
 
     -- * Computations of geometrical objects
@@ -24,7 +24,11 @@ module Geometry.ConvexHull
     -- * Operations with points
     isBetween3D,
     mergePoints,
-    fromFacet
+    fromFacet,
+
+
+    -- * Testing
+    isColinearIn3DFromList
 )
 
 where
@@ -92,8 +96,8 @@ instance Num (Int, Int, Int) where
     negate (x,y,z) = (-x,-y,-z)
 
 -- | Assume every point is different
-convexHull3D :: [Point3D] -> Maybe ConvexHull
-convexHull3D points
+convexHull3 :: [Point3D] -> Maybe ConvexHull
+convexHull3 points
     | length points < 4 = Nothing
     | isNothing tetraHedron = Nothing
     | otherwise = Just convexHull
@@ -284,6 +288,19 @@ isColinearIn3D [a,b] c =    let
                                 Nothing -> False
                                 Just ls -> all (== head ls) (tail ls) 
 
+isColinearIn3DFromList :: [Point3D] ->  Bool -- ^ Not able to use determinant algorithm because the matrix is not square
+isColinearIn3DFromList [a,b,c] =    let 
+                            distanceXYZ (a,b,c) (d,e,f) = [a-d, b-e, c-f]
+                            ab = map toRational $ distanceXYZ a b
+                            ac = map toRational $ distanceXYZ a c
+                            ratio = checkRatio ab ac
+                            in case ratio of
+                                Nothing -> False
+                                Just ls -> all (== head ls) (tail ls) 
+                                
+
+
+
 checkRatio :: [Rational] -> [Rational] -> Maybe [Rational]
 checkRatio l1 l2
     | l1 == [0,0,0] = Just [0,0,0]
@@ -330,3 +347,6 @@ inside p convexHull = all (not.flip isInFrontOf p) (facets convexHull)
 
 isCoplanarCH :: Point3D -> ConvexHull -> Bool
 isCoplanarCH p convexHull = any (`isCoplanar` p) (map fromFacet $ facets convexHull)
+
+
+

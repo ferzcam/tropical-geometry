@@ -31,11 +31,12 @@ library
       Example
       Polynomial.Monomial
       Polynomial.Prelude
-      Polynomial.Polytope
       Arithmetic.Numbers
       Arithmetic.Matrix
-      Geometry.ConvexHull
+      Geometry.ConvexHull2
+      Geometry.ConvexHull3
       Geometry.Minkowski
+      Geometry.Polytope
       Geometry.Polyhedral
       Core
   other-modules:
@@ -71,10 +72,11 @@ test-suite Tropical-test-suite
       Paths_Tropical
       TPolynomial.TMonomial
       TPolynomial.TPrelude
-      TPolynomial.TPolytope
       TArithmetic.TMatrix
       TArithmetic.TNumbers
-      TGeometry.TConvexHull
+      TGeometry.TConvexHull2
+      TGeometry.TConvexHull3
+      TGeometry.TPolytope
       TGeometry.TPolyhedral
 
   hs-source-dirs:

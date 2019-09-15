@@ -1,6 +1,6 @@
 module Geometry.Polyhedral where
 
-import Geometry.ConvexHull
+import Geometry.ConvexHull3
 import Data.List
 import Data.Maybe
 import Data.Function
@@ -57,3 +57,12 @@ normalCone v facets@(f:fs) = computeNormalCone normals
         normals = map (normalVector v) (facets++[f])
         computeNormalCone [v1,v2] = [crossProduct v1 v2]
         computeNormalCone (v1:v2:vs) = (crossProduct v1 v2):computeNormalCone (v2:vs)
+
+normalFan :: ConvexHull -> [[Point3D]]
+normalFan convexHull = normalFanPointsFacets (fromConvexHull convexHull) convexHull 
+
+normalFanPointsFacets :: [Point3D] -> ConvexHull -> [[Point3D]]
+normalFanPointsFacets [] _ = []
+normalFanPointsFacets (v:vs) convexHull = (normalCone (Vertex v) properFacets):normalFanPointsFacets vs convexHull
+    where
+        properFacets = adjacentFacets v convexHull 

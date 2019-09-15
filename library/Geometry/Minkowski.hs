@@ -1,9 +1,8 @@
 module Geometry.Minkowski where
 
-import Geometry.ConvexHull (Point3D)
+import Geometry.ConvexHull2 (Point2D)
+import Geometry.ConvexHull3 (Point3D)
 import Data.List
-
-type Point2D = (Int, Int)
 
 minkowskiSum2D :: [Point2D] ->[Point2D] -> [Point2D]
 minkowskiSum2D l1 l2 = sort [sum' a b | a <- l1, b <- l2]

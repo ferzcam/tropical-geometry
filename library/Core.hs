@@ -3,8 +3,8 @@ module Core (
     module Polynomial.Monomial,
     module Arithmetic.Numbers,
     module Arithmetic.Matrix,
-    module Polynomial.Polytope,
-    module Geometry.ConvexHull,
+    module Geometry.ConvexHull2,
+    module Geometry.ConvexHull3,
     module Geometry.Minkowski
     
     )
@@ -12,9 +12,9 @@ module Core (
 where
 
     import Polynomial.Prelude
-    import Polynomial.Polytope
     import Arithmetic.Numbers
     import Arithmetic.Matrix
     import Polynomial.Monomial
-    import Geometry.ConvexHull
+    import Geometry.ConvexHull2
+    import Geometry.ConvexHull3
     import Geometry.Minkowski

@@ -9,22 +9,28 @@ module Polynomial.Prelude (
 
     -- * Classes
     IsPolynomial(..),
-    IsOrderedPolynomial(..)
+    IsOrderedPolynomial(..),
+
+    -- * Functions
+    polytope2
 ) where 
 
 import Control.Lens
 import Prelude as P 
 import qualified Data.Map.Strict as MS
-import Polynomial.Monomial
-import Arithmetic.Numbers
 import Numeric.Algebra as NA hiding ((<), (>), (-))
 import qualified Numeric.Additive.Class as AD
 import Debug.Trace
+import Data.List
 import qualified Data.Sized as DS
-import              GHC.TypeLits
+import GHC.TypeLits
 import Data.Type.Ordinal.Builtin
-import           Data.Singletons.Prelude
+import Data.Singletons.Prelude
 
+
+import Polynomial.Monomial
+import Arithmetic.Numbers
+import Geometry.ConvexHull2
 
 type Index = Int
 
@@ -137,3 +143,7 @@ prodTerm (mon1, coeff1) (mon2, coeff2) = (mon1 NA.* mon2, coeff1 P.* coeff2)
 
 (!*) :: (Num k) => k -> Polynomial k ord n -> Polynomial k ord n
 num !* poly = Polynomial $ MS.map (P.* num) (getTerms poly)
+
+
+polytope2 :: IsOrderedPolynomial poly => poly -> [Point2D]
+polytope2 = convexHull2 . map (\[a,b] -> (a,b)) . map (DS.toList . getMonomial . fst) . MS.toList . terms
