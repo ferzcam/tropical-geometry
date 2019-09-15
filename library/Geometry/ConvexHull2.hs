@@ -53,9 +53,7 @@ determinant p1 p2 p3 = detLU $ fromLists $ map toList [p1,p2,p3]
 semiHullUp :: [Point2D] -> [Point2D]
 semiHullUp [a] = [a]
 semiHullUp [a,b] = [a,b]
-semiHullUp points@(x:y:z:w)
-    | isColinear x y z = semiHullUp (x:z:w)
-    | otherwise = if determinant y3 x3 z3 > 0 then x:semiHullUp (y:z:w)
+semiHullUp points@(x:y:z:w) = if determinant y3 x3 z3 > 0 then x:semiHullUp (y:z:w)
                         else semiHullUp (x:z:w)
     where
         (x3:y3:z3:w3) = map lift2To3 points
@@ -63,9 +61,7 @@ semiHullUp points@(x:y:z:w)
 semiHullDown :: [Point2D] -> [Point2D]
 semiHullDown [a] = [a]
 semiHullDown [a,b] = [a,b]
-semiHullDown points@(x:y:z:w)
-    | isColinear x y z = semiHullDown (x:z:w) 
-    | otherwise = if determinant y3 x3 z3 < 0 then x:semiHullDown (y:z:w)
+semiHullDown points@(x:y:z:w) = if determinant y3 x3 z3 < 0 then x:semiHullDown (y:z:w)
                             else semiHullDown (x:z:w)
     where
         (x3:y3:z3:w3) = map lift2To3 points
@@ -92,14 +88,23 @@ isPointDown (l1,l2) (r1,r2) (p1,p2) = rP2 <= (m * rP1) + b
         b = rL2 - m * rL1
         
 
+dropColinearPoints :: [Point2D] -> [Point2D]
+dropColinearPoints [] = []
+dropColinearPoints [a] = [a]
+dropColinearPoints [a,b] = [a,b]
+dropColinearPoints (x:y:z:w)
+    | isColinear x y z = dropColinearPoints (x:z:w)
+    | otherwise = x:dropColinearPoints (y:z:w) 
+
+
 convexHull2 :: [Point2D] -> [Point2D]
-convexHull2 points = trace ("LOWERHULL " ++ show lowerHull ++ "\n" ++ "UPPERHULL" ++ show upperHull ) union lowerHull upperHull
+convexHull2 points = union lowerHull upperHull
         where
-            lst = trace ("SHOW NUB POINTS " ++ show (nub points)) sort $ nub points
-            left =  trace ("LEFTMOST " ++ show (leftMost lst))leftMost lst
-            right = trace ("RIGHTMOST " ++ show (rightMost lst)) rightMost lst
-            lowerHull = semiHullDown $ filter (isPointDown left right) lst
-            upperHull = trace ("INPUT UPERHULL" ++  show (filter (isPointUp left right) lst)) semiHullUp $ filter (isPointUp left right) lst
+            lst = sort $ nub points
+            left = leftMost lst
+            right = rightMost lst
+            lowerHull = dropColinearPoints $ semiHullDown $ filter (isPointDown left right) lst
+            upperHull = dropColinearPoints $ semiHullUp $ filter (isPointUp left right) lst
 
 
     
