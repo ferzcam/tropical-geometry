@@ -31,6 +31,7 @@ library
       Example
       Polynomial.Monomial
       Polynomial.Prelude
+      Polynomial.Hypersurface
       Arithmetic.Numbers
       Arithmetic.Matrix
       Geometry.ConvexHull2
@@ -78,6 +79,7 @@ test-suite Tropical-test-suite
       TGeometry.TConvexHull3
       TGeometry.TPolytope
       TGeometry.TPolyhedral
+      TPolynomial.THypersurface
 
   hs-source-dirs:
       test-suite

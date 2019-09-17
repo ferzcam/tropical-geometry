@@ -1,6 +1,7 @@
 module Core (
     module Polynomial.Prelude,
     module Polynomial.Monomial,
+    module Polynomial.Hypersurface,
     module Arithmetic.Numbers,
     module Arithmetic.Matrix,
     module Geometry.ConvexHull2,
@@ -18,3 +19,4 @@ where
     import Geometry.ConvexHull2
     import Geometry.ConvexHull3
     import Geometry.Minkowski
+    import Polynomial.Hypersurface

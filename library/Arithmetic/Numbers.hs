@@ -8,7 +8,7 @@ module Arithmetic.Numbers
 ) where
 
 import Data.Function
-import Numeric.Algebra hiding (negate)
+import Numeric.Algebra hiding (negate, fromInteger)
 import Numeric.Algebra.Class as AC
 
 
@@ -73,3 +73,22 @@ instance (Ord a, Num a) => Num (Tropical a) where
 instance (Num a, Ord a, Rig a) => DecidableZero (Tropical a) 
 instance Functor Tropical where
   fmap f (Tropical a) = Tropical (f a)
+
+
+instance Integral (Tropical Integer) where
+  toInteger (Tropical a) = a
+  toInteger Inf = 0
+
+instance Enum (Tropical Integer) where
+  toEnum a = Tropical (toInteger a)
+  fromEnum (Tropical a) = fromInteger a
+  fromEnum Inf = 0
+
+instance Real (Tropical Integer) where
+  toRational (Tropical a) = toRational a
+  toRational Inf = 0
+
+instance Ord (Tropical Integer) where
+  compare Inf a = LT
+  compare a Inf = GT
+  compare (Tropical a) (Tropical b) = compare a b

@@ -15,6 +15,7 @@ import TGeometry.TConvexHull3
 import TGeometry.TMinkowski
 import TGeometry.TPolyhedral
 import TGeometry.TPolytope
+import TPolynomial.THypersurface
 
 main :: IO ()
 main = defaultMain allTests
@@ -23,6 +24,16 @@ main = defaultMain allTests
 
 allTests ::   TestTree
 allTests = testGroup "Tasty tests" [
-        testGroup "List of tests:" [testsNumbers, testsMatrices, testsMonomial, testsPrelude, testsConvexHull2, testsConvexHull3, testsMinkowski, testsPolyhedral, testsPolytope]
+        testGroup "List of tests:" [
+            testsNumbers, 
+            testsMatrices, 
+            testsMonomial, 
+            testsPrelude, 
+            testsConvexHull2, 
+            testsConvexHull3, 
+            testsMinkowski, 
+            testsPolyhedral, 
+            testsPolytope,
+            testsHypersurface]
     ]
 

@@ -119,7 +119,7 @@ instance (KnownNat n, CoeffRig k, IsMonomialOrder ord) => IsOrderedPolynomial (P
 
 
 instance (IsMonomialOrder ord, KnownNat n) => Num (Polynomial (Tropical Integer) ord n) where 
-    (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith (P.+) terms1 terms2
+    (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith     (P.+) terms1 terms2
     (*) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.fromListWith (P.+) [ prodTerm t1 t2 | t1 <- MS.toList terms1, t2 <- MS.toList terms2]
     fromInteger x = Polynomial $ MS.singleton one (Tropical x)
     negate poly =  Polynomial $ MS.map P.negate $ terms poly
