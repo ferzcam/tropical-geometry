@@ -28,13 +28,21 @@ f5 = 2*x*y^(-1) + 2*y^(-1) + (-2)
 
 testMapTermPoint :: TestTree
 testMapTermPoint =   HU.testCase "Get the key-value pair with the terms and its corresponding points" $ do
-        show (mapTermPoint f1) @?=  "fromList [((0,0,2),(,2)),((0,1,0),(X_1,0)),((0,2,1),(X_1^2,1)),((1,0,0),(X_0,0)),((1,1,0),(X_0X_1,0)),((2,0,1),(X_0^2,1))]"
+        show (mapTermPoint f1) @?=  "fromList [((0,0),(,2)),((0,1),(X_1,0)),((0,2),(X_1^2,1)),((1,0),(X_0,0)),((1,1),(X_0X_1,0)),((2,0),(X_0^2,1))]"
  
 
 testFindFanVertex :: TestTree
 testFindFanVertex = HU.testCase "Computing fan vertices" $ do
-        findFanVertex (mapTermPoint f1) (0,0,2) (0,1,0) (1,0,0) @?= (2,2)
+        findFanVertex (mapTermPoint f1) [(0,0), (0,1), (1,0)] @?= (2,2)
 
+
+testInnerNormals :: TestTree
+testInnerNormals = HU.testCase "Compute inner normals of triangles" $ do
+        sort (innerNormals (0,0) (0,1) (1,0)) @?= sort [(-1,-1), (1,0), (0,1)]
+
+testVerticess :: TestTree
+testVerticess = HU.testCase "Test for vertices" $ do
+        sort (verticess f1) @?= sort [(2,2),(0,0),(-1,0),(0,-1)] 
 
 testsHypersurface :: TestTree
-testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex]
+testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticess]
