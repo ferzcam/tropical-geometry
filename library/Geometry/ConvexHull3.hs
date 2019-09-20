@@ -41,6 +41,8 @@ import qualified Data.Map.Strict as MS
 import Data.Matrix hiding (trace)
 import Data.Function
 
+import Geometry.ConvexHull2
+
 
 type Point3D = (Int, Int, Int)
 
@@ -98,8 +100,8 @@ instance Num (Int, Int, Int) where
 -- | Assume every point is different
 convexHull3 :: [Point3D] -> Maybe ConvexHull
 convexHull3 points
-    | length points < 4 = Nothing
-    | isNothing tetraHedron = Nothing
+    | length points < 4 = Just $ convexHull2In3 points
+    | isNothing tetraHedron = Just $ convexHull2In3 points
     | otherwise = Just convexHull
         where
             convexHull =  addPoints initialCH afterTetrahedron conflictGraph
@@ -108,6 +110,12 @@ convexHull3 points
             tetraHedron = computeTetrahedron points
             afterTetrahedron = points \\ fromJust tetraHedron
 
+
+
+convexHull2In3 :: [Point3D] -> ConvexHull
+convexHull2In3 points3 = ConvexHull [fromVertices $ map lift2To3 $ convexHull2 points2]
+    where
+        points2 = map project3To2 points3
 -------------------------------------------------
 
 

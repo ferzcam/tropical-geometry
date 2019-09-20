@@ -53,13 +53,16 @@ computeIntersection (mon1, c1) (mon2, c2) (mon3, c3) = (x, y)
             y = ((f-c)*(d-g) - (i-f)*(a-d)) `div` ((b-e)*(d-g)-(e-h)*(a-d)) 
             x = ((f-c)-(b-e)*y) `div` (a-d)
 
-findFanVertex :: (Integral k) => MS.Map Point2D (Monomial ord n, k) -> [Point2D] -> Point2D
-findFanVertex mapPointMon points = computeIntersection mon1 mon2 mon3 
+findFanVertex :: (Integral k) => MS.Map Point2D (Monomial ord n, k) -> [Point2D] -> (Point2D,[Point2D])
+findFanVertex mapPointMon points = (computeIntersection mon1 mon2 mon3, sort [inormal1,inormal2,inormal3]) 
     where
-        [pp1, pp2, pp3] = (reverse.sort) points
-        mon1 = fromJust $ MS.lookup pp1 mapPointMon
-        mon2 = fromJust $ MS.lookup pp2 mapPointMon
-        mon3 = fromJust $ MS.lookup pp3 mapPointMon
+        [pp1, pp2, pp3] = sort points
+        mon1 = fromJust $ MS.lookup pp3 mapPointMon
+        mon2 = fromJust $ MS.lookup pp1 mapPointMon
+        mon3 = fromJust $ MS.lookup pp2 mapPointMon
+        inormal1 = innerNormal pp1 pp2 pp3        
+        inormal2 = innerNormal pp2 pp3 pp1
+        inormal3 = innerNormal pp3 pp1 pp2
 
 
 innerNormal :: Point2D -> Point2D -> Point2D -> Point2D
@@ -81,8 +84,8 @@ innerNormals a@(x1,y1) b@(x2,y2) c@(x3,y3) = [inner1, inner2, inner3]
         inner3 = innerNormal c a b
         
 
-verticess :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> [Point2D]
-verticess poly = map (findFanVertex polyMap) triangles 
+verticesNormals :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> MS.Map (Point2D) [Point2D]
+verticesNormals poly = MS.fromList $ map (findFanVertex polyMap) triangles 
     where
         polyMap = mapTermPoint poly
         triangles = subdivision poly

@@ -1,7 +1,7 @@
 module Geometry.ConvexHull2 where
 
 import Polynomial.Monomial
-import Geometry.ConvexHull3
+--import Geometry.ConvexHull3
 
 
 import Data.List
@@ -26,7 +26,7 @@ type Point2D = (Int, Int)
 --     | otherwise = b < d 
     
 
-lift2To3 :: Point2D -> Point3D
+lift2To3 :: Point2D -> (Int, Int, Int)
 lift2To3 = \(a,b) -> (a,b,1)
 
 
@@ -41,11 +41,11 @@ isColinearFromList [a,b,c] = isColinear a b c
 
 
 
-project3To2 :: Point3D -> Point2D
+project3To2 :: (Int, Int, Int) -> Point2D
 project3To2 = \(a,b,_) -> (a,b)
 
 
-determinant :: Point3D -> Point3D -> Point3D -> Rational
+determinant :: (Int, Int, Int) -> (Int, Int, Int) -> (Int, Int, Int) -> Rational
 determinant p1 p2 p3 = detLU $ fromLists $ map toList [p1,p2,p3]
     where
         toList = (\(a,b,c) -> map toRational [a,b,c])

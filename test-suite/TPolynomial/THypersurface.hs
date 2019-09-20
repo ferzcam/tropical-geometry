@@ -11,7 +11,7 @@ import Test.Tasty
 import Test.Tasty.HUnit as HU
 import Data.List
 import Core
-import Data.Map.Strict
+import qualified Data.Map.Strict as MS 
 
 x, y :: Polynomial (Tropical Integer) Lex 2
 x = variable 0
@@ -33,16 +33,27 @@ testMapTermPoint =   HU.testCase "Get the key-value pair with the terms and its 
 
 testFindFanVertex :: TestTree
 testFindFanVertex = HU.testCase "Computing fan vertices" $ do
-        findFanVertex (mapTermPoint f1) [(0,0), (0,1), (1,0)] @?= (2,2)
-
+        findFanVertex (mapTermPoint f1) [(0,0), (0,1), (1,0)] @?= ((2,2), sort [(-1,-1),(1,0),(0,1)])
+        findFanVertex (mapTermPoint f1) [(1,1), (0,1), (1,0)] @?= ((0,0), sort [(1,1),(-1,0),(0,-1)])
+        findFanVertex (mapTermPoint f1) [(2,0), (1,1), (1,0)] @?= ((-1,0),sort [(-1,-1),(1,0),(0,1)])
+        findFanVertex (mapTermPoint f1) [(0,2), (0,1), (1,1)] @?= ((0,-1),sort [(-1,-1),(1,0),(0,1)])
 
 testInnerNormals :: TestTree
 testInnerNormals = HU.testCase "Compute inner normals of triangles" $ do
         sort (innerNormals (0,0) (0,1) (1,0)) @?= sort [(-1,-1), (1,0), (0,1)]
 
-testVerticess :: TestTree
-testVerticess = HU.testCase "Test for vertices" $ do
-        sort (verticess f1) @?= sort [(2,2),(0,0),(-1,0),(0,-1)] 
+testVerticesNormals :: TestTree
+testVerticesNormals = HU.testCase "Test for vertices" $ do
+        (verticesNormals f1) @?= MS.fromList [ ((2,2), sort [(-1,-1),(1,0),(0,1)]), 
+                                                ((0,0), sort [(1,1),(-1,0),(0,-1)]),
+                                                ((-1,0),sort [(-1,-1),(1,0),(0,1)]),
+                                                ((0,-1),sort [(-1,-1),(1,0),(0,1)])]
+        --sort (vertices f2) @?= sort [(-2,1),(-1,1),(1,-1),(1,-2)]
+        --sort (vertices f3) @?= sort [(-2,0),(-1,0),(0,1),(1,1),(2,2),(1,0),(0,-1),(0,-2),(-1,-1)]
+        --sort (vertices f4) @?= sort [(0,0)]
+        --sort (vertices f5) @?= sort [(0,4)]
+        
 
 testsHypersurface :: TestTree
-testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticess]
+testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticesNormals]
+

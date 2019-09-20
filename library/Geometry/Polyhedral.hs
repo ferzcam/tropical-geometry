@@ -47,6 +47,8 @@ normalVector v f = crossProduct vector1 vector2
         vector2 = ((-) `on` coordinates) v3 v4
 
 
+
+
 crossProduct :: Point3D -> Point3D -> Point3D
 crossProduct (x1,y1,z1) (x2,y2,z2) = (y1*z2-y2*z1,-(x1*z2-x2*z1),x1*y2-x2*y1)
 
@@ -66,3 +68,12 @@ normalFanPointsFacets [] _ = []
 normalFanPointsFacets (v:vs) convexHull = (normalCone (Vertex v) properFacets):normalFanPointsFacets vs convexHull
     where
         properFacets = adjacentFacets v convexHull 
+
+
+
+isLowerFace :: Facet -> Bool
+isLowerFace facet = snd' normal < 0
+    where
+        snd' (_,a,_) = a
+        vertex = Vertex $ head $ fromFacet facet
+        normal = normalVector vertex facet

@@ -21,7 +21,9 @@ import Data.Maybe
 -- | Computes the projection R^3 -> R^2 of a convexhull. The input is a convexhull in R^3 and the output will regular subdivision of the convexhull in R^2
 
 projectionToR2 :: ConvexHull -> [[Point2D]]
-projectionToR2 convexHull = internal
+projectionToR2 convexHull
+    | length notColinear == 1 = notColinear 
+    | otherwise = internal
     where
         facetsInPoints = map fromFacet $ facets convexHull
         triangles = filter (\points -> length points == 3) facetsInPoints
