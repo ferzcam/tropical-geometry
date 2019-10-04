@@ -20,14 +20,6 @@ import Geometry.Polytope
 
 -- | This function produces a key-value map of the terms of a polynomial with their corresponding coordinates for the Newton polytope
 
--- mapTermPoint :: (IsMonomialOrder ord, Ord k, Integral k) 
---     => Polynomial k ord n -> MS.Map Point3D (Monomial ord n, k)
--- mapTermPoint poly = MS.fromList $ zipWith (,) points terms 
---     where
---         terms = MS.toList $ (getTerms poly)
---         monExps = DS.toList . getMonomial
---         toPoints = \(mon,coef) -> let [a,b] = monExps mon in (a, b, fromIntegral coef)
---         points = map toPoints terms
 
 mapTermPoint :: (IsMonomialOrder ord, Ord k, Integral k) 
     => Polynomial k ord n -> MS.Map Point2D (Monomial ord n, k)
@@ -39,7 +31,7 @@ mapTermPoint poly = MS.fromList $ zipWith (,) points terms
         points = map toPoints terms
 
 
--- | Finds the vertex of a tropical line which corresponds to the intersection of the polyhedral fan of a triangle
+-- | Finds the vertex of a tropical line which corresponds to the intersection of the polyhedral fan of a triangle. The output is the result of the systems of equations given by: ax + by +c = 0; dx + ey f = 0; gx + hy + i = 0.
 
 computeIntersection :: (Integral k) => (Monomial ord n, k) -> (Monomial ord n, k) -> (Monomial ord n, k) -> Point2D
 computeIntersection (mon1, c1) (mon2, c2) (mon3, c3) = (x, y) 
@@ -56,7 +48,7 @@ computeIntersection (mon1, c1) (mon2, c2) (mon3, c3) = (x, y)
 findFanVertex :: (Integral k) => MS.Map Point2D (Monomial ord n, k) -> [Point2D] -> (Point2D,[Point2D])
 findFanVertex mapPointMon points = (computeIntersection mon1 mon2 mon3, sort [inormal1,inormal2,inormal3]) 
     where
-        [pp1, pp2, pp3] = sort points
+        [pp1, pp2, pp3] = sort points -- This sorting is done to ensure that pp1 has non-zero degree on x.
         mon1 = fromJust $ MS.lookup pp3 mapPointMon
         mon2 = fromJust $ MS.lookup pp1 mapPointMon
         mon3 = fromJust $ MS.lookup pp2 mapPointMon
@@ -84,7 +76,7 @@ innerNormals a@(x1,y1) b@(x2,y2) c@(x3,y3) = [inner1, inner2, inner3]
         inner3 = innerNormal c a b
         
 
-verticesNormals :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> MS.Map (Point2D) [Point2D]
+verticesNormals :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> MS.Map Point2D [Point2D]
 verticesNormals poly = MS.fromList $ map (findFanVertex polyMap) triangles 
     where
         polyMap = mapTermPoint poly
