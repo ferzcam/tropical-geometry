@@ -1,3 +1,5 @@
+{-#LANGUAGE FlexibleInstances#-}
+
 module Geometry.ConvexHull2 where
 
 import Polynomial.Monomial
@@ -15,6 +17,9 @@ import qualified Data.Sized.Builtin as DS
 
 type Point2D = (Int, Int)
 
+instance Num (Int, Int) where
+    (x1,y1) + (x2,y2) = (x1+x2, y1+y2)
+    negate (x,y) = (-x,-y)
 -- above :: Point2D -> Point2D -> Bool
 -- above (a,b) (c,d) 
 --     | a /= c = False
@@ -53,11 +58,11 @@ determinant p1 p2 p3 = detLU $ fromLists $ map toList [p1,p2,p3]
 semiHullUp :: [Point2D] -> Maybe Point2D -> [Point2D]
 semiHullUp [a] _= [a]
 semiHullUp [a,b] _ = [a,b]
-semiHullUp points@(x:y:z:w) Nothing = if determinant y3 x3 z3 > 0 then x:semiHullUp (y:z:w) (Just x)
+semiHullUp points@(x:y:z:w) Nothing = if determinant x3 y3 z3 < 0 then x:semiHullUp (y:z:w) (Just x)
                         else semiHullUp (x:z:w) Nothing
     where
         (x3:y3:z3:w3) = map lift2To3 points
-semiHullUp points@(x:y:z:w) (Just prev) = if determinant y3 x3 z3 > 0 then x:semiHullUp (y:z:w) (Just x)
+semiHullUp points@(x:y:z:w) (Just prev) = if determinant x3 y3 z3 < 0 then x:semiHullUp (y:z:w) (Just x)
                         else semiHullUp (prev:x:z:w) Nothing
     where
         (x3:y3:z3:w3) = map lift2To3 points
@@ -65,11 +70,11 @@ semiHullUp points@(x:y:z:w) (Just prev) = if determinant y3 x3 z3 > 0 then x:sem
 semiHullDown :: [Point2D] -> Maybe Point2D -> [Point2D]
 semiHullDown [a] _ = [a]
 semiHullDown [a,b] _ = [a,b]
-semiHullDown points@(x:y:z:w) Nothing = if determinant y3 x3 z3 < 0 then x:semiHullDown (y:z:w) (Just x)
+semiHullDown points@(x:y:z:w) Nothing = if determinant x3 y3 z3 > 0 then x:semiHullDown (y:z:w) (Just x)
                             else semiHullDown (x:z:w) Nothing
     where
         (x3:y3:z3:w3) = map lift2To3 points
-semiHullDown points@(x:y:z:w) (Just prev) = if determinant y3 x3 z3 < 0 then x:semiHullDown (y:z:w) (Just x)
+semiHullDown points@(x:y:z:w) (Just prev) = if determinant x3 y3 z3 > 0 then x:semiHullDown (y:z:w) (Just x)
                             else semiHullDown (prev:x:z:w) Nothing
     where
         (x3:y3:z3:w3) = map lift2To3 points

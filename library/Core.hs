@@ -3,6 +3,7 @@ module Core (
     module Polynomial.Monomial,
     module Polynomial.Hypersurface,
     module Arithmetic.Numbers,
+    module Arithmetic.Symbolic,
     module Arithmetic.Matrix,
     module Geometry.ConvexHull2,
     module Geometry.ConvexHull3,
@@ -14,6 +15,7 @@ where
 
     import Polynomial.Prelude
     import Arithmetic.Numbers
+    import Arithmetic.Symbolic
     import Arithmetic.Matrix
     import Polynomial.Monomial
     import Geometry.ConvexHull2

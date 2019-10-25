@@ -12,7 +12,8 @@ module Polynomial.Prelude (
     IsOrderedPolynomial(..),
 
     -- * Functions
-    polytope2
+    polytope2,
+    (!*)
 ) where 
 
 import Control.Lens
@@ -31,6 +32,13 @@ import Data.Singletons.Prelude
 import Polynomial.Monomial
 import Arithmetic.Numbers
 import Geometry.ConvexHull2
+
+
+import qualified Arithmetic.Symbolic as EX (Expr(..), fromIntt)
+
+
+
+-- infix 7 !*!
 
 
 class    (DecidableZero r, Rig r, Commutative r, Eq r) => CoeffRig r
@@ -85,6 +93,9 @@ class (CoeffRig (Coeff poly), KnownNat (Arity poly)) => IsPolynomial poly where
 
     variable :: Ordinal (Arity poly) -> poly
     variable idx = fromMonomial $ DS.replicate sing 0 & ix idx .~ 1  
+
+    -- (!*!) :: Coeff poly -> poly -> poly
+    -- (!*!) = (!*)
     
 
 class (IsMonomialOrder (MonOrder poly), IsPolynomial poly) => IsOrderedPolynomial poly where
@@ -117,11 +128,26 @@ instance (KnownNat n, CoeffRig k, IsMonomialOrder ord) => IsOrderedPolynomial (P
 
 
 
+-- instance (Eq k, Num k, DecidableZero k, Rig k,Commutative k , IsMonomialOrder ord, KnownNat n) => Num (Polynomial k ord n) where 
+--     (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith     (P.+) terms1 terms2
+--     (*) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.fromListWith (P.+) [ prodTerm t1 t2 | t1 <- MS.toList terms1, t2 <- MS.toList terms2]
+--     fromInteger x = Polynomial $ MS.singleton one (P.fromInteger x)
+--     negate poly =  Polynomial $ MS.map P.negate $ terms poly
+
+
 instance (IsMonomialOrder ord, KnownNat n) => Num (Polynomial (Tropical Integer) ord n) where 
     (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith     (P.+) terms1 terms2
     (*) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.fromListWith (P.+) [ prodTerm t1 t2 | t1 <- MS.toList terms1, t2 <- MS.toList terms2]
-    fromInteger x = Polynomial $ MS.singleton one (Tropical x)
+    fromInteger x = Polynomial $ MS.singleton one (P.fromInteger x)
     negate poly =  Polynomial $ MS.map P.negate $ terms poly
+
+instance (IsMonomialOrder ord, KnownNat n) => Num (Polynomial (Tropical (EX.Expr Integer)) ord n) where 
+    (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith     (P.+) terms1 terms2
+    (*) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.fromListWith (P.+) [ prodTerm t1 t2 | t1 <- MS.toList terms1, t2 <- MS.toList terms2]
+    fromInteger x = Polynomial $ MS.singleton one (Tropical ((EX.fromIntt x)))
+    negate poly =  Polynomial $ MS.map P.negate $ terms poly
+    
+
 
 instance (Num k, IsMonomialOrder ord) => AD.Additive (Polynomial k ord n) where 
     (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith (P.+) terms1 terms2

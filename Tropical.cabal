@@ -33,6 +33,7 @@ library
       Polynomial.Prelude
       Polynomial.Hypersurface
       Arithmetic.Numbers
+      Arithmetic.Symbolic
       Arithmetic.Matrix
       Geometry.ConvexHull2
       Geometry.ConvexHull3
@@ -79,6 +80,7 @@ test-suite Tropical-test-suite
       TGeometry.TConvexHull3
       TGeometry.TPolytope
       TGeometry.TPolyhedral
+      TGeometry.TMinkowski
       TPolynomial.THypersurface
 
   hs-source-dirs:
