@@ -89,3 +89,14 @@ verticesNormals poly = MS.fromList $ map (findFanVertex polyMap) triangles
     where
         polyMap = mapTermPoint poly
         triangles = subdivision poly
+
+
+neighborTriangles :: [[Point2D]] -> MS.Map [Point2D] [[Point2D]] -> MS.Map [Point2D] [[Point2D]]
+neighborTriangles [] mapContainer = mapContainer
+neighborTriangles (p:ps) mapContainer =  neighborTriangles ps (foldr (lookAndInsert p) mapContainer ps)
+    where
+        lookAndInsert p1 p2 acc = case length (p1\\p2) == (length p1) - 2 of
+                                    True -> MS.insertWith (++) p1 [p2] acc
+                                    False -> acc
+
+-- neighborPoints :: MS.Map [Point2D] [[Point2D]]
