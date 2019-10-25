@@ -72,8 +72,8 @@ normalFanPointsFacets (v:vs) convexHull = (normalCone (Vertex v) properFacets):n
 
 
 isLowerFace :: Facet -> Bool
-isLowerFace facet = snd' normal < 0
+isLowerFace facet = trd' normal < 0
     where
-        snd' (_,a,_) = a
+        trd' (_,_,a) = a
         vertex = Vertex $ head $ fromFacet facet
         normal = normalVector vertex facet

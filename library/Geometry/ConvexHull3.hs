@@ -240,11 +240,11 @@ checkColinearity points@(p1:p2:p3:_) = points \\ midPoints
         midPoints = map (\(_,p,_) -> p) nicePoints
         nicePoints = [(p1,p2,p3) | p1 <- points, p2 <- points, p3 <- points, isColinearIn3D [p1,p3] p2, isBetween3D [p1,p3] p2, p1 /= p2, p2/=p3, p1/=p3]
 
-checkColinearity' :: [Point3D] -> [Point3D]
-checkColinearity' [a,b] = []
-checkColinearity' points@(p1:p2:p3:p)
-    | isColinearIn3D [p1,p3] p2 = checkColinearity' (p1:p3:p)
-    | otherwise = p1:checkColinearity' (p2:p3:p)
+-- checkColinearity' :: [Point3D] -> [Point3D]
+-- checkColinearity' [a,b] = []
+-- checkColinearity' points@(p1:p2:p3:p)
+--     | isColinearIn3D [p1,p3] p2 = checkColinearity' (p1:p3:p)
+--     | otherwise = p1:checkColinearity' (p2:p3:p)
 
 isBetween3D :: [Point3D] -> Point3D -> Bool
 isBetween3D [p1,p3] p2

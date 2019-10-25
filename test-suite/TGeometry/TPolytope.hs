@@ -25,7 +25,7 @@ testProjectionToR2 =   HU.testCase "Project 2D ConvexHull to produce 2D subdivis
 
 
 testsPolytope :: TestTree
-testsPolytope = testGroup "Test for monomials" [testProjectionToR2]
+testsPolytope = testGroup "Test for polytopes" [testProjectionToR2]
 
 
 

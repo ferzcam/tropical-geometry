@@ -32,7 +32,6 @@ import Polynomial.Monomial
 import Arithmetic.Numbers
 import Geometry.ConvexHull2
 
-type Index = Int
 
 class    (DecidableZero r, Rig r, Commutative r, Eq r) => CoeffRig r
 

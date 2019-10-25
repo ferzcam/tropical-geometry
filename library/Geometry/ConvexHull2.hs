@@ -50,21 +50,38 @@ determinant p1 p2 p3 = detLU $ fromLists $ map toList [p1,p2,p3]
     where
         toList = (\(a,b,c) -> map toRational [a,b,c])
 
-semiHullUp :: [Point2D] -> [Point2D]
-semiHullUp [a] = [a]
-semiHullUp [a,b] = [a,b]
-semiHullUp points@(x:y:z:w) = if determinant y3 x3 z3 > 0 then x:semiHullUp (y:z:w)
-                        else semiHullUp (x:z:w)
+semiHullUp :: [Point2D] -> Maybe Point2D -> [Point2D]
+semiHullUp [a] _= [a]
+semiHullUp [a,b] _ = [a,b]
+semiHullUp points@(x:y:z:w) Nothing = if determinant y3 x3 z3 > 0 then x:semiHullUp (y:z:w) (Just x)
+                        else semiHullUp (x:z:w) Nothing
+    where
+        (x3:y3:z3:w3) = map lift2To3 points
+semiHullUp points@(x:y:z:w) (Just prev) = if determinant y3 x3 z3 > 0 then x:semiHullUp (y:z:w) (Just x)
+                        else semiHullUp (prev:x:z:w) Nothing
     where
         (x3:y3:z3:w3) = map lift2To3 points
 
-semiHullDown :: [Point2D] -> [Point2D]
-semiHullDown [a] = [a]
-semiHullDown [a,b] = [a,b]
-semiHullDown points@(x:y:z:w) = if determinant y3 x3 z3 < 0 then x:semiHullDown (y:z:w)
-                            else semiHullDown (x:z:w)
+semiHullDown :: [Point2D] -> Maybe Point2D -> [Point2D]
+semiHullDown [a] _ = [a]
+semiHullDown [a,b] _ = [a,b]
+semiHullDown points@(x:y:z:w) Nothing = if determinant y3 x3 z3 < 0 then x:semiHullDown (y:z:w) (Just x)
+                            else semiHullDown (x:z:w) Nothing
     where
         (x3:y3:z3:w3) = map lift2To3 points
+semiHullDown points@(x:y:z:w) (Just prev) = if determinant y3 x3 z3 < 0 then x:semiHullDown (y:z:w) (Just x)
+                            else semiHullDown (prev:x:z:w) Nothing
+    where
+        (x3:y3:z3:w3) = map lift2To3 points
+
+
+-- semiHullDown :: [Point2D] -> [Point2D]
+-- semiHullDown [a] = [a]
+-- semiHullDown [a,b] = [a,b]
+-- semiHullDown points@(x:y:z:w) = if determinant y3 x3 z3 < 0 then x:semiHullDown (y:z:w)
+--                             else semiHullDown (x:z:w)
+--     where
+--         (x3:y3:z3:w3) = map lift2To3 points
 
 
 leftMost :: [Point2D] -> Point2D
@@ -103,8 +120,8 @@ convexHull2 points = union lowerHull upperHull
             lst = sort $ nub points
             left = leftMost lst
             right = rightMost lst
-            lowerHull = dropColinearPoints $ semiHullDown $ filter (isPointDown left right) lst
-            upperHull = dropColinearPoints $ semiHullUp $ filter (isPointUp left right) lst
+            lowerHull = dropColinearPoints $ semiHullDown (filter (isPointDown left right) lst) Nothing
+            upperHull = dropColinearPoints $ semiHullUp (filter (isPointUp left right) lst) Nothing
 
 
     
