@@ -97,11 +97,12 @@ verticesNormals poly = MS.fromList $ map (findFanNVertex polyMap) triangles
 
 neighborTriangles :: [Polygon] -> MS.Map Polygon [Polygon] -> MS.Map Polygon [Polygon]
 neighborTriangles [] mapContainer = mapContainer
-neighborTriangles (p:ps) mapContainer =  neighborTriangles ps (foldr (lookAndInsert p) mapContainer ps)
+neighborTriangles (p:ps) mapContainer = MS.map (map sort) $ neighborTriangles ps (foldr (lookAndInsert p) mapContainer ps)
     where
         lookAndInsert p1 p2 acc = case length (p1\\p2) == (length p1) - 2 of
-                                    True -> MS.insertWith (++) p1 [p2] acc
+                                    True ->  MS.insertWith (++) p2 [p1] $ MS.insertWith (++) p1 [p2] acc
                                     False -> acc
+
 
 
 pointsWithTriangles :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> MS.Map Polygon Point2D
@@ -128,14 +129,30 @@ computeEdges map1 map2 = concatMap getEdges pointsWithNormals
         getNormals point2D = (point2D, fromJust $ MS.lookup point2D map2)
         attachNormals = map (\(e,l) -> (getNormals e, map getNormals l))
         
-        getEdges ((p,n), []) = [(p, p + head n)]
+        getEdges ((p,n), []) = map (\normal-> (p, p+normal)) n
         getEdges ((p,n), (p1,n1):ps) = let ((point, newNormals),edge) = analizeNormals (p,n) (p1,n1)  in
             edge:(getEdges ((point, newNormals), ps))
 
         pointsWithNormals = attachNormals listMap1
 
+isInverse :: (Point2D) -> (Point2D) -> (Point2D) -> (Point2D) ->Bool
+isInverse (x1,y1) (nx1, ny1) (x2,y2) (nx2, ny2)
+    | x1 == x2 = nx1 == 0 && nx2 == 0 && ny1*ny2 < 0 
+    | y1 == y2 = ny1 == 0 && ny2 == 0 && nx1*nx2 < 0
+    | nx1 == 0 = False
+    | div (y2-y1) (x2-x1) == div ny1 nx1 = True
+    | otherwise = False
+    
+
 analizeNormals :: (Point2D, Normals) -> (Point2D, Normals) -> ((Point2D,Normals),(Point2D, Point2D))
 analizeNormals (p1, n1) (p2, n2) = ((p1, newNormals), (p1,p2))
     where
-        newNormals = foldr (\normal acc -> if isSelected normal n2 then acc else normal:acc) [] n1
-        isSelected normal normals =  any (==normal) normals
+        isThereTwin p1 normal p2 normals = any (isInverse p1 normal p2) normals
+        newNormals = foldr (\normal acc -> if isThereTwin p1 normal p2 n2 then acc else normal:acc) [] n1
+
+hypersurface :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> [(Point2D, Point2D)]
+hypersurface poly = nub $ computeEdges (convertMap neighbors pointTriangles) pointNormals
+    where 
+        pointNormals = verticesNormals poly
+        neighbors = neighborTriangles (map sort $ subdivision poly) MS.empty
+        pointTriangles = pointsWithTriangles poly
