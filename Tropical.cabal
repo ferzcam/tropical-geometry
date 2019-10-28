@@ -49,7 +49,7 @@ library
                 -freverse-errors
                 -ferror-spans
   build-depends:
-      base , containers, numeric-prelude, semiring-simple, algebra, sized, singletons, type-natural, lens, matrix
+      base , containers, numeric-prelude, semiring-simple, algebra, sized, singletons, type-natural, lens, matrix, gloss
   default-language: Haskell2010
 
 

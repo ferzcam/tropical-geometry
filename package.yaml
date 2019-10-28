@@ -30,6 +30,7 @@ library:
   - singletons
   - lens
   - matrix
+  - gloss
   source-dirs: library
 
 
