@@ -33,13 +33,13 @@ library
       Polynomial.Prelude
       Polynomial.Hypersurface
       Arithmetic.Numbers
-      Arithmetic.Symbolic
       Arithmetic.Matrix
       Geometry.ConvexHull2
       Geometry.ConvexHull3
       Geometry.Minkowski
       Geometry.Polytope
       Geometry.Polyhedral
+      Graphics.Drawings
       Core
   other-modules:
       Paths_Tropical

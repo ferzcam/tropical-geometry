@@ -34,7 +34,6 @@ import Arithmetic.Numbers
 import Geometry.ConvexHull2
 
 
-import qualified Arithmetic.Symbolic as EX (Expr(..), fromIntt)
 
 
 
@@ -139,12 +138,6 @@ instance (IsMonomialOrder ord, KnownNat n) => Num (Polynomial (Tropical Integer)
     (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith     (P.+) terms1 terms2
     (*) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.fromListWith (P.+) [ prodTerm t1 t2 | t1 <- MS.toList terms1, t2 <- MS.toList terms2]
     fromInteger x = Polynomial $ MS.singleton one (P.fromInteger x)
-    negate poly =  Polynomial $ MS.map P.negate $ terms poly
-
-instance (IsMonomialOrder ord, KnownNat n) => Num (Polynomial (Tropical (EX.Expr Integer)) ord n) where 
-    (+) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.unionWith     (P.+) terms1 terms2
-    (*) (Polynomial terms1) (Polynomial terms2) = Polynomial $ MS.fromListWith (P.+) [ prodTerm t1 t2 | t1 <- MS.toList terms1, t2 <- MS.toList terms2]
-    fromInteger x = Polynomial $ MS.singleton one (Tropical ((EX.fromIntt x)))
     negate poly =  Polynomial $ MS.map P.negate $ terms poly
     
 

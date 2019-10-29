@@ -13,6 +13,7 @@ import Geometry.ConvexHull2 (Point2D)
 fromPoint2D :: Point2D -> Point
 fromPoint2D (x,y) = (fromIntegral x, fromIntegral y)
 
+
 tupleToList :: (Point2D, Point2D) -> [Point]
 tupleToList (p1, p2) = [fromPoint2D p1, fromPoint2D p2]
 
