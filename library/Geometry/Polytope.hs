@@ -35,12 +35,16 @@ import Data.Maybe
 
 
 projectionToR2 :: ConvexHull -> [[Point2D]]
-projectionToR2 convexHull = projected
+projectionToR2 convexHull = let lengthConvexHull = length $ facets convexHull in
+                            if lengthConvexHull == 1 then 
+                                projected.triangles.facetsInPoints $ facets convexHull
+                            else 
+                                projected.triangles.facetsInPoints $ lowerFaces
     where
         lowerFaces = filter isLowerFace $ facets convexHull
-        facetsInPoints = map fromFacet lowerFaces
-        triangles = filter (\points -> length points == 3) facetsInPoints
-        projected = map (map project3To2) triangles
+        facetsInPoints = map fromFacet
+        triangles = filter (\points -> length points == 3)
+        projected = map (map project3To2) 
 
 
 delete' :: [Point2D] -> [[Point2D]] -> [[Point2D]]

@@ -120,7 +120,7 @@ dropColinearPoints (x:y:z:w)
 
 
 convexHull2 :: [Point2D] -> [Point2D]
-convexHull2 points = union lowerHull upperHull
+convexHull2 points = union lowerHull (reverse upperHull)
         where
             lst = sort $ nub points
             left = leftMost lst

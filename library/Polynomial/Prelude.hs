@@ -140,6 +140,14 @@ instance (IsMonomialOrder ord, KnownNat n) => Num (Polynomial (Tropical Integer)
     fromInteger x = Polynomial $ MS.singleton one (P.fromInteger x)
     negate poly =  Polynomial $ MS.map P.negate $ terms poly
     
+instance (IsMonomialOrder ord, KnownNat n) => Fractional (Polynomial (Tropical Integer) ord n) where
+    recip (Polynomial terms1) = Polynomial $ (MS.fromList . map negateTerm . (MS.toList)) terms1  -- Pseudo recip, only work with monic polynomials
+        where
+            negateTerm (mon, coef) = let 
+                                        listExps = DS.toList $ getMonomial mon
+                                        negated = map P.negate listExps
+                                    in (toMonomial negated, coef) 
+
 
 
 instance (Num k, IsMonomialOrder ord) => AD.Additive (Polynomial k ord n) where 
@@ -151,7 +159,6 @@ instance (AD.Additive (Polynomial k ord n), Semiring k, Num k) => LeftModule k (
 
 instance (AD.Additive (Polynomial k ord n), Semiring k, Num k) => RightModule k (Polynomial k ord n) where
     poly *. num = num !* poly
-
 
 
 -- | Aux functions

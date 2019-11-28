@@ -69,21 +69,31 @@ findPolygonNVertex mapPointMon points = ( [pp1,pp2,pp3], computeIntersection mon
 
 innerNormal :: Point2D -> Point2D -> Point2D -> Point2D
 innerNormal a@(x1,y1) b@(x2,y2) c@(x3,y3)
-    | dot > 0 = nab
-    | dot < 0 = (y1-y2,x2-x1)
+    | dot > 0 = simplify nab
+    | dot < 0 = simplify (y1-y2,x2-x1)
     where
         ab = (x2-x1,y2-y1)
         ac = (x3-x1,y3-y1)
         nab = (y2-y1,x1-x2) -- (y,-x)
         dot = (y2-y1)*(x3-x1) + (x1-x2)*(y3-y1)
+        simplify (0, q) = (0, div q (abs q))  
+        simplify (q, 0) = (div q (abs q), 0)
+        simplify (p, q) = let g = gcd p q in (div p g, div q g)  
+
+
+
 
 
 innerNormals :: Point2D -> Point2D -> Point2D -> Normals
-innerNormals a@(x1,y1) b@(x2,y2) c@(x3,y3) = [inner1, inner2, inner3]
+innerNormals a@(x1,y1) b@(x2,y2) c@(x3,y3) = map simplify [inner1, inner2, inner3] -- simplify is to normalize the normals
     where
         inner1 = innerNormal a b c
         inner2 = innerNormal b c a
         inner3 = innerNormal c a b
+        simplify (0, q) = (0, div q (abs q))  
+        simplify (q, 0) = (div q (abs q), 0)
+        simplify (p, q) = let g = gcd p q in (div p g, div q g)  
+
         
 
 verticesNormals :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> MS.Map Point2D Normals
@@ -97,11 +107,13 @@ verticesNormals poly = MS.fromList $ map (findFanNVertex polyMap) triangles
 
 neighborTriangles :: [Polygon] -> MS.Map Polygon [Polygon] -> MS.Map Polygon [Polygon]
 neighborTriangles [] mapContainer = mapContainer
-neighborTriangles (p:ps) mapContainer = MS.map (map sort) $ neighborTriangles ps (foldr (lookAndInsert p) mapContainer ps)
-    where
-        lookAndInsert p1 p2 acc = case length (p1\\p2) == (length p1) - 2 of
-                                    True ->  MS.insertWith (++) p2 [p1] $ MS.insertWith (++) p1 [p2] acc
-                                    False -> acc
+neighborTriangles (p:ps) mapContainer
+    | ps == [] && MS.null mapContainer = MS.fromList [(p, [])] -- The case that there is only one triangle. This will correspond to a tropical line
+    | otherwise = MS.map (map sort) $ neighborTriangles ps (foldr (lookAndInsert p) mapContainer ps)
+        where
+            lookAndInsert p1 p2 acc = case length (p1\\p2) == (length p1) - 2 of -- Checks is triangles share two vertices.
+                                        True ->  MS.insertWith (++) p2 [p1] $ MS.insertWith (++) p1 [p2] acc
+                                        False -> acc
 
 
 
