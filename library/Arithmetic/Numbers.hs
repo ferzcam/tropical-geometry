@@ -14,7 +14,7 @@ import Numeric.Algebra.Class as AC
 
 
 
---The set includes all the real numbers and the inifinity
+--The set includes all the real numbers and the infinity
 data Tropical a = Tropical {value :: a} | Inf 
   deriving (Eq)
 

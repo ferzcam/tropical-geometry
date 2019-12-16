@@ -17,6 +17,10 @@ import qualified Data.Sized.Builtin as DS
 
 type Point2D = (Int, Int)
 
+
+(>*<) :: Int -> (Int, Int) -> (Int, Int)
+(>*<) num (px, py) = (num*px, num*py)
+
 instance Num (Int, Int) where
     (x1,y1) + (x2,y2) = (x1+x2, y1+y2)
     negate (x,y) = (-x,-y)

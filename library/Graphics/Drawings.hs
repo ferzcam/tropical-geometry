@@ -25,3 +25,11 @@ makeFig poly = let
     display (InWindow "My Window" (400, 400) (10, 10)) white scaled
 
 
+makeFigs :: (IsMonomialOrder ord, Ord k, Integral k) => [Polynomial k ord n] -> IO()
+makeFigs polys = let
+                    colors = [red, green, blue, yellow, cyan, magenta, rose, violet, azure, aquamarine, chartreuse, orange]
+                    figures = map (Pictures . map (Line . tupleToList) . hypersurface) polys
+                    putColors = zipWith color colors figures
+                    scaled = scale 10.0 10.0 (Pictures putColors)
+                in
+    display (InWindow "Tropical curves" (400, 400) (10,10)) white scaled

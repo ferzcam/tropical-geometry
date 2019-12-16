@@ -141,7 +141,7 @@ computeEdges map1 map2 = concatMap getEdges pointsWithNormals
         getNormals point2D = (point2D, fromJust $ MS.lookup point2D map2)
         attachNormals = map (\(e,l) -> (getNormals e, map getNormals l))
         
-        getEdges ((p,n), []) = map (\normal-> (p, p+normal)) n
+        getEdges ((p,n), []) = map (\normal-> (p, p+ (10 >*< normal))) n
         getEdges ((p,n), (p1,n1):ps) = let ((point, newNormals),edge) = analizeNormals (p,n) (p1,n1)  in
             edge:(getEdges ((point, newNormals), ps))
 
