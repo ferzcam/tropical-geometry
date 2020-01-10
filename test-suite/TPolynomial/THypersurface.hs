@@ -62,12 +62,12 @@ testVerticesNormals = HU.testCase "Test for vertices and their normals" $ do
         (verticesNormals f4) @?= MS.fromList [((0,0), sw)]
         (verticesNormals f5) @?= MS.fromList [((0,4), sw)]
         
-testHypersurface :: TestTree
-testHypersurface = HU.testCase "Compute hypersurface of polynomials" $ do
-        (sort $ hypersurface f4) @?= sort [((0,0), (0,1)), ((0,0), (1,0)), ((0,0), (-1,-1))]
-        (sort $ hypersurface f5) @?= sort [((0,4), (0,5)), ((0,4), (1,4)), ((0,4), (-1, 3))]
+-- testHypersurface :: TestTree
+-- testHypersurface = HU.testCase "Compute hypersurface of polynomials" $ do
+--         (sort $ hypersurface f4) @?= sort [((0,0), (0,1)), ((0,0), (1,0)), ((0,0), (-1,-1))]
+--         (sort $ hypersurface f5) @?= sort [((0,4), (0,5)), ((0,4), (1,4)), ((0,4), (-1, 3))]
 
 
 testsHypersurface :: TestTree
-testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticesNormals, testHypersurface] 
+testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticesNormals] 
 

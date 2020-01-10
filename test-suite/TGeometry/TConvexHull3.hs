@@ -49,7 +49,7 @@ module TGeometry.TConvexHull3 (testsConvexHull3) where
         
     testsConvexHull3D :: TestTree
     testsConvexHull3D = HU.testCase "Compute convex hull 3D" $ do
-        fmap fromConvexHull (convexHull3 [(3,0,0), (2,1,0), (1,2,0), (0,3,0), (2,0,0), (1,1,0), (0,2,0), (1,0,0), (0,1,0), (0,0,0)]) @?= Just ( [(3,0,1),(0,0,1),(0,3,1)])
+        fmap fromConvexHull (convexHull3 [(3,0,0), (2,1,0), (1,2,0), (0,3,0), (2,0,0), (1,1,0), (0,2,0), (1,0,0), (0,1,0), (0,0,0)]) @?= Just ( sort [(3,0,1),(0,0,1),(0,3,1)])
         fmap fromConvexHull (convexHull3 [(3,0,1),(0,0,2),(0,3,1)]) @?= Just (sort [(3,0,1),(0,0,1),(0,3,1)])
         fmap fromConvexHull (convexHull3 [(1,2,3), (2,1,3), (5,3,1)]) @?= Just (sort [(1,2,1), (2,1,1), (5,3,1)])
         fmap fromConvexHull (convexHull3 [(0,0,0), (0,2,0), (2,0,0), (1,1,0)]) @?= Just (sort [(0,0,1), (0,2,1), (2,0,1)])
