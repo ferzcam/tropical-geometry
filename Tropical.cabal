@@ -13,7 +13,8 @@ category:	Algebra, Geometry, Tropical Geometry
 author:         Fernando Zhapa
 maintainer:     Fernando Zhapa
 license:        GPL-3
-license-file:	LICENSE
+license-file:	  LICENSE
+description:    This package includes Tropical algebra and geometry stuff such as tropical numbers, tropical matrices, and tropical polynomials. Also you can find here an algorithm to compute tropical hypersurfaces for polynomials in two variables.
 build-type:     Simple
 cabal-version:  >= 1.10
 extra-source-files:
