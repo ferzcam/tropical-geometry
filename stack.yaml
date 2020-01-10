@@ -18,7 +18,7 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver: lts-9.10
+resolver: lts-12.26
 #lts-11.17
 
 # User packages to be built.
@@ -45,13 +45,15 @@ extra-deps:
 - ghc-typelits-presburger-0.2.0.5
 - type-natural-0.8.2.0
 - hlint-test-0.1.0.0
-- algebra-4.3.1          
-- gloss-1.13.1.1   
-- gloss-rendering-1.13.1.1      
-- lens-4.17.1            
-- matrix-0.3.6.1         
-- numeric-prelude-0.4.3.1
-- containers-0.5.10.2
+- algebra-4.3.1        
+# - binary-0.8.7.0  
+# - text-1.2.4.0
+# # - gloss-1.13.1.1   
+# # - gloss-rendering-1.13.1.1      
+# # - lens-4.17.1            
+# # - matrix-0.3.6.1         
+# # - numeric-prelude-0.4.3.1
+# - containers-0.5.11.0
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
