@@ -1,0 +1,107 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: c75ea98b3c83e973806b0c1e2cf6523cc7b3c4f87d21ddaa95612a41ff0e9da5
+
+name:           Tropical
+version:        0.0.0
+homepage:       https://github.com/ferynando7/Tropical#readme
+bug-reports:    https://github.com/ferynando7/Tropical/issues
+author:         Fernando Zhapa
+maintainer:     Fernando Zhapa
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    CHANGELOG.md
+    package.yaml
+    README.md
+    stack.yaml
+
+source-repository head
+  type: git
+  location: https://github.com/ferynando7/Tropical
+
+library
+  exposed-modules:
+      Arithmetic.Matrix
+      Arithmetic.Numbers
+      Core
+      Geometry.ConvexHull2
+      Geometry.ConvexHull3
+      Geometry.Polyhedral
+      Geometry.Polytope
+      Graphics.Drawings
+      Polynomial.Hypersurface
+      Polynomial.Monomial
+      Polynomial.Prelude
+  other-modules:
+      Paths_Tropical
+  hs-source-dirs:
+      library
+  ghc-options: -Wall
+  build-depends:
+      algebra
+    , base
+    , containers
+    , gloss
+    , lens
+    , matrix
+    , numeric-prelude
+    , semiring-simple
+    , singletons
+  default-language: Haskell2010
+
+executable Tropical
+  main-is: Main.hs
+  other-modules:
+      Paths_Tropical
+  hs-source-dirs:
+      executable
+  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N
+  build-depends:
+      Tropical
+    , base
+  default-language: Haskell2010
+
+test-suite Tropical-test-suite
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      TArithmetic.TMatrix
+      TArithmetic.TNumbers
+      TGeometry.TConvexHull2
+      TGeometry.TConvexHull3
+      TGeometry.TPolyhedral
+      TGeometry.TPolytope
+      TPolynomial.THypersurface
+      TPolynomial.TMonomial
+      TPolynomial.TPrelude
+      Paths_Tropical
+  hs-source-dirs:
+      test-suite
+  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N
+  build-depends:
+      Tropical
+    , base
+    , tasty
+    , tasty-hspec
+    , tasty-hunit
+  default-language: Haskell2010
+
+benchmark Tropical-benchmarks
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      Paths_Tropical
+  hs-source-dirs:
+      benchmark
+  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N
+  build-depends:
+      Tropical
+    , base
+    , criterion
+  default-language: Haskell2010

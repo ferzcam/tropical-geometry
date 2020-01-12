@@ -1,10 +1,10 @@
 # This YAML file describes your package. Stack will automatically generate a
 # Cabal file when you run `stack build`. See the hpack website for help with
 # this file: <https://github.com/sol/hpack>.
-name: Tropical
+name: tropical-geometry
 version: '0.0.0'
-github: "ferynando7/Tropical"
-license: MIT
+github: "ferynando7/tropical-geometry"
+license: GPL-3
 author: "Fernando Zhapa"
 maintainer: "Fernando Zhapa"
 # synopsis: A new Haskeleton package.
@@ -35,7 +35,7 @@ library:
 
 
 executables:
-  Tropical:
+  tropical-geometry:
     source-dirs: executable
     main: Main.hs
     dependencies:
@@ -47,7 +47,7 @@ executables:
     - -with-rtsopts=-N
 
 benchmarks:
-  Tropical-benchmarks:
+  tropical-geometry-benchmarks:
     source-dirs: benchmark
     main: Main.hs
     dependencies:
@@ -60,7 +60,7 @@ benchmarks:
     - -with-rtsopts=-N
 
 tests:
-  Tropical-test-suite:
+  tropical-geometry-test-suite:
     source-dirs: test-suite
     main: Main.hs
     dependencies:
