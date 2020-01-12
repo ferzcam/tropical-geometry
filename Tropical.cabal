@@ -32,7 +32,6 @@ source-repository head
 
 library
   exposed-modules:
-      Example
       Polynomial.Monomial
       Polynomial.Prelude
       Polynomial.Hypersurface
@@ -40,7 +39,6 @@ library
       Arithmetic.Matrix
       Geometry.ConvexHull2
       Geometry.ConvexHull3
-      Geometry.Minkowski
       Geometry.Polytope
       Geometry.Polyhedral
       Graphics.Drawings
@@ -94,7 +92,6 @@ test-suite Tropical-test-suite
       TGeometry.TConvexHull3
       TGeometry.TPolytope
       TGeometry.TPolyhedral
-      TGeometry.TMinkowski
       TPolynomial.THypersurface
 
   hs-source-dirs:

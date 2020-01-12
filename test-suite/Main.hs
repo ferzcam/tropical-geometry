@@ -12,7 +12,6 @@ import TArithmetic.TNumbers
 import TArithmetic.TMatrix
 import TGeometry.TConvexHull2
 import TGeometry.TConvexHull3
-import TGeometry.TMinkowski
 import TGeometry.TPolyhedral
 import TGeometry.TPolytope
 import TPolynomial.THypersurface
@@ -31,7 +30,6 @@ allTests = testGroup "Tasty tests" [
             testsPrelude, 
             testsConvexHull2, 
             testsConvexHull3, 
-            testsMinkowski, 
             testsPolyhedral, 
             testsPolytope,
             testsHypersurface]
