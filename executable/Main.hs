@@ -6,7 +6,6 @@
 
 module Main where
 
-import qualified Example
 import Core
 
 
@@ -25,4 +24,4 @@ f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
 res = makeFigs [f1,f2]
 
 main :: IO ()
-main = Example.main
+main = putStrLn "Hello worls"
