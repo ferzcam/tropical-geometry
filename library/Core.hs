@@ -6,7 +6,6 @@ module Core (
     module Arithmetic.Matrix,
     module Geometry.ConvexHull2,
     module Geometry.ConvexHull3,
-    module Geometry.Minkowski,
     module Graphics.Drawings
     
     )
@@ -19,7 +18,6 @@ where
     import Polynomial.Monomial
     import Geometry.ConvexHull2
     import Geometry.ConvexHull3
-    import Geometry.Minkowski
     import Polynomial.Hypersurface
     import Graphics.Drawings
 

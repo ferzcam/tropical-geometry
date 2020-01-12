@@ -21,19 +21,6 @@ import Data.Maybe
 
 -- | Computes the projection R^3 -> R^2 of a convexhull. The input is a convexhull in R^3 and the output will regular subdivision of the convexhull in R^2
 
--- projectionToR2 :: ConvexHull -> [[Point2D]]
--- projectionToR2 convexHull
---     | length notColinear == 1 = notColinear 
---     | otherwise = internal
---     where
---         facetsInPoints = map fromFacet $ facets convexHull
---         triangles = filter (\points -> length points == 3) facetsInPoints
---         projected = map (map project3To2) triangles
---         border = convexHull2 $ concat projected
---         notColinear = filter (\facet -> (not.isColinearFromList) facet) $ projected
---         internal = delete' border notColinear 
-
-
 projectionToR2 :: ConvexHull -> [[Point2D]]
 projectionToR2 convexHull = let lengthConvexHull = length $ facets convexHull in
                             if lengthConvexHull == 1 then 
@@ -57,9 +44,9 @@ delete' point (p:ps)
 subdivision :: (Integral k) => Polynomial k ord n -> [[Point2D]]
 subdivision poly = (projectionToR2.fromJust.convexHull3) points
     where
-        terms = MS.toList $ (getTerms poly)
+        terms = MS.toList $ getTerms poly
         monExps = DS.toList . getMonomial
-        toPoints = \(mon,coef) -> let [a,b] = monExps mon in (a, b, fromIntegral coef)
+        toPoints (mon, coef) = let [a,b] = monExps mon in (a, b, fromIntegral coef)
         points = map toPoints terms
 
 

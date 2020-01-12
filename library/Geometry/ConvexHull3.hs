@@ -38,7 +38,7 @@ where
 import Data.List
 import Data.Maybe
 import qualified Data.Map.Strict as MS
-import Data.Matrix hiding (trace)
+import Data.Matrix
 import Data.Function
 
 import Geometry.ConvexHull2
@@ -212,10 +212,6 @@ fromVertices points@(p:ps) = Facet edges
         edges = getEdges $ map Vertex (points++[p])
         getEdges [a] = []
         getEdges (x:y:z) = Edge (x,y):getEdges (y:z)
--- fromVertices [a,b,c] = Facet [Edge (va,vb), Edge (vb,vc), Edge (vc,va)]
---     where
---         [va,vb,vc] = map (Vertex) [a,b,c]
----------------------------------------------------
 
 fromConvexHull :: ConvexHull -> [Point3D]
 fromConvexHull convexHull = sort.nub $ concatMap fromFacet (facets convexHull)     
@@ -232,19 +228,12 @@ mergePoints p1@(p:ps) p2@(x:y:xs)
                                 else mergePoints (ps++[p]) p2
     | otherwise = mergePoints p1 ((y:xs) ++ [x])
 
--- [l1,l2] ++
 
 checkColinearity :: [Point3D] -> [Point3D]
 checkColinearity points@(p1:p2:p3:_) = points \\ midPoints
     where
         midPoints = map (\(_,p,_) -> p) nicePoints
         nicePoints = [(p1,p2,p3) | p1 <- points, p2 <- points, p3 <- points, isColinearIn3D [p1,p3] p2, isBetween3D [p1,p3] p2, p1 /= p2, p2/=p3, p1/=p3]
-
--- checkColinearity' :: [Point3D] -> [Point3D]
--- checkColinearity' [a,b] = []
--- checkColinearity' points@(p1:p2:p3:p)
---     | isColinearIn3D [p1,p3] p2 = checkColinearity' (p1:p3:p)
---     | otherwise = p1:checkColinearity' (p2:p3:p)
 
 isBetween3D :: [Point3D] -> Point3D -> Bool
 isBetween3D [p1,p3] p2
@@ -297,17 +286,7 @@ isColinearIn3D [a,b] c =    let
                                 Just ls -> all (== head ls) (tail ls) 
 
 isColinearIn3DFromList :: [Point3D] ->  Bool -- ^ Not able to use determinant algorithm because the matrix is not square
-isColinearIn3DFromList [a,b,c] =    let 
-                            distanceXYZ (a,b,c) (d,e,f) = [a-d, b-e, c-f]
-                            ab = map toRational $ distanceXYZ a b
-                            ac = map toRational $ distanceXYZ a c
-                            ratio = checkRatio ab ac
-                            in case ratio of
-                                Nothing -> False
-                                Just ls -> all (== head ls) (tail ls) 
-                                
-
-
+isColinearIn3DFromList [a,b,c] =  isColinearIn3D [a,b] c
 
 checkRatio :: [Rational] -> [Rational] -> Maybe [Rational]
 checkRatio l1 l2

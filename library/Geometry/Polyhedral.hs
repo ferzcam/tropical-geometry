@@ -14,7 +14,7 @@ adjacentFacets p c = sortFacets p $ filter (isPointInFacet p) (facets c)
 -- | For each vertex of a polyhedron, the facets must be ordered clockwise since we need there normals to point inside the polyhedron
 
 isPointInFacet :: Point3D -> Facet -> Bool
-isPointInFacet p f = p `elem` (fromFacet f)
+isPointInFacet p f = p `elem` fromFacet f
 
 
 -- | Checks if two facets are adjacent with respect to a vertex in counterclockwise orientation.

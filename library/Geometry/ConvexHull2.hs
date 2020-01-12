@@ -7,8 +7,7 @@ import Polynomial.Monomial
 
 
 import Data.List
-import Debug.Trace
-import Data.Matrix hiding (trace)
+import Data.Matrix
 import qualified Data.Map.Strict as MS
 import qualified Data.Sized.Builtin as DS
 
@@ -24,19 +23,10 @@ type Point2D = (Int, Int)
 instance Num (Int, Int) where
     (x1,y1) + (x2,y2) = (x1+x2, y1+y2)
     negate (x,y) = (-x,-y)
--- above :: Point2D -> Point2D -> Bool
--- above (a,b) (c,d) 
---     | a /= c = False
---     | otherwise = b > d 
-
--- below :: Point2D -> Point2D -> Bool
--- below (a,b) (c,d) 
---     | a /= c = False
---     | otherwise = b < d 
-    
+   
 
 lift2To3 :: Point2D -> (Int, Int, Int)
-lift2To3 = \(a,b) -> (a,b,1)
+lift2To3 (a,b) = (a,b,1)
 
 
 isColinear :: Point2D -> Point2D -> Point2D -> Bool
@@ -51,13 +41,13 @@ isColinearFromList [a,b,c] = isColinear a b c
 
 
 project3To2 :: (Int, Int, Int) -> Point2D
-project3To2 = \(a,b,_) -> (a,b)
+project3To2 (a,b,_) = (a,b)
 
 
 determinant :: (Int, Int, Int) -> (Int, Int, Int) -> (Int, Int, Int) -> Rational
 determinant p1 p2 p3 = detLU $ fromLists $ map toList [p1,p2,p3]
     where
-        toList = (\(a,b,c) -> map toRational [a,b,c])
+        toList (a,b,c) = map toRational [a,b,c]
 
 semiHullUp :: [Point2D] -> Maybe Point2D -> [Point2D]
 semiHullUp [a] _= [a]
@@ -82,15 +72,6 @@ semiHullDown points@(x:y:z:w) (Just prev) = if determinant x3 y3 z3 > 0 then x:s
                             else semiHullDown (prev:x:z:w) Nothing
     where
         (x3:y3:z3:w3) = map lift2To3 points
-
-
--- semiHullDown :: [Point2D] -> [Point2D]
--- semiHullDown [a] = [a]
--- semiHullDown [a,b] = [a,b]
--- semiHullDown points@(x:y:z:w) = if determinant y3 x3 z3 < 0 then x:semiHullDown (y:z:w)
---                             else semiHullDown (x:z:w)
---     where
---         (x3:y3:z3:w3) = map lift2To3 points
 
 
 leftMost :: [Point2D] -> Point2D
@@ -124,7 +105,7 @@ dropColinearPoints (x:y:z:w)
 
 
 convexHull2 :: [Point2D] -> [Point2D]
-convexHull2 points = union lowerHull (reverse upperHull)
+convexHull2 points = lowerHull `union` reverse upperHull
         where
             lst = sort $ nub points
             left = leftMost lst
