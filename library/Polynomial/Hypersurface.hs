@@ -18,19 +18,17 @@ import Geometry.Polytope
 -- | The tropical hypersurface of a polynomial f is the n-1 skeleton of the Newton polyotpe of f with a regular subdivision induced by a vector w in R^n. The hypersurface will be stored as a set of points.
 
 
--- | This function produces a key-value map of the terms of a polynomial with their corresponding coordinates for the Newton polytope
-
-
 type Polygon = [Point2D]
 type Normals = [Point2D]
 
+-- | This function produces a key-value map of the terms of a polynomial with their corresponding coordinates for the Newton polytope
 mapTermPoint :: (IsMonomialOrder ord, Ord k, Integral k) 
     => Polynomial k ord n -> MS.Map Point2D (Monomial ord n, k)
-mapTermPoint poly = MS.fromList $ zipWith (,) points terms 
+mapTermPoint poly = MS.fromList $ zip points terms 
     where
-        terms = MS.toList $ (getTerms poly)
+        terms = MS.toList $ getTerms poly
         monExps = DS.toList . getMonomial
-        toPoints = \(mon,coef) -> let [a,b] = monExps mon in (a, b)
+        toPoints (mon,coef) = let [a,b] = monExps mon in (a, b)
         points = map toPoints terms
 
 
@@ -108,12 +106,12 @@ verticesNormals poly = MS.fromList $ map (findFanNVertex polyMap) triangles
 neighborTriangles :: [Polygon] -> MS.Map Polygon [Polygon] -> MS.Map Polygon [Polygon]
 neighborTriangles [] mapContainer = mapContainer
 neighborTriangles (p:ps) mapContainer
-    | ps == [] && MS.null mapContainer = MS.fromList [(p, [])] -- The case that there is only one triangle. This will correspond to a tropical line
+    | null ps && MS.null mapContainer = MS.fromList [(p, [])] -- The case that there is only one triangle. This will correspond to a tropical line
     | otherwise = MS.map (map sort) $ neighborTriangles ps (foldr (lookAndInsert p) mapContainer ps)
         where
-            lookAndInsert p1 p2 acc = case length (p1\\p2) == (length p1) - 2 of -- Checks is triangles share two vertices.
-                                        True ->  MS.insertWith (++) p2 [p1] $ MS.insertWith (++) p1 [p2] acc
-                                        False -> acc
+            lookAndInsert p1 p2 acc =   if length (p1\\p2) == (length p1) - 2 then -- Checks is triangles share two vertices.
+                                            MS.insertWith (++) p2 [p1] $ MS.insertWith (++) p1 [p2] acc
+                                        else acc
 
 
 
@@ -147,7 +145,7 @@ computeEdges map1 map2 = concatMap getEdges pointsWithNormals
 
         pointsWithNormals = attachNormals listMap1
 
-isInverse :: (Point2D) -> (Point2D) -> (Point2D) -> (Point2D) ->Bool
+isInverse :: Point2D -> Point2D -> Point2D -> Point2D ->Bool
 isInverse (x1,y1) (nx1, ny1) (x2,y2) (nx2, ny2)
     | x1 == x2 = nx1 == 0 && nx2 == 0 && ny1*ny2 < 0 
     | y1 == y2 = ny1 == 0 && ny2 == 0 && nx1*nx2 < 0

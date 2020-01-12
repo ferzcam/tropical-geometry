@@ -21,7 +21,7 @@ module Polynomial.Monomial
 where
 
 import Data.Function
-import Numeric.Algebra hiding (negate,(+),(>))
+import Numeric.Algebra hiding ((+),(>))
 import Prelude hiding (lex)
 import qualified Data.Sized as DS
 import qualified Data.Sequence as Seq
