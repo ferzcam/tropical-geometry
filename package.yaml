@@ -2,7 +2,7 @@
 # Cabal file when you run `stack build`. See the hpack website for help with
 # this file: <https://github.com/sol/hpack>.
 name: tropical-geometry
-version: '0.0.0'
+version: '0.0.0.1'
 github: "ferynando7/tropical-geometry"
 license: GPL-3
 author: "Fernando Zhapa"

@@ -5,7 +5,7 @@
 -- hash: 53dd4a7acd8ade173a39eac25004715c97d5308eda32dd85c431115e6b383c27
 
 name:           tropical-geometry
-version:        0.0.0
+version:        0.0.0.1
 synopsis:	      A Tropical Geometry package for Haskell
 homepage:       https://github.com/ferynando7/tropical-geometry#readme
 bug-reports:    https://github.com/ferynando7/tropical-geometry/issues
@@ -51,17 +51,17 @@ library
                 -freverse-errors
                 -ferror-spans
   build-depends:
-      algebra,
-      base,
-      containers,
-      gloss,
-      lens,
-      matrix,
-      numeric-prelude,
-      semiring-simple,
-      singletons,
-      sized,
-      type-natural
+    algebra >=4.3.1 && <4.4,
+    base >=4.11.1.0 && <4.12,
+    containers >=0.5.11.0 && <0.6,
+    gloss >=1.12.0.0 && <1.13,
+    lens >=4.16.1 && <4.17,
+    matrix >=0.3.6.1 && <0.4,
+    numeric-prelude >=0.4.3.1 && <0.5,
+    semiring-simple >=1.0.0.1 && <1.1,
+    singletons >=2.4.1 && <2.5,
+    sized >=0.3.0.0 && <0.4,
+    type-natural >=0.8.2.0 && <0.9
   default-language: Haskell2010
 
 
