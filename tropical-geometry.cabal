@@ -53,6 +53,7 @@ library
   build-depends:
     algebra >=4.3.1 && <4.4,
     base >=4.11.1.0 && <4.12,
+    criterion,
     containers >=0.5.11.0 && <0.6,
     gloss >=1.12.0.0 && <1.13,
     lens >=4.16.1 && <4.17,
@@ -76,7 +77,8 @@ executable tropical-geometry
   ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
   build-depends:
     tropical-geometry,
-    base
+    base,
+    criterion
   default-language: Haskell2010
 
 test-suite tropical-geometry-test-suite
@@ -118,5 +120,5 @@ benchmark tropical-geometry-benchmarks
   build-depends:
       tropical-geometry
     , base
-    , criterion
+    , criterion -any
   default-language: Haskell2010
