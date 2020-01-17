@@ -40,6 +40,7 @@ import Data.Maybe
 import qualified Data.Map.Strict as MS
 import Data.Matrix
 import Data.Function
+import qualified Debug.Trace as TR
 
 import Geometry.ConvexHull2
 
@@ -97,6 +98,44 @@ instance Num (Int, Int, Int) where
     (x1,y1,z1) + (x2,y2,z2) = (x1+x2, y1+y2, z1+z2)
     negate (x,y,z) = (-x,-y,-z)
 
+
+minX :: [Point3D] -> (Point3D, [Point3D])
+minX points = let point = foldr1 (\(x,y,z) (ax,ay,az) -> if x < ax then (x,y,z) else (ax,ay,az)) points
+                in (point, points \\ [point])
+
+maxX :: [Point3D] -> (Point3D, [Point3D])
+maxX points = let point = foldr1 (\(x,y,z) (ax,ay,az) -> if x > ax then (x,y,z) else (ax,ay,az)) points
+                in (point, points \\ [point])
+
+minY :: [Point3D] -> (Point3D, [Point3D])
+minY points = let point = foldr1 (\(x,y,z) (ax,ay,az) -> if y < ay then (x,y,z) else (ax,ay,az)) points
+                in (point, points \\ [point])
+
+maxY :: [Point3D] -> (Point3D, [Point3D])
+maxY points = let point = foldr1 (\(x,y,z) (ax,ay,az) -> if y > ay then (x,y,z) else (ax,ay,az)) points
+                in (point, points \\ [point])
+
+minZ :: [Point3D] -> (Point3D, [Point3D])
+minZ points = let point = foldr1 (\(x,y,z) (ax,ay,az) -> if z < az then (x,y,z) else (ax,ay,az)) points
+                in (point, points \\ [point])
+
+maxZ :: [Point3D] -> (Point3D, [Point3D])
+maxZ points = let point = foldr1 (\(x,y,z) (ax,ay,az) -> if z > az then (x,y,z) else (ax,ay,az)) points
+                in (point, points \\ [point])
+
+
+considerExtremes :: [Point3D] -> [Point3D]
+considerExtremes points
+    | length points < 4 = points
+    | otherwise = let   (xmin, tail1) = minX points
+                        (xmax, tail2) = maxX tail1
+                        (ymin, tail3) = minY tail2
+                        (ymax, tail4) = maxY tail3
+                        (zmin, tail5)=  minZ tail4
+                        (zmax, tail6) = maxZ tail5
+                        
+
+                    in [xmin,xmax,ymin,ymax,zmin,zmax] ++ tail6
 -- | Assume every point is different
 convexHull3 :: [Point3D] -> Maybe ConvexHull
 convexHull3 points
@@ -107,8 +146,9 @@ convexHull3 points
             convexHull =  addPoints initialCH afterTetrahedron conflictGraph
             conflictGraph = startConflictGraph initialCH afterTetrahedron
             initialCH = (initializeCH . fromJust) tetraHedron
-            tetraHedron = computeTetrahedron points
-            afterTetrahedron = points \\ fromJust tetraHedron
+            sortedPoints = considerExtremes points
+            tetraHedron = computeTetrahedron sortedPoints
+            afterTetrahedron = sortedPoints \\ fromJust tetraHedron
 
 
 

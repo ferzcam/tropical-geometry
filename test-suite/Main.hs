@@ -34,4 +34,3 @@ allTests = testGroup "Tasty tests" [
             testsPolytope,
             testsHypersurface]
     ]
-
