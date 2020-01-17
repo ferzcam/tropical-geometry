@@ -19,6 +19,7 @@ f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
 f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
 f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
 
+ 
 main :: IO ()
 main = defaultMain [
         bgroup "Vertices and normals"
@@ -27,5 +28,6 @@ main = defaultMain [
         ,   bench "f2" $ whnf verticesNormals f2
         ,   bench "f3" $ whnf verticesNormals f3
         ,   bench "f4" $ whnf verticesNormals f4
+        ,   bench "f5" $ whnf verticesNormals f5
         ]
     ] 

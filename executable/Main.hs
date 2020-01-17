@@ -30,6 +30,7 @@ main = defaultMain [
         ,   bench "f2" $ whnf verticesNormals f2
         ,   bench "f3" $ whnf verticesNormals f3
         ,   bench "f4" $ whnf verticesNormals f4
+        ,   bench "f5" $ whnf verticesNormals f5
         ]
     ] 
 
