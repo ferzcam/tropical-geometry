@@ -67,14 +67,14 @@ library
 
 
 
-
+-- -threaded -with-rtsopts=-N
 executable tropical-geometry
   main-is: Main.hs
   other-modules:
       Paths_tropical_geometry
   hs-source-dirs:
       executable
-  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
+  ghc-options: -Wall -rtsopts  -freverse-errors
   build-depends:
     tropical-geometry,
     base,
