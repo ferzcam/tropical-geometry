@@ -39,9 +39,12 @@ library
       Arithmetic.Matrix
       Geometry.ConvexHull2
       Geometry.ConvexHull3
+      Geometry.Facet
+      Geometry.Vertex
       Geometry.Polytope
       Geometry.Polyhedral
       Graphics.Drawings
+      Util
       Core
   other-modules:
       Paths_tropical_geometry
@@ -62,7 +65,8 @@ library
     semiring-simple >=1.0.0.1 && <1.1,
     singletons >=2.4.1 && <2.5,
     sized >=0.3.0.0 && <0.4,
-    type-natural >=0.8.2.0 && <0.9
+    type-natural >=0.8.2.0 && <0.9,
+    hmatrix-glpk
   default-language: Haskell2010
 
 
@@ -107,6 +111,7 @@ test-suite tropical-geometry-test-suite
     , tasty-hunit
     , containers
     , hlint-test
+    , matrix
   default-language: Haskell2010
 
 benchmark tropical-geometry-benchmarks

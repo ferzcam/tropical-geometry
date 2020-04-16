@@ -52,15 +52,14 @@ module TGeometry.TConvexHull3 (testsConvexHull3) where
     list1 = take 23 list
     testsConvexHull3D :: TestTree
     testsConvexHull3D = HU.testCase "Compute convex hull 3D" $ do
-       -- fmap fromConvexHull (convexHull3 [(3,0,0), (2,1,0), (1,2,0), (0,3,0), (2,0,0), (1,1,0), (0,2,0), (1,0,0), (0,1,0), (0,0,0)]) @?= Just ( sort [(3,0,1),(0,0,1),(0,3,1)])
-       -- fmap fromConvexHull (convexHull3 [(3,0,1),(0,0,2),(0,3,1)]) @?= Just (sort [(3,0,1),(0,0,1),(0,3,1)])
-       -- fmap fromConvexHull (convexHull3 [(1,2,3), (2,1,3), (5,3,1)]) @?= Just (sort [(1,2,1), (2,1,1), (5,3,1)])
-       -- fmap fromConvexHull (convexHull3 [(0,0,0), (0,2,0), (2,0,0), (1,1,0)]) @?= Just (sort [(0,0,1), (0,2,1), (2,0,1)])
-       -- fmap fromConvexHull (convexHull3 [(0,0,0), (0,2,0), (2,0,0), (1,1,1)]) @?= Just (sort [(0,0,0), (0,2,0), (2,0,0), (1,1,1)])
-       -- fmap fromConvexHull (convexHull3 [(0,0,0),(3,3,3),(0,4,0),(4,0,0),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)]) @?= Just (sort [(0,0,0),(0,4,0),(4,0,0),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)])
-        fmap fromConvexHull (convexHull3 [(1,1,2),(0,0,0),(3,3,3),(0,4,0),(4,0,0),(2,1,3),(2,2,2),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)]) @?= Just (sort [(0,0,0),(0,4,0),(4,0,0),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)])
-        fmap fromConvexHull (convexHull3 [(1,1,1),(0,0,0),(3,3,3),(0,4,0),(4,0,0),(2,0,2),(2,2,2),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)]) @?= Just (sort [(0,0,0),(0,4,0),(4,0,0),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)])
-        fmap fromConvexHull (convexHull3 list1 ) @?= Just (sort [(0,0,1), (0,2,1), (2,0,1)])
+        fmap fromConvexHull (convexHull3 [(3,0,0), (2,1,0), (1,2,0), (0,3,0), (2,0,0), (1,1,0), (0,2,0), (1,0,0), (0,1,0), (0,0,0)]) @?= Just ( sort [(3,0,1),(0,0,1),(0,3,1)])
+        -- fmap fromConvexHull (convexHull3 [(3,0,1),(0,0,2),(0,3,1)]) @?= Just (sort [(3,0,1),(0,0,1),(0,3,1)])
+        -- fmap fromConvexHull (convexHull3 [(1,2,3), (2,1,3), (5,3,1)]) @?= Just (sort [(1,2,1), (2,1,1), (5,3,1)])
+        -- fmap fromConvexHull (convexHull3 [(0,0,0), (0,2,0), (2,0,0), (1,1,0)]) @?= Just (sort [(0,0,1), (0,2,1), (2,0,1)])
+        -- fmap fromConvexHull (convexHull3 [(0,0,0), (0,2,0), (2,0,0), (1,1,1)]) @?= Just (sort [(0,0,0), (0,2,0), (2,0,0), (1,1,1)])
+        -- fmap fromConvexHull (convexHull3 [(0,0,0),(3,3,3),(0,4,0),(4,0,0),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)]) @?= Just (sort [(0,0,0),(0,4,0),(4,0,0),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)])
+        -- fmap fromConvexHull (convexHull3 [(1,1,2),(0,0,0),(3,3,3),(0,4,0),(4,0,0),(2,1,3),(2,2,2),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)]) @?= Just (sort [(0,0,0),(0,4,0),(4,0,0),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)])
+        -- fmap fromConvexHull (convexHull3 [(1,1,1),(0,0,0),(3,3,3),(0,4,0),(4,0,0),(2,0,2),(2,2,2),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)]) @?= Just (sort [(0,0,0),(0,4,0),(4,0,0),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)])
 
     testsConvexHull3 :: TestTree
     testsConvexHull3 = testGroup "Test for convex hull in 3D" [testComputeSegment, testComputeTriangle, testComputeTetrahedron, testIsBetween3D, testsMergePoints, testsConvexHull3D]

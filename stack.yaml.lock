@@ -46,6 +46,13 @@ packages:
       sha256: eab9c8585cb156b168928ff24fd9139d820e45af564c54dfc1f29303d7ded88b
   original:
     hackage: algebra-4.3.1
+- completed:
+    hackage: hmatrix-glpk-0.19.0.0@sha256:cf46c54bc3878bd207674ad88c3389083809f4df862df68ee64c6708dc517a52,1683
+    pantry-tree:
+      size: 660
+      sha256: 8e781b7b10d93e1def514c48da663b1b046ed5c23857938bad1229e9f4a589c1
+  original:
+    hackage: hmatrix-glpk-0.19.0.0
 snapshots:
 - completed:
     size: 509471

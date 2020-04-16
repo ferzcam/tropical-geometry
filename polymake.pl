@@ -6,6 +6,8 @@ sub s_f1{
     my $f1 = toTropicalPolynomial("min(2x+1, x+y, 2y+1, x+z, y+z, 2z+2)", qw(z x y));
     my $H1 = new Hypersurface<Min>(POLYNOMIAL=>$f1);
     print $H1->VERTICES . "\n". "\n";
+    print $H1 -> MAXIMAL_POLYTOPES. "\n". "\n";
+    print $H1 -> WEIGHTS
 }
 
 sub s_f2{
@@ -55,10 +57,10 @@ sub s_f8{
 
 
 s_f1();
-s_f2();
-s_f3();
-s_f4();
-s_f5();
-s_f6();
-s_f7();
-s_f8();
+# s_f2();
+# s_f3();
+# s_f4();
+# s_f5();
+# s_f6();
+# s_f7();
+# s_f8();
