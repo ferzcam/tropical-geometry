@@ -53,6 +53,13 @@ packages:
       sha256: 8e781b7b10d93e1def514c48da663b1b046ed5c23857938bad1229e9f4a589c1
   original:
     hackage: hmatrix-glpk-0.19.0.0
+- completed:
+    hackage: linear-1.21@sha256:41c6dd6caeccde2507088a5cf5d9278a875d2d96f3f39afb080b04a0a44d0b10,4102
+    pantry-tree:
+      size: 2211
+      sha256: a82fa87ae058aeb32cc8f44e896f776699518fbe29bdd7a829098c8e2db15950
+  original:
+    hackage: linear-1.21
 snapshots:
 - completed:
     size: 509471

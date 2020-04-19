@@ -1,4 +1,4 @@
-
+{-# LANGUAGE FlexibleInstances #-}
 
 module Util where
 
@@ -22,3 +22,13 @@ dot l1 = (foldr1 (+)) . (safeZipWith (*) l1)
 
 ($+$) :: (Num a) => [a] -> [a] -> [a]
 ($+$) = safeZipWith (+)
+
+
+
+instance Num [Rational] where 
+    (+) = ($+$) 
+    --(*)  
+--    abs = map abs
+--    signum = map signum, fromInteger, (negate | (-))
+
+instance Num Bool

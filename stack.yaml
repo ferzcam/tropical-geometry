@@ -46,7 +46,8 @@ extra-deps:
 - type-natural-0.8.2.0
 - hlint-test-0.1.0.0
 - algebra-4.3.1       
-- hmatrix-glpk-0.19.0.0 
+- hmatrix-glpk-0.19.0.0
+- linear-1.21
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
