@@ -31,8 +31,9 @@ testAdjacencyMatrix =   HU.testCase "Tests for generating adjacency matrix for n
     (toLists $ fst (generateMatrices set1)) @?= matrix1
     (toLists $ fst (generateMatrices set2)) @?= matrix2
     (sort.snd) (generateMatrices set1) @?= sort [[1,2],[2,3],[3,4],[4,5],[1,5]]
-   -- snd (generateMatrices set2) @?= matrix2
-    
+   
+
+
 testsFacet :: TestTree
 testsFacet = testGroup "Test for facets" [testAdjacencyMatrix]
 
