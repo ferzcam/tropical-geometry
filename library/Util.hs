@@ -88,12 +88,21 @@ forwardSub lower bV = reverseV $ backwardSub (reverseM lower) (reverseV bV)
 --         reverseV = V.fromList . reverse .V.toList
 
 
-solveLS :: (Fractional a, Ord a, Show a) => Matrix a -> V.Vector a -> Maybe (V.Vector a)
-solveLS matrix vector = Just $ backwardSub u y
-    where
-        Just (u,l,_,_) = luDecomp matrix
-        y = forwardSub l vector
+-- solveLS :: (Fractional a, Ord a, Show a) => Matrix a -> V.Vector a -> Maybe (V.Vector a)
+-- solveLS matrix vector =  Just $ backwardSub u y
+--     where
+--         Just (u,l,_,_) = luDecomp matrix
+--         y = forwardSub l vector
 
+
+solveLS :: (Fractional a, Ord a, Show a) => Matrix a -> V.Vector a -> Maybe (V.Vector a)
+solveLS matrix vector = case luDecomp matrix of 
+                            Nothing -> Nothing
+                            Just (u,l,_,_) ->  let y = forwardSub l vector 
+                                                in Just $ backwardSub u y
+    --where
+       -- Just (u,l,_,_) = luDecomp matrix
+      --  y = forwardSub l vector
 
 
 instance Num [Rational]

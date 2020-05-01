@@ -24,5 +24,7 @@ b = [1,1,1] :: [Rational]
 hyperplanes = facetEnumeration verticess
 
 
+vertices2 = [[0,0,0],[0,0,1],[0,1,0],[1,0,0],[0,1,1],[1,0,1],[1,1,0],[1,1,1]] :: [Vertex]
+
 main :: IO ()
 main = putStrLn "Welcome to the tropical-geometry package"

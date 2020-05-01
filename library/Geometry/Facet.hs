@@ -4,6 +4,8 @@ module Geometry.Facet
 where
 
 import Util
+import Geometry.Vertex
+
 import Data.Matrix hiding (trace)
 import Data.List (sort, delete, nub, isSubsequenceOf)
 import qualified Data.Map.Strict as MS
@@ -25,6 +27,9 @@ type AdjacencyMatrix = Matrix Bool
 type Facet = [Int]
 type Hyperplane = [Rational]
 
+
+remove :: Eq a => a -> [a] -> [a]
+remove elem = (delete elem).nub
 
 centroid :: [Vertex] -> Vertex
 centroid set = let n = fromIntegral $ length set 
@@ -52,8 +57,9 @@ hyper z = map (/(dot z z)) z
 
 areNeighbors :: Vertex -> Vertex -> MS.Map Vertex Int -> Maybe Facet
 areNeighbors ui uj dict
+    | not $ isOneFace ui uj set = Nothing
     | zValue == replicate (length ui) 0 = Nothing
-    | all (<=1) inHalfSpace = trace ("INDICES: " ++ show indices) Just (sort indices)
+    | all (<=1) inHalfSpace = (fmap sort indices)
     | otherwise = Nothing
     where
         set = MS.keys dict
@@ -62,14 +68,18 @@ areNeighbors ui uj dict
         hValue = hyper zValue
         inHalfSpace = map (dot hValue) set
         inFacet = filter (\x -> dot hValue x == 1) set
-        indices =   if (length inFacet) >= dimension 
-                    then map (fromJust . (flip MS.lookup dict)) inFacet 
-                    else []
+        indices =  case length inFacet of
+                    2 -> Just []
+                    d ->  if d >= dimension
+                            then Just $ map (fromJust . (flip MS.lookup dict)) inFacet 
+                            else Just []
         
+            
+            
 
 -- | Generates the adjacency matrix of vertices and the initial facet matrix. The centroid is computed inside the function.
 generateMatrices :: [Vertex] -> (AdjacencyMatrix, [Facet])
-generateMatrices set =  foldr insertNeighbors ((zero nPoints nPoints),[]) pairs
+generateMatrices set = fmap (remove []) $ foldr insertNeighbors ((zero nPoints nPoints),[]) pairs
 -- trace ("\nDICT: " ++ show dict)
     where
         nPoints = length set
@@ -86,39 +96,33 @@ generateMatrices set =  foldr insertNeighbors ((zero nPoints nPoints),[]) pairs
                 checkForNeighbors = areNeighbors ui uj dict
 
 
--- indexedFacetToMatrix :: [FacetIndexed] -> Int -> Facets
--- indexedFacetToMatrix facets dimension = finalMatrix
---     where
---         initialMatrix = zero (length facets) dimension
---         ll@(finalMatrix,_) = foldr (\facet (matrix, i) -> ((foldr (\j mat-> setElem True (i,j) mat) matrix facet), i+1)) (initialMatrix,1) facets
--- computeHyperplane ::
---     [[Ratio Int]] ->    -- set of d d-dimensional vertices.Thus the matrix is square
---     [Ratio Int]         -- hyperplane
--- computeHyperplane vertices = NLA.toList $ (NLA.fromLists vertices) NLA.<\> (NLA.fromList (replicate (length vertices) 1)) 
-
-
 
 computeHyperplane ::
     [Vertex] ->    -- set of d d-dimensional vertices.Thus the matrix is square
-    Hyperplane         -- hyperplane
-computeHyperplane vertices =  V.toList $ fromJust $ solveLS matrix vector
+    Maybe Hyperplane         -- hyperplane
+computeHyperplane [] = Nothing
+computeHyperplane vertices =  fmap V.toList $ solveLS matrix vector
+--V.toList $ fromJust $
 -- trace ("\n\nVERTICES: " ++ show vertices)
     where 
         matrix = fromLists vertices
         vector = V.fromList $ (replicate (length vertices) 1)
 
 facetsToVertices :: [Facet] -> MS.Map Int Vertex -> [[Vertex]]
-facetsToVertices facets dictIndexVertex = map (map (fromJust . (flip MS.lookup dictIndexVertex))) facets
+facetsToVertices facets dictIndexVertex = map (take dim) facetsByVertices
+    where 
+        dim = (length.head.head) facetsByVertices
+        facetsByVertices = map (map (fromJust . (flip MS.lookup dictIndexVertex))) facets
 
 generateBranches :: Int -> Int -> AdjacencyMatrix -> [Branch]
-generateBranches idx dim adjacency = concatMap (goDeep adjacency dim) (map ((++[idx]).return) neighbors) 
+generateBranches idx dim adjacency = nub $ map sort $ concatMap (goDeep adjacency dim) (map ((++[idx]).return) neighbors) 
     where
         neighbors = [col | col <- [1..(ncols adjacency)], getElem idx col adjacency]
 
 goDeep :: AdjacencyMatrix -> Int -> Branch -> [Branch]
 goDeep adjacency dim b@(x:xs)
     | length b == dim = return b
-    | otherwise = concatMap (goDeep adjacency dim) $ ((delete []).nub) $ map (smartAppend b) neighbors 
+    | otherwise = concatMap (goDeep adjacency dim) $ (remove []) $ map (smartAppend b) neighbors 
         where
             neighbors = [col | col <- [1..(ncols adjacency)], getElem x col adjacency]
             smartAppend list nElem = if elem nElem list then [] else nElem:list
@@ -132,8 +136,8 @@ goDeep adjacency dim b@(x:xs)
  -}
 facetEnumeration :: 
     [Vertex] ->    -- set of vertices (not centered to origin)
-    ([Facet],[Hyperplane])       -- set of hyperplanes ([[a]], [a])
-facetEnumeration vertices =  (,) newFacets newHyperplanes
+    ([Facet],[Maybe Hyperplane])       -- set of hyperplanes ([[a]], [a])
+facetEnumeration vertices =  (,) newFacets (remove Nothing $ newHyperplanes)
 -- trace ("\n\nINITIAL FACETS: " ++ show facets ++ "\n\nINITIAL HYPER: " ++ show initialHyperplanes)
     where
         uSet = toOrigin vertices
@@ -150,8 +154,8 @@ checkVertex ::
     Vertex ->               -- ^ vertex to check
     (AdjacencyMatrix,       -- ^ adjacency matrix 
     [Facet],                 -- ^ set of facets
-    [Hyperplane]) ->        -- ^ set of hyperplanes
-    (AdjacencyMatrix, [Facet], [Hyperplane])  -- ^ resulting tuple (adjacency,facets, hyperplanes)
+    [Maybe Hyperplane]) ->        -- ^ set of hyperplanes
+    (AdjacencyMatrix, [Facet], [Maybe Hyperplane])  -- ^ resulting tuple (adjacency,facets, hyperplanes)
 checkVertex dictIndexVertex dictVertexIndex ui (adjacency, facets, hyperplanes) = joinTuple adjacency $ foldr (checkBranch dictIndexVertex ui) (facets, hyperplanes) branches
     where
         idx = fromJust $ MS.lookup ui dictVertexIndex
@@ -165,19 +169,20 @@ checkVertex dictIndexVertex dictVertexIndex ui (adjacency, facets, hyperplanes) 
 
 
 checkBranch ::
-    MS.Map Int Vertex ->    -- ^ dictionany of indices and vertices
+    MS.Map Int Vertex ->    -- ^ dictionary of indices and vertices
     Vertex ->          -- ^ vertex ui that will be the root
     Branch ->   -- ^ branch under ui
     ([Facet],          -- ^ set of facets
-    [Hyperplane]) ->       -- ^ set of hyperplanes
-    ([Facet], [Hyperplane])  -- ^ resulting tuple (facets, hyperplanes)
+    [Maybe Hyperplane]) ->       -- ^ set of hyperplanes
+    ([Facet], [Maybe Hyperplane])  -- ^ resulting tuple (facets, hyperplanes)
 checkBranch dictIndexVertex ui branch (facets, hyperplanes) =
-    if (not.(elem hyper)) hyperplanes && all (<=1) equation12 && dot hyper ui > 0
+    if (not.(elem hyper)) hyperplanes && all (<= pure 1) equation12 && ((fmap dot hyper) <*> (pure ui)) > pure 0
     then (branch:facets,hyper:hyperplanes)
     else (facets,hyperplanes)
     where
         branchToVertices = map (\idx -> fromJust $ MS.lookup idx dictIndexVertex) branch
         hyper = computeHyperplane branchToVertices
-        equation12 = map (dot hyper) branchToVertices
+        set = map snd $ MS.toList dictIndexVertex
+        equation12 = map (((fmap dot hyper) <*>) . pure) set
 
 

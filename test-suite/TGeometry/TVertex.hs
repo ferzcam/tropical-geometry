@@ -25,8 +25,16 @@ testExtremeVertex =   HU.testCase "Tests for checking extreme vertices in a set"
     isExtremeVertex (set2!!4) set2 @?= False
 
 
+testOneFace :: TestTree
+testOneFace = HU.testCase "Tests for checking 1-faces in a set" $ do
+    isOneFace [5,1] [6,3] set1 @?= True
+    isOneFace [5,1] [6,5] set1 @?= False
+    isOneFace [5,1] [5,2] set1 @?= False
+    isOneFace [1,5] [2,2] set1 @?= True
+    isOneFace [1,0,0] [0,1,0] set2 @?= True
+    isOneFace [1,0,0] [0.5,0.5,0.5] set2 @?= False
 testsSimplex :: TestTree
-testsSimplex = testGroup "Test for polytopes" [testExtremeVertex]
+testsSimplex = testGroup "Test for polytopes" [testExtremeVertex, testOneFace]
 
 
 
