@@ -4,8 +4,6 @@ module Core (
     module Polynomial.Hypersurface,
     module Arithmetic.Numbers,
     module Arithmetic.Matrix,
-    module Geometry.ConvexHull2,
-    --module Geometry.ConvexHull3,
     module Geometry.Vertex,
     module Geometry.Facet,
     module Graphics.Drawings
@@ -18,8 +16,6 @@ where
     import Arithmetic.Numbers
     import Arithmetic.Matrix
     import Polynomial.Monomial
-    import Geometry.ConvexHull2
-    import Geometry.ConvexHull3
     import Geometry.Vertex
     import Geometry.Facet
     import Polynomial.Hypersurface

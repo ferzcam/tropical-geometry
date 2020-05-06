@@ -35,13 +35,11 @@ library
       Polynomial.Monomial
       Polynomial.Prelude
       Polynomial.Hypersurface
+      Polynomial.System
       Arithmetic.Numbers
       Arithmetic.Matrix
-      Geometry.ConvexHull2
-      Geometry.ConvexHull3
       Geometry.Facet
       Geometry.Vertex
-      Geometry.Polytope
       Geometry.Polyhedral
       Graphics.Drawings
       Util
@@ -68,7 +66,8 @@ library
     sized >=0.3.0.0 && <0.4,
     type-natural >=0.8.2.0 && <0.9,
     hmatrix-glpk,
-    linear
+    linear,
+    bimap
 
 
   default-language: Haskell2010
@@ -100,11 +99,11 @@ test-suite tropical-geometry-test-suite
       TPolynomial.TPrelude
       TArithmetic.TMatrix
       TArithmetic.TNumbers
-      TGeometry.TConvexHull2
-      TGeometry.TConvexHull3
-      TGeometry.TPolytope
       TGeometry.TPolyhedral
       TPolynomial.THypersurface
+      TGeometry.TFacet
+      TGeometry.TVertex
+
 
   hs-source-dirs:
       test-suite
@@ -118,6 +117,7 @@ test-suite tropical-geometry-test-suite
     , containers
     , hlint-test
     , matrix
+    
   default-language: Haskell2010
 
 benchmark tropical-geometry-benchmarks

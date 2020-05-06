@@ -1,6 +1,14 @@
-module Geometry.Vertex 
+module Geometry.Vertex(
+    -- * Types
+    Vertex,
+    AdjacencyMatrix,
 
-(isExtremeVertex, isOneFace)
+    -- * Functions 
+    isExtremeVertex,
+    extremalVertices,
+    isOneFace,
+    adjacencyMatrix
+)
 
 where
 
@@ -9,11 +17,19 @@ import Numeric.LinearProgramming
 import Data.List ((\\))
 import Debug.Trace
 import Util
+import Data.Matrix
+import qualified Data.Map.Strict as MS
+import Data.List
+import Data.Maybe
 
 {- 
     Module that implements functions for the finding of all the extreme vertices in the Newton polyhedron of a polynomial f.
 -}
 
+
+
+type Vertex = [Rational]
+type AdjacencyMatrix = Matrix Bool
 
 -- | Analizes whether a point in a set is extremal or not.
 -- | This function is based on Theorem 2 of the article "Linear Programming Approaches to the Convex Hull Problem in R^m"
@@ -27,6 +43,10 @@ isExtremeVertex point set = feasibleNNegative objectiveFunc constraintsLeft cons
         objectiveFunc = (1) : (replicate (length point) 0)
         constraintsLeft = ((map.map) realToFrac $ (zipWith (:) sigmaValues differences))
         constraintsRight = (replicate (length set2) 0)
+
+
+extremalVertices :: [Vertex] -> [Vertex]
+extremalVertices set = filter (\x -> isExtremeVertex x set) set
 
 
 feasibleNNegative :: [Double] -> [[Double]] -> [Double] -> Bool
@@ -70,3 +90,19 @@ feasibleNNegative2 objectiveFunc constrLeft@(x:xs) constrRight@(y:ys) = feasNOpt
         feasNOpt _ = False
 
 
+
+
+
+-- | Constructs the adjacency matrix of the extreme vertices in a polyhedron. The set of vertices must be extremal.
+adjacencyMatrix :: [Vertex] -> AdjacencyMatrix
+adjacencyMatrix set = foldr insertNeighbors (zero nPoints nPoints) pairs
+    where
+        pairs = combinations set 2
+        nPoints = length set
+        dictVertexIdx = MS.fromList $ zip (sort set) [1..]
+        insertNeighbors [ui, uj] matrix 
+            | not (isOneFace ui uj set) = matrix
+            | otherwise = setElem True (i,j) $ setElem True (j,i) matrix
+            where
+                i = fromJust $ MS.lookup ui dictVertexIdx
+                j = fromJust $ MS.lookup uj dictVertexIdx

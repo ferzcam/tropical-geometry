@@ -6,12 +6,14 @@
 
 module TPolynomial.THypersurface (testsHypersurface) where
 
+import Polynomial.Hypersurface
 
 import Test.Tasty
 import Test.Tasty.HUnit as HU
 import Data.List
 import Core
-import qualified Data.Map.Strict as MS 
+import Data.Maybe
+   
 
 x, y :: Polynomial (Tropical Integer) Lex 2
 x = variable 0
@@ -22,52 +24,26 @@ f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
 f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
 f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
 f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
+f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4 + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3 + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
+f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5 + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4 + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3 + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
+
+f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6 + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5 + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4 + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3 + 2*x^2 + x*y + 3*y^2 + x + 2*y + 10
+f9 = x^2*y^2 + y^2 + x^2 + 0
 
 
--- Normals 
--- (ne (northEast): means that the diagonal component points to north-east direction)
--- (nw (northWest): means that the diagonal component points to north-west direction)
--- (se (southEast): means that the diagonal component points to south-east direction)
--- (sw (southWest): means that the diagonal component points to south-west direction)
 
-
-ne = sort [(1,1), (-1, 0), (0, -1)]
-nw = sort [(-1,1), (1, 0), (0, -1)]
-se = sort [(1,-1), (-1, 0), (0, 1)]
-sw = sort [(-1,-1), (1, 0), (0, 1)]
-
-
-testMapTermPoint :: TestTree
-testMapTermPoint =   HU.testCase "Get the key-value pair with the terms and its corresponding points" $ do
-        show (mapTermPoint f1) @?=  "fromList [((0,0),(,2)),((0,1),(X_1,0)),((0,2),(X_1^2,1)),((1,0),(X_0,0)),((1,1),(X_0X_1,0)),((2,0),(X_0^2,1))]"
- 
-
-testFindFanVertex :: TestTree
-testFindFanVertex = HU.testCase "Computing fan vertices" $ do
-        findFanNVertex (mapTermPoint f1) [(0,0), (0,1), (1,0)] @?= ((2,2), sw)
-        findFanNVertex (mapTermPoint f1) [(1,1), (0,1), (1,0)] @?= ((0,0), ne)
-        findFanNVertex (mapTermPoint f1) [(2,0), (1,1), (1,0)] @?= ((-1,0),sw)
-        findFanNVertex (mapTermPoint f1) [(0,2), (0,1), (1,1)] @?= ((0,-1),sw)
-        findFanNVertex (mapTermPoint f5) [(1,-1), (0,-1), (0,0)] @?= ((0,4), sw)
-
-testInnerNormals :: TestTree
-testInnerNormals = HU.testCase "Compute inner normals of triangles" $ do
-        sort (innerNormals (0,0) (0,1) (1,0)) @?= sort [(-1,-1), (1,0), (0,1)]
-
-testVerticesNormals :: TestTree
-testVerticesNormals = HU.testCase "Test for vertices and their normals" $ do
-        (verticesNormals f1) @?= MS.fromList [ ((2,2), sw), ((0,0), ne), ((-1,0), sw), ((0,-1), sw)]
-        (verticesNormals f2) @?= MS.fromList [((-2,1), sw), ((-1,1), se), ((1,-1), nw), ((1,-2), sw)]
-        (verticesNormals f3) @?= MS.fromList [((-2,0), sw), ((-1,0), ne), ((0,1), sw), ((1,1), ne), ((2,2), sw), ((1,0), sw), ((0,-1), ne), ((0,-2), sw), ((-1,-1), sw)]
-        (verticesNormals f4) @?= MS.fromList [((0,0), sw)]
-        (verticesNormals f5) @?= MS.fromList [((0,4), sw)]
-        
--- testHypersurface :: TestTree
--- testHypersurface = HU.testCase "Compute hypersurface of polynomials" $ do
---         (sort $ hypersurface f4) @?= sort [((0,0), (0,1)), ((0,0), (1,0)), ((0,0), (-1,-1))]
---         (sort $ hypersurface f5) @?= sort [((0,4), (0,5)), ((0,4), (1,4)), ((0,4), (-1, 3))]
-
+testVertices :: TestTree
+testVertices = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
+        (sort.(map fromJust).vertices) f1 @?= sort [[2,2], [-1,0], [0,0], [0,-1]]
+        (sort.(map fromJust).vertices) f2 @?= sort [[-1,1], [1,-1], [-2,1], [1,-2]]
+        (sort.(map fromJust).vertices) f3 @?= sort [[-2,0], [-1,0], [0,1], [1,1], [2,2], [1,0], [0,-1], [0,-2], [-1,-1]]
+        (sort.(map fromJust).vertices) f4 @?= sort [[0,0]]
+        (sort.(map fromJust).vertices) f5 @?= sort [[0,4]]
+        (sort.(map fromJust).vertices) f6 @?= sort [[-4,-3],[-4,-2],[-2,-3],[-1,1],[0,-1],[0,0],[2,-1],[2,0],[5,3]]
+        (sort.(map fromJust).vertices) f7 @?= sort [[-2,2],[-1,0],[-1,1],[0,0],[2,-3],[2,-1],[2,0],[5,3]]
+        (sort.(map fromJust).vertices) f8 @?= sort [[-6,-4],[-5,-4],[-4,0],[-2,-4],[-2,2],[-1,0],[-1,1],[0,-3],[0,0],[2,-2],[2,-1],[2,0],[10,8]]
+        (sort.(map fromJust).vertices) f9 @?= sort [[0,0]]
 
 testsHypersurface :: TestTree
-testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticesNormals] 
+testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testVertices] 
 

@@ -2,7 +2,7 @@
 {-# LANGUAGE UndecidableInstances, MultiParamTypeClasses #-}
 
 
---ConstrainedClassMethods, 
+
 module Polynomial.Prelude (
     -- * Types
     Polynomial(..),
@@ -12,7 +12,6 @@ module Polynomial.Prelude (
     IsOrderedPolynomial(..),
 
     -- * Functions
-    polytope2,
     (!*)
 ) where 
 
@@ -31,9 +30,6 @@ import Data.Singletons.Prelude
 
 import Polynomial.Monomial
 import Arithmetic.Numbers
-import Geometry.ConvexHull2
-
-
 
 
 
@@ -159,7 +155,3 @@ prodTerm (mon1, coeff1) (mon2, coeff2) = (mon1 NA.* mon2, coeff1 P.* coeff2)
 
 (!*) :: (Num k) => k -> Polynomial k ord n -> Polynomial k ord n
 num !* poly = Polynomial $ MS.map (P.* num) (getTerms poly)
-
-
-polytope2 :: IsOrderedPolynomial poly => poly -> [Point2D]
-polytope2 = convexHull2 . map ( (\[a,b] -> (a,b)) . DS.toList . getMonomial . fst) . MS.toList . terms

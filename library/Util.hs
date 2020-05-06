@@ -16,6 +16,13 @@ safeZipWith f l1 l2
     | length l1 /= length l2 = error "Lists must have the same size for safe zipping"
     | otherwise = zipWith f l1 l2
 
+safeZipWith3 :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
+safeZipWith3 f l1 l2 l3
+    | length l1 /= length l2 || length l1 /= length l3 = error "Lists must have the same size for safe zipping"
+    | otherwise = zipWith3 f l1 l2 l3
+
+
+
 dot :: (Num a) => [a] -> [a] -> a
 dot l1 = (foldr1 (+)) . (safeZipWith (*) l1)
 
@@ -34,30 +41,16 @@ safeZipWithV f l1 l2
 dotV :: (Num a) => V.Vector a -> V.Vector a -> a
 dotV v1 = (foldr (+) 0) . (safeZipWithV (*) v1)
 
--- | Solves a linear equality system @A x = b@ given by a lower triangular matrix via
--- forward substitution.
--- forwardSub :: Fractional a => Matrix a -> V.Vector a -> V.Vector a
--- forwardSub = forwardSub' (V.empty) 
---   where
---     forwardSub' xV lower bV 
---         | nrows lower == 0 = xV
---         | nrows lower == 1 = (V.snoc xV curX)
---         | otherwise = forwardSub' (V.snoc xV curX)
---                         (submatrix 2 (nrows lower) 1 (ncols lower) lower) 
---                     (V.tail bV) 
---         where
---             curRow = getRow 1 lower 
---             offset = V.length xV
---             lm   =  getRow 1 lower V.! offset
---             curB = V.head bV  
---             negSum = curRow `dotV` xV
---             curX = (curB - negSum) / lm
-                    
+
+prodMatVec :: (Num a) => Matrix a -> V.Vector a -> V.Vector a
+prodMatVec matrix vector
+    | ncols matrix /= length vector = error "Dimensions for matrix product with a vector do not match"
+    | otherwise = V.fromList $ map (dot (V.toList vector)) (toLists matrix)
 
 
 -- | Solves a linear equality system @A x = b@ given by an upper triangular matrix via
 -- backward substitution.
-backwardSub :: (Fractional a, Show a) => Matrix a -> V.Vector a -> V.Vector a
+backwardSub :: (Fractional a) => Matrix a -> V.Vector a -> V.Vector a
 backwardSub upper bV =
   backwardSub' upper bV V.empty (nrows upper)
   where
@@ -74,43 +67,29 @@ backwardSub upper bV =
         backwardSub' upper bV (curX `V.cons` xV) (i-1)
 
 
-forwardSub :: (Fractional a, Show a) => Matrix a -> V.Vector a -> V.Vector a
+forwardSub :: (Fractional a) => Matrix a -> V.Vector a -> V.Vector a
 forwardSub lower bV = reverseV $ backwardSub (reverseM lower) (reverseV bV)
     where
         reverseM = fromLists . reverse. (map reverse) . toLists
         reverseV = V.fromList . reverse .V.toList
 
-
--- backwardSub :: Fractional a => Matrix a -> V.Vector a -> V.Vector a
--- backwardSub upper bV = forwardSub (reverseM upper) (reverseV bV)
---     where
---         reverseM = fromLists . reverse . toLists
---         reverseV = V.fromList . reverse .V.toList
-
-
--- solveLS :: (Fractional a, Ord a, Show a) => Matrix a -> V.Vector a -> Maybe (V.Vector a)
--- solveLS matrix vector =  Just $ backwardSub u y
---     where
---         Just (u,l,_,_) = luDecomp matrix
---         y = forwardSub l vector
-
-
 solveLS :: (Fractional a, Ord a, Show a) => Matrix a -> V.Vector a -> Maybe (V.Vector a)
 solveLS matrix vector = case luDecomp matrix of 
                             Nothing -> Nothing
-                            Just (u,l,_,_) ->  let y = forwardSub l vector 
+                            Just (u,l,perm,_) ->  let y = forwardSub l (prodMatVec perm vector)
                                                 in Just $ backwardSub u y
-    --where
-       -- Just (u,l,_,_) = luDecomp matrix
-      --  y = forwardSub l vector
+   
 
-
-instance Num [Rational]
+--instance Num [Rational]
       
-    --(*)  
---    abs = map abs
---    signum = map signum, fromInteger, (negate | (-))
+
 
 instance Num Bool where
     fromInteger 0 = False
     fromInteger 1 = True
+
+
+
+
+sndThrd :: (a,b,c) -> (b,c)
+sndThrd (_,b,c) = (b,c)

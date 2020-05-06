@@ -40,6 +40,7 @@ instance (Num a) => Unital (Tropical a) where
   one = Tropical 0
 
 
+
 instance (Num a, Ord a, Rig a) => LeftModule Natural (Tropical a) where
   a .* t1 = Tropical (fromNatural a) AC.* t1
 

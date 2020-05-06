@@ -10,12 +10,9 @@ import TPolynomial.TMonomial
 import TPolynomial.TPrelude
 import TArithmetic.TNumbers
 import TArithmetic.TMatrix
-import TGeometry.TConvexHull2
-import TGeometry.TConvexHull3
 import TGeometry.TVertex
 import TGeometry.TFacet
 import TGeometry.TPolyhedral
-import TGeometry.TPolytope
 import TPolynomial.THypersurface
 
 main :: IO ()
@@ -30,11 +27,8 @@ allTests = testGroup "Tasty tests" [
             testsMatrices, 
             testsMonomial, 
             testsPrelude, 
-            testsConvexHull2, 
-            testsConvexHull3, 
             testsPolyhedral, 
-           -- testsPolytope,
             testsHypersurface,
-            testsSimplex,
-            testsFacet]
+            testsSimplex]
+           -- testsFacet]
     ]

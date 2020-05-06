@@ -13,17 +13,12 @@ import Data.Maybe
 import Debug.Trace
 import Linear.Matrix (luSolve)
 import  qualified Data.Vector as V
---import qualified Numeric.LinearAlgebra as NLA ((<\>), fromLists, fromList, toList)
---import Foreign.Storable (Storable)
---import Data.Ratio
---import Internal.Algorithms (Field)
+
 
 -- | Module that implements functions for facet enumeration. Based on the artcile written by Yaguang Yang: A Facet Enumeration Algorithm for Convex Polytopes. 
 
 
-type Vertex = [Rational]
 type Branch = [Int]
-type AdjacencyMatrix = Matrix Bool
 type Facet = [Int]
 type Hyperplane = [Rational]
 
@@ -39,74 +34,34 @@ toOrigin :: [Vertex] -> [Vertex]
 toOrigin set = let center = centroid set
                 in map ($-$ center) set
 
--- | For reference, review the paper mentioned at the beginning
-zeta :: Vertex -> Vertex -> Vertex
-zeta ui uj 
-    | uj $-$ ui == (replicate (length ui)) 0 = error "Points must be different to compute zeta"
-    | otherwise = let 
-                    diff = uj $-$ ui
-                    tValue = negate $ (dot ui diff) / (dot diff diff)
-                  in
-                    ui $+$ (map (*tValue) diff)
-
-
-hyper :: Vertex -> Hyperplane
-hyper z = map (/(dot z z)) z
-                    
-
-
-areNeighbors :: Vertex -> Vertex -> MS.Map Vertex Int -> Maybe Facet
-areNeighbors ui uj dict
-    | not $ isOneFace ui uj set = Nothing
-    | zValue == replicate (length ui) 0 = Nothing
-    | all (<=1) inHalfSpace = (fmap sort indices)
-    | otherwise = Nothing
-    where
-        set = MS.keys dict
-        dimension = length ui
-        zValue = zeta ui uj
-        hValue = hyper zValue
-        inHalfSpace = map (dot hValue) set
-        inFacet = filter (\x -> dot hValue x == 1) set
-        indices =  case length inFacet of
-                    2 -> Just []
-                    d ->  if d >= dimension
-                            then Just $ map (fromJust . (flip MS.lookup dict)) inFacet 
-                            else Just []
-        
-            
-            
-
--- | Generates the adjacency matrix of vertices and the initial facet matrix. The centroid is computed inside the function.
-generateMatrices :: [Vertex] -> (AdjacencyMatrix, [Facet])
-generateMatrices set = fmap (remove []) $ foldr insertNeighbors ((zero nPoints nPoints),[]) pairs
--- trace ("\nDICT: " ++ show dict)
-    where
-        nPoints = length set
-        dimension = length (head set)
-        setToOrigin = toOrigin set
-        pairs = combinations setToOrigin 2
-        dict = MS.fromList $ zip (sort setToOrigin) [1..]
-        insertNeighbors [ui, uj] (matrix, facets)
-            | checkForNeighbors == Nothing = (matrix,facets)
-            | otherwise = ((setElem 1 (i,j)) $ (setElem 1 (j,i)) matrix , (fromJust checkForNeighbors):facets)
-            where
-                i = fromJust $ MS.lookup ui dict
-                j = fromJust $ MS.lookup uj dict
-                checkForNeighbors = areNeighbors ui uj dict
-
 
 
 computeHyperplane ::
-    [Vertex] ->    -- set of d d-dimensional vertices.Thus the matrix is square
-    Maybe Hyperplane         -- hyperplane
-computeHyperplane [] = Nothing
-computeHyperplane vertices =  fmap V.toList $ solveLS matrix vector
---V.toList $ fromJust $
--- trace ("\n\nVERTICES: " ++ show vertices)
-    where 
+    [Vertex] ->    -- | Set of d d-dimensional vertices.Thus the matrix is square
+    (Maybe Hyperplane, Bool)         -- | (Possible hyperplane, Flag indicating in which way the hyperplane was computed)
+computeHyperplane [] = (Nothing, False)
+computeHyperplane vertices =    if linearSystem /= Nothing 
+                                then (linearSystem, False) 
+                                else (computeHyperplane' vertices, True)
+    where
+        linearSystem = fmap V.toList $ solveLS matrix vector
         matrix = fromLists vertices
         vector = V.fromList $ (replicate (length vertices) 1)
+
+
+computeHyperplane' ::
+    [Vertex] ->    -- set of d d-dimensional vertices.Thus the matrix is square
+    Maybe Hyperplane         -- hyperplane
+computeHyperplane' [] = Nothing
+computeHyperplane' vertices
+    | length vertices < dim = error "There must be at least d d-dimensional vertices for computing hyperplane"
+    | otherwise = Just $ map (detLU.fromLists.(diff ++).return) ident
+
+    where
+        dim = length (head vertices)
+        points = take dim vertices
+        diff = map ($-$ (head points)) (tail points)
+        ident = toLists $ identity dim
 
 facetsToVertices :: [Facet] -> MS.Map Int Vertex -> [[Vertex]]
 facetsToVertices facets dictIndexVertex = map (take dim) facetsByVertices
@@ -136,17 +91,18 @@ goDeep adjacency dim b@(x:xs)
  -}
 facetEnumeration :: 
     [Vertex] ->    -- set of vertices (not centered to origin)
-    ([Facet],[Maybe Hyperplane])       -- set of hyperplanes ([[a]], [a])
-facetEnumeration vertices =  (,) newFacets (remove Nothing $ newHyperplanes)
+    [(Facet, Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a])
+facetEnumeration vertices = safeZipWith3 (,,) newFacets cleanedHypers b
 -- trace ("\n\nINITIAL FACETS: " ++ show facets ++ "\n\nINITIAL HYPER: " ++ show initialHyperplanes)
     where
-        uSet = toOrigin vertices
-        (adjacency, facets) = generateMatrices uSet
-        dictVertexIndex = MS.fromList $ zip (sort uSet) [1..]
-        dictIndexVertex = MS.fromList $ zip [1..] (sort uSet)
-        initialHyperplanes = map computeHyperplane (facetsToVertices facets dictIndexVertex)
-        (_,newFacets, newHyperplanes) = foldr (checkVertex dictIndexVertex dictVertexIndex) (adjacency,facets, initialHyperplanes) uSet
-
+        uSet = sort $ toOrigin vertices
+        center = centroid vertices
+        adjacency = adjacencyMatrix uSet
+        dictVertexIndex = MS.fromList $ zip uSet [1..]
+        dictIndexVertex = MS.fromList $ zip [1..] uSet
+        (_,newFacets, newHyperplanes) = foldr (checkVertex dictIndexVertex dictVertexIndex) (adjacency,[], []) uSet
+        cleanedHypers = map fromJust $ remove Nothing newHyperplanes
+        b = map (succ . (dot center)) cleanedHypers
 
 checkVertex ::
     MS.Map Int Vertex ->    -- ^ dictionany of indices and vertices
@@ -161,7 +117,6 @@ checkVertex dictIndexVertex dictVertexIndex ui (adjacency, facets, hyperplanes) 
         idx = fromJust $ MS.lookup ui dictVertexIndex
         dim = length ui
         facetsUi = [facet | facet <- facets, elem idx facet] -- take facets that include vertex ui
-        --neighborsUi = [MS.lookup index dictIndexVertex | index <- [1..(length adjacency)] , (adjacency!!ui)!!index == 1 ]
         inFacets = \branch -> any (isSubsequenceOf (sort branch)) facetsUi
         branches = filter (not.inFacets) (generateBranches idx dim adjacency)
         joinTuple a (b,c) = (a,b,c)
@@ -176,13 +131,11 @@ checkBranch ::
     [Maybe Hyperplane]) ->       -- ^ set of hyperplanes
     ([Facet], [Maybe Hyperplane])  -- ^ resulting tuple (facets, hyperplanes)
 checkBranch dictIndexVertex ui branch (facets, hyperplanes) =
-    if (not.(elem hyper)) hyperplanes && all (<= pure 1) equation12 && ((fmap dot hyper) <*> (pure ui)) > pure 0
+    if (not.(elem hyper)) hyperplanes && all (<= pure 1) equation12 && (((fmap dot hyper) <*> (pure ui)) > pure 0  || computedWithDet)
     then (branch:facets,hyper:hyperplanes)
     else (facets,hyperplanes)
     where
         branchToVertices = map (\idx -> fromJust $ MS.lookup idx dictIndexVertex) branch
-        hyper = computeHyperplane branchToVertices
+        (hyper, computedWithDet) = computeHyperplane branchToVertices
         set = map snd $ MS.toList dictIndexVertex
         equation12 = map (((fmap dot hyper) <*>) . pure) set
-
-
