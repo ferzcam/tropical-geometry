@@ -14,6 +14,8 @@ import TGeometry.TVertex
 import TGeometry.TFacet
 import TGeometry.TPolyhedral
 import TPolynomial.THypersurface
+import TPolynomial.THypersurface3
+import TPolynomial.THypersurface4
 
 main :: IO ()
 main = defaultMain allTests
@@ -29,6 +31,8 @@ allTests = testGroup "Tasty tests" [
             testsPrelude, 
             testsPolyhedral, 
             testsHypersurface,
+            testsHypersurface3,
+            testsHypersurface4,
             testsSimplex]
            -- testsFacet]
     ]

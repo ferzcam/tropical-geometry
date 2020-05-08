@@ -52,6 +52,28 @@ sub s_f8{
 }
 
 
+sub s_f31{
+    my $f31 = toTropicalPolynomial("min(x+y+z+3, x + 2w, y + 2w, 2+z + 2w, -2 + 3w)", qw(w x y z));
+    my $H31 = new Hypersurface<Min>(POLYNOMIAL=>$f31); 
+    print $H31->VERTICES . "\n". "\n";
+}
+
+sub s_f32{
+    my $f32 = toTropicalPolynomial("min(x, y, z, 1 + w)", qw(w x y z));
+    my $H32 = new Hypersurface<Min>(POLYNOMIAL=>$f32); 
+    print $H32->VERTICES . "\n". "\n";
+}
+
+
+sub s_f41{
+    my $f41 = toTropicalPolynomial("min(x+w+3+2v, 2x+2w+2, x+y-5+2v, z+3v, 2x+y+w+10, y+z+2v, -3+4v)", qw(v w x y z));
+    my $H41 = new Hypersurface<Min>(POLYNOMIAL=>$f41); 
+    print $H41->VERTICES . "\n". "\n";
+}
+
+
+#3*x*w + 2*x^2*w^2 + (-5)*x*y + z + 10*x^2*y*w + y*z + (-3)
+
 # f8 = 10*x^6 + 8*x^5*y + 2*x^4*y^2 + 3*x^3*y^3 + 1*x^2*y^4 + x*y^5 + 10*y^6 + 7*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5 +  4*x^4 + x^3*y + 2*x^2*y^2 + 1*x*y^3 + 4*y^4 + 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 11
 
 
@@ -62,5 +84,10 @@ sub s_f8{
 # s_f4();
 # s_f5();
 # s_f6();
-s_f7();
+#s_f7();
 #s_f8();
+
+#s_f31();
+#s_f32();
+
+s_f41();
