@@ -72,11 +72,26 @@ sub s_f41{
 }
 
 
-#3*x*w + 2*x^2*w^2 + (-5)*x*y + z + 10*x^2*y*w + y*z + (-3)
+sub s_f42{
+    my $f42 = toTropicalPolynomial("min(2y + 1 + w, 2x + w - 1, 2z + w -1, 3x -1 )", qw(w x y z));
+    my $H42 = new Hypersurface<Min>(POLYNOMIAL=>$f42); 
+    print $H42->VERTICES . "\n". "\n";
+}
 
-# f8 = 10*x^6 + 8*x^5*y + 2*x^4*y^2 + 3*x^3*y^3 + 1*x^2*y^4 + x*y^5 + 10*y^6 + 7*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5 +  4*x^4 + x^3*y + 2*x^2*y^2 + 1*x*y^3 + 4*y^4 + 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 11
+sub s_f51{
+    my $f51 = toTropicalPolynomial("min(2x -1 +2u , 2x+2v, 2x+2w, 2x+2z,
+     2y-1 +2u, 2v+2y,2w+2y,2y+2z,
+      2z+ 2u-2,2z+2v-1,2z+2w-1,4z-1)", qw(u v w x y z));
+    my $H51 = new Hypersurface<Min>(POLYNOMIAL=>$f51); 
+    print $H51->VERTICES . "\n". "\n";
+}
 
 
+#(x^2 + y^2 + (-1)*z^2)*(v^2+w^2+z^2 + (-1))
+
+#(x^2 + y^2 + (-1)*z^2)*(v^2+w^2+z^2 + (-1))
+
+#y^2*w - x^2*w - z^2*w - x^3
 
 # s_f1();
 # s_f2();
@@ -90,4 +105,4 @@ sub s_f41{
 #s_f31();
 #s_f32();
 
-s_f41();
+s_f51();

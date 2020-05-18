@@ -91,7 +91,7 @@ goDeep adjacency dim b@(x:xs)
  -}
 facetEnumeration :: 
     [Vertex] ->    -- set of vertices (not centered to origin)
-    [(Facet, Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a])
+    [(Facet, Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a], a)
 facetEnumeration vertices = safeZipWith3 (,,) newFacets cleanedHypers b
 -- trace ("\n\nINITIAL FACETS: " ++ show facets ++ "\n\nINITIAL HYPER: " ++ show initialHyperplanes)
     where

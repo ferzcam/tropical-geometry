@@ -6,7 +6,9 @@ module Core (
     module Arithmetic.Matrix,
     module Geometry.Vertex,
     module Geometry.Facet,
-    module Graphics.Drawings
+    module Geometry.Polyhedral,
+    module Graphics.Drawings,
+    module Geometry.LRS
     
     )
 
@@ -18,6 +20,8 @@ where
     import Polynomial.Monomial
     import Geometry.Vertex
     import Geometry.Facet
+    import Geometry.Polyhedral
+    import Geometry.LRS
     import Polynomial.Hypersurface
     import Graphics.Drawings
 

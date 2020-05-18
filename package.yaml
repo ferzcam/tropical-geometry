@@ -31,6 +31,7 @@ library:
   - lens
   - matrix
   - gloss
+  - lens
   source-dirs: library
 
 

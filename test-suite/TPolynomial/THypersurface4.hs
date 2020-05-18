@@ -29,6 +29,7 @@ f1 = 3*x*w + 2*x^2*w^2 + (-5)*x*y + z + 10*x^2*y*w + y*z + (-3)
 testVertices4 :: TestTree
 testVertices4 = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
         (sort.(map fromJust).vertices) f1 @?= sort [[8,-23,0,-28],[-9/2,2,0,-3]]
+      --  (sort.(map fromJust).vertices) f2 @?= sort []
         
 testsHypersurface4 :: TestTree
 testsHypersurface4 = testGroup "Test for Computing Hypersurfaces" [testVertices4] 
