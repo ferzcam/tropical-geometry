@@ -51,6 +51,13 @@ sub s_f8{
     print $H8->VERTICES . "\n". "\n";
 }
 
+sub s_f10{
+    my $f10 = toTropicalPolynomial("min(3x + 2y -1, 3x + 2z, 3x - 2y + 4z - 1, 3x - 4y + 6z, x + 2y + 2z, x + 4z + 1, 2y + 3z -1, 1 + 5z,  7z - 2y - 1, 2y -2x + 5z)", qw(z x y));
+    my $H10 = new Hypersurface<Min>(POLYNOMIAL=>$f10); 
+    print $H10->VERTICES . "\n". "\n";
+}
+
+
 
 sub s_f31{
     my $f31 = toTropicalPolynomial("min(x+y+z+3, x + 2w, y + 2w, 2+z + 2w, -2 + 3w)", qw(w x y z));
@@ -90,4 +97,5 @@ sub s_f41{
 #s_f31();
 #s_f32();
 
-s_f41();
+#s_f41();
+s_f10();

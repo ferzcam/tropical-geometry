@@ -18,21 +18,22 @@ import TPolynomial.THypersurface3
 import TPolynomial.THypersurface4
 
 main :: IO ()
-main = defaultMain allTests
+main = do
+  print f10
+  defaultMain allTests
 
-
+                --testsNumbers, 
+            --testsMatrices, 
+            --testsMonomial, 
+            --testsPrelude, 
+            --testsPolyhedral,
+       --     testsHypersurface3,
+         --   testsHypersurface4,
+          --  testsSimplex]
+           -- testsFacet]
 
 allTests ::   TestTree
 allTests = testGroup "Tasty tests" [
         testGroup "List of tests:" [
-            testsNumbers, 
-            testsMatrices, 
-            testsMonomial, 
-            testsPrelude, 
-            testsPolyhedral, 
-            testsHypersurface,
-            testsHypersurface3,
-            testsHypersurface4,
-            testsSimplex]
-           -- testsFacet]
-    ]
+            testsHypersurface]
+            ]

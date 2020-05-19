@@ -4,7 +4,7 @@
 -- {-# LANGUAGE ConstrainedClassMethods, UndecidableInstances, MultiParamTypeClasses #-}
 
 
-module TPolynomial.THypersurface (testsHypersurface) where
+module TPolynomial.THypersurface (testsHypersurface, f10) where
 
 import Polynomial.Hypersurface
 
@@ -30,6 +30,9 @@ f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5 + 6*x^4 + 4*x^3*y +
 f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6 + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5 + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4 + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3 + 2*x^2 + x*y + 3*y^2 + x + 2*y + 10
 f9 = x^2*y^2 + y^2 + x^2 + 0
 
+p1 = 2*x^3 + 1*y^2 + 1*x^3*y^2
+p2 = (-1)*x^^(-2) + y^^(-2) + (-2)*y^^(-4) + (-2)
+f10 = p1*p2
 
 
 testVertices :: TestTree
@@ -43,7 +46,9 @@ testVertices = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
         (sort.(map fromJust).vertices) f7 @?= sort [[-2,2],[-1,0],[-1,1],[0,0],[2,-3],[2,-1],[2,0],[5,3]]
         (sort.(map fromJust).vertices) f8 @?= sort [[-6,-4],[-5,-4],[-4,0],[-2,-4],[-2,2],[-1,0],[-1,1],[0,-3],[0,0],[2,-2],[2,-1],[2,0],[10,8]]
         (sort.(map fromJust).vertices) f9 @?= sort [[0,0]]
+        (sort.(map fromJust).vertices) f10 @?= sort [[0,0], [0, 1/2]]  
 
+--    
 testsHypersurface :: TestTree
 testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testVertices] 
 
