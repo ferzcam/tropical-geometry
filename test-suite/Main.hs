@@ -16,6 +16,7 @@ import TGeometry.TPolyhedral
 import TPolynomial.THypersurface
 import TPolynomial.THypersurface3
 import TPolynomial.THypersurface4
+import TPolynomial.THypersurface5
 
 main :: IO ()
 main = do
@@ -35,5 +36,16 @@ main = do
 allTests ::   TestTree
 allTests = testGroup "Tasty tests" [
         testGroup "List of tests:" [
-            testsHypersurface]
-            ]
+            testsNumbers, 
+            testsMatrices, 
+            testsMonomial, 
+            testsPrelude, 
+            testsPolyhedral, 
+            testsHypersurface,
+            testsHypersurface3,
+            testsHypersurface4,
+            testsHypersurface5,
+
+            testsSimplex]
+           -- testsFacet]
+    ]

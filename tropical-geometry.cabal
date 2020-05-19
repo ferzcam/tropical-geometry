@@ -41,6 +41,7 @@ library
       Geometry.Facet
       Geometry.Vertex
       Geometry.Polyhedral
+      Geometry.LRS
       Graphics.Drawings
       Util
       Core

@@ -22,13 +22,19 @@ import Data.List
 import Debug.Trace
 
 
-vertices :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> [Maybe Vertex]
-vertices poly = map solveSystem facetMons
+expVecs :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> [Vertex]
+expVecs poly = safeZipWith (++) expVec (map return coeffs)
     where
         terms = (MS.toList . getTerms) poly
         expVec = ((map ((map fromIntegral) . DS.toList . getMonomial . fst))) terms
         coeffs = map (toRational.snd) terms
-        points = safeZipWith (++) expVec (map return coeffs)
+
+
+vertices :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> [Maybe Vertex]
+vertices poly = map solveSystem facetMons
+    where
+        terms = (MS.toList . getTerms) poly
+        points = expVecs poly
         dictPointTerm = MS.fromList $ zip points terms
         extremal = sort $ extremalVertices points
         dictIndexPoint = MS.fromList $ zip [1..] extremal
