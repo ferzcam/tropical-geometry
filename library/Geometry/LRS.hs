@@ -90,8 +90,6 @@ setElem' elem (row, col) mat
     | row < 0 || col < 0 || row >= nrows mat || col >= ncols mat = error ("setElem': Trying to set at (" ++ show row ++ "," ++ show col ++ ") in a " ++ show (nrows mat) ++ "x" ++ show (ncols mat) ++ " matrix.")
     | otherwise = setElem elem (row+1, col+1) mat
 
-
-
 mapCol' :: (Int -> a -> a) -> Int -> Matrix a -> Matrix a
 mapCol' f col = mapCol f (col+1)
 
