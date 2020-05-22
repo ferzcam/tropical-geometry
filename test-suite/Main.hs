@@ -17,6 +17,7 @@ import TPolynomial.THypersurface
 import TPolynomial.THypersurface3
 import TPolynomial.THypersurface4
 import TPolynomial.THypersurface5
+import TGeometry.TLRSPol2
 
 main :: IO ()
 main = do
@@ -45,7 +46,7 @@ allTests = testGroup "Tasty tests" [
             testsHypersurface3,
             testsHypersurface4,
             testsHypersurface5,
-
-            testsSimplex]
+            testsSimplex,
+            testsVertexEnumPol2]
            -- testsFacet]
     ]
