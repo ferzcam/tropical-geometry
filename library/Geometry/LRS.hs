@@ -47,7 +47,8 @@ submatrix' ::
     (Int, Int) ->   -- ^ Cols indices
     Matrix a ->
     Matrix a
-submatrix' (ro,rk) (co,ck) = submatrix (ro+1) (rk+1) (co+1) (ck+1) 
+submatrix' (ro,rk) (co,ck) m = submatrix (ro+1) (rk+1) (co+1) (ck+1) m
+
 
 
 -- | Lens for columns
@@ -97,10 +98,14 @@ setElem' elem (row, col) mat
     | otherwise = setElem elem (row+1, col+1) mat
 
 mapCol' :: (Int -> a -> a) -> Int -> Matrix a -> Matrix a
-mapCol' f col = mapCol f (col+1)
+mapCol' f col m
+    | col < 0 || col > (ncols m)-1 = error "mapCol': index out of bounds" 
+    | otherwise = mapCol f (col+1) m
 
 mapRow' :: (Int -> a -> a) -> Int -> Matrix a -> Matrix a
-mapRow' f col = mapRow f (col+1)
+mapRow' f row m
+    | row < 0 || row > (nrows m)-1 = error "mapCol': index out of bounds" 
+    | otherwise = mapRow f (row+1) m
 
 
 
@@ -126,87 +131,89 @@ getOptimumVertex mat col = trace ("Problem: " ++ show (replicate (ncols mat) (-1
  -}
 
 
+sortSystem :: Matrix Rational -> Col -> Vertex -> (Matrix Rational, Col)
 
-
-
-
---  getDictionary :: Matrix Rational -> Col -> Dictionary
---  getDictionary _A b = Dict [0..rows+1+cols] (identity (rows+1)  <|> (p21 <-> p22)  <|> (p31 <-> p32))
---      where
---          rows = nrows _A
---          cols = ncols _A
---          slack = identity rows
---  --        topRow = rowFromList $ 1: (replicate (cols) (-1)) ++ (replicate rows 0)
---          topRow = rowFromList $ 1 : (replicate (rows) 0) ++ (replicate (cols) (-1))
---  
---          leftColumn = colFromList (replicate rows 0)
---          newA =  _A <|> slack --matrix form
---          _A_b = submatrix' (0, rows-1) (0, rows-1) newA -- basis
---          _A_n = submatrix' (0, rows-1) (rows, rows+cols-1) newA -- cobasis
---          c_b = submatrix' (0, 0) (1, rows) topRow -- basic part of top row
---          c_n = submatrix' (0, 0) (rows+1, rows+cols) topRow -- cobasic part of top row
---          -- parts of the dictionary 
---          Right invA_b = inverse _A_b
---          p21 = negate $ c_n - (c_b |*| invA_b |*| _A_n)
---          p22 = invA_b |*| _A_n
---          p31 =  c_b |*| invA_b |*| b
---          p32 = invA_b |*| b
-
-getDictionary :: Matrix Rational -> Col -> Dictionary
-getDictionary _A b = trace ("invA_b>>> " ++ show (invA_b) ++ "\n\nAB" ++ show (_A_b)) Dict [0..rows] [rows+1..rows+cols] (identity (rows+1)  <|> (p21 <-> p22)  <|> (p31 <-> p32))
+sortSystem mat col vertex = if length meetEq < ncols mat then error "Not enough inequalities" else (,) newMat newCol
     where
-        rows = nrows _A
-        cols = ncols _A
-        slack = identity rows
---        topRow = rowFromList $ 1: (replicate (cols) (-1)) ++ (replicate rows 0)
-        topRow = rowFromList $ 1: ((replicate (cols) (-1) ++ replicate (rows) 0))
-
-        leftColumn = colFromList (replicate rows 0)
-        newA =  topRow <-> (leftColumn <|>  _A <|> slack) --matrix form
-        newB = (colFromList [0]) <-> b
-        _A_b = submatrix' (1, rows) (1, rows) newA -- basis
-        _A_n = submatrix' (1, rows) (rows+1, rows+cols) newA -- cobasis
-        -- parts of the dictionary 
-        c_b = submatrix' (0, 0) (1, rows) topRow -- basic part of top row
-        c_n = submatrix' (0, 0) (rows+1, rows+cols) topRow -- cobasic part of top row
-        Right invA_b = inverse _A_b
-        p22 = invA_b |*| _A_n
-        p32 = invA_b |*| b
-        p21 = negate $ c_n - (c_b |*| invA_b |*| _A_n)
-        p31 = c_b |*| invA_b |*| b
---          p21 = negate $ c_n - (c_b |*| invA_b |*| _A_n)
---          p22 = invA_b |*| _A_n
---          p31 =  c_b |*| invA_b |*| b
---          p32 = invA_b |*| b
-
-
-        
-
-getSortedDictionary :: Matrix Rational -> Col -> Dictionary
-getSortedDictionary mat col = trace ("PAIRS>>> " ++ show toBeLast ) getDictionary newMat newCol
-    where
-        optimum = fromJust $ getOptimumVertex mat col
         matLists = toLists mat
         bList = concat $ toLists col
-        meetEq = [i | i <- [0..((pred.nrows) mat)], (dot (matLists!!i) optimum) == col^. elemAt (i,0)]
+        meetEq = [i | i <- [0..((pred.nrows) mat)], (dot (matLists!!i) vertex) == (col^. elemAt (i,0))]
         pairs = safeZipWith (,) matLists bList
         toBeLast = map (pairs !!) meetEq
         ordered = (pairs \\ toBeLast) ++ (toBeLast)
         newMat = fromLists $ map fst ordered
         newCol = colFromList $ map snd ordered
 
-getSortedDictionary' :: Matrix Rational -> Col -> (Matrix Rational, Col)
-getSortedDictionary' mat col = trace ("PAIRS>>> " ++ show toBeLast) (,) newMat newCol
+
+
+getDictionary :: Matrix Rational -> Col -> Vertex -> Dictionary
+getDictionary _A b vertex = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+1)) <|> (p21 <-> p22) <|> (p31 <-> p32))
     where
-        optimum = fromJust $ getOptimumVertex mat col
-        matLists = toLists mat
-        bList = concat $ toLists col
-        meetEq = [i | i <- [0..((pred.nrows) mat)], (dot (matLists!!i) optimum) == col^. elemAt (i,0)]
-        pairs = safeZipWith (,) matLists bList
-        toBeLast = map (pairs !!) meetEq
-        ordered = (pairs \\ toBeLast) ++ (reverse $ sort toBeLast)
-        newMat = fromLists $ map fst ordered
-        newCol = colFromList $ map snd ordered
+        (newA, newb) = sortSystem _A b vertex
+        rows = nrows newA
+        cols = ncols newA
+        slack = identity rows
+        dictionary = newA <|> slack
+        topRow = rowFromList $ 1 : replicate cols 1 ++ replicate rows 0
+        c_B = submatrix' (0,0) (1,rows) topRow
+        c_N = submatrix' (0,0) (rows+1, rows+cols) topRow
+        _A_B = submatrix' (0,rows-1) (0,rows-1) dictionary
+        _A_N = submatrix' (0,rows-1) (rows, rows+cols-1) dictionary
+        Right invA_B = inverse _A_B
+        p21 = (c_N - c_B |*| invA_B |*| _A_N)
+        p22 = invA_B |*| _A_N
+        p31 = -c_B |*| invA_B |*| newb
+        p32 = invA_B |*| newb
+
+
+
+
+enteringVariable :: Dictionary -> Maybe Int
+enteringVariable dictionary
+    | null negs = Nothing
+    | otherwise = Just $ (fst.head.sort) negs
+    where
+        cobasic_0 = zip (dictionary^._N) (map (\j -> dictionary^.dict.elemAt (0,j)) (dictionary^._N))
+        negs = filter (\(_,value) -> value < 0) cobasic_0
+
+lexMinRatio :: Dictionary -> Int -> Int
+lexMinRatio dictionary s
+    | null indexed_s = 0
+    | otherwise = (dictionary ^. _B) !! (fst $ indexed_s !! (fromJust $ elemIndex (minimum ratios) ratios))
+    where
+        rows = numRows dictionary
+        cols = numCols dictionary
+        dim = cols - rows - 1
+        dictMatrix = dictionary^.dict
+        col_s = dictMatrix ^. colAt s
+        _D = (dictMatrix ^. colAt (cols-1)) <|> submatrix' (0,rows-1) (0, rows-1) dictMatrix
+        slice_s = (concat.toLists) $ submatrix' (dim+1, rows-1) (0,0) col_s
+        indexed_s = filter (snd.(fmap (>0))) $ safeZipWith (,) [dim+1..rows-1] slice_s 
+        sub_D = map (head . toLists . (\i -> _D ^. rowAt i) . fst) indexed_s
+        ratios = safeZipWith (map $) (map ((flip (/)) . snd) indexed_s) sub_D
+
+
+
+selectPivot :: Dictionary -> Maybe (Int, Int)
+selectPivot dictionary
+    | s == Nothing = Nothing
+    | otherwise = Just (r, fromJust s)
+    where 
+        s = enteringVariable dictionary
+        r = lexMinRatio dictionary (fromJust s)
+
+pivot :: Int ->Int -> Dictionary -> Dictionary
+pivot r s dictionary = Dict new_B new_N (_E |*| dictMatrix)
+    where
+        dictMatrix = dictionary ^. dict
+        col_s = dictMatrix ^. colAt (s)
+        t = fromJust $ elemIndex r (dictionary ^. _B) -- idxR
+        idxS = fromJust $ elemIndex s (dictionary ^. _N)
+        a_t = col_s ^. elemAt (t,0)
+        eta = (mapCol' (\_ x -> -x/a_t) 0 col_s) & elemAt (t,0) .~ (1/a_t)
+        _E = (identity (nrows dictMatrix)) & colAt t .~ eta
+        new_B = dictionary^._B & element t .~ s
+        new_N = dictionary^._N & element idxS .~ r
 
 
 simplex :: Dictionary -> Dictionary
@@ -216,223 +223,44 @@ simplex dictionary
     where
         idxsToPivot = selectPivot dictionary
 
--- enteringVariable :: (Num a, Ord a, Show a) => 
---     [Int] ->    -- | Cobasis N
---     [a] ->      -- | Row zero of A_N
---     Maybe Int   -- | Index of the entering variable in N
--- enteringVariable _N cobasic  = findIndex (<0) cobasic
-    -- | null idxsNeg = Nothing
-    -- | otherwise = elemIndex leastCob _N
-    -- where
-    --     idxsNeg = [i | i <- [0..(length cobasic)-1],  cobasic!!i < 0]
-    --     leastCob = minimum $ map (_N!!) idxsNeg
-    --fmap ((+) (dimB)) $ findIndex (<0) cobasic
 
 
-enteringVariable ::
-    Dictionary ->      -- | Row zero of A_N
-    Maybe Int   -- | Index of the entering variable in N
-enteringVariable dictionary  = findIndex (<0) negs
-    where
-        negs = map (\j -> dictionary^.dict.elemAt (0,j)) (dictionary^._N)
-
-
-
-selectPivot :: Dictionary -> Maybe (Int, Int)
-selectPivot dictionary
-    | idxEntering == Nothing  =    Nothing
-    | idxLeaving == Nothing  =   Nothing
-    | otherwise = trace ("\n Pivot " ++ show (((fromJust idxLeaving), (cobasis!!(fromJust idxEntering)) ) ) ++ "\n Cobase>>>"  ++ show cobasis  ++ "\nDictionary" ++ show dictMatrix )   Just $ (,) (fromJust idxLeaving) (cobasis!!(fromJust idxEntering))
-    where
-        cobasis = dictionary^._N
-        dictMatrix = dictionary^.dict
-        rows = nrows dictMatrix
-        cols = ncols dictMatrix
-        dim = cols - rows - 1
-        idxEntering = (enteringVariable dictionary)
-        idxLeaving = lexMinRatio dictionary (fromJust idxEntering)
-        -- (cobasis!!(fromJust idxEntering))
-
-lexMinRatio :: 
-    Dictionary ->   -- | Dictionary
-    Int ->          -- | Index of entering varibale s in N
-    Maybe Int             -- | Variable s in B
-lexMinRatio dictionary s
-    | null indexed_s = Nothing
-    | otherwise = trace ("\n D-Vectors>>>" ++ show sub_D) Just $ (dictionary^._B) !! (fst $ indexed_s !! (fromJust $ elemIndex (minimum ratios) ratios))
-    where
-       -- sizeB = length $ dictionary^._B
-        dictMatrix = dictionary^.dict
-        rows = nrows dictMatrix
-        cols = ncols dictMatrix
-        dim = cols - rows - 1
-        _D = (dictMatrix ^. colAt (cols-1)) <|> submatrix' (0, rows-1) (0, rows-1) dictMatrix
-        s_col = dictMatrix ^. colAt ((dictionary^._N)!!s) -- (sizeB + s)
-        slice_s = (concat . toLists . (submatrix' (dim+1, rows-1) (0,0)))  s_col
-        indexed_s = filter (snd.(fmap (>0))) $ zip [(dim+1)..] slice_s
-        sub_D = map (head .toLists . (\i -> _D ^. rowAt i) . fst) indexed_s -- takes rows with indices as in indexed_s
-        ratios = safeZipWith (map $) (map ((flip (/)) . snd) indexed_s) sub_D
-
-
--- lexMinRatio :: 
---     Dictionary ->   -- | Dictionary
---     Int ->          -- | Index of entering variable s in N
---     Int             -- | Index of possible leaving variable s in B
--- lexMinRatio dictionary s
---     | null indexed_s = 0
---     | otherwise = (dictionary ^. _B )!! (fst $ indexed_s !! (fromJust $ elemIndex (minimum ratios) ratios))
--- --  | otherwise = (dictionary ^. _B )!! (fst $ indexed_s !! (fromJust $ elemIndex (minimum ratios) ratios))
---     -- 
---     where
---         sizeB = length $ dictionary^._B
---         dictMatrix = dictionary^.dict
---         rows = nrows dictMatrix
---         cols = ncols dictMatrix
---         dim = cols - rows - 1
---         _D = (dictMatrix ^. colAt (cols-1)) <|> submatrix' (0, rows-1) (0, rows-1) dictMatrix
---         s_col = dictMatrix ^. colAt pivot
---         slice_s = (concat . toLists . (submatrix' (dim+1, rows-1) (0,0)))  s_col
---         indexed_s = filter (snd.(fmap (>0))) $ zip [(dim+1)..] slice_s
---         sub_D = map (head .toLists . (\i -> _D ^. rowAt i) . fst) indexed_s -- takes rows with indices as in indexed_s
---         ratios = safeZipWith (map $) (map ((flip (/)) . snd) indexed_s) sub_D
-
-
--- selectPivot :: Dictionary -> Maybe (Int, Int)
--- selectPivot dictionary
---     | idxEntering == Nothing  =  trace ( "\ncobasis>>>" ++ show cobasic ++ "\nN>>>  "  ++ show (dictionary^._N) ++ "\nDic>>>\n" ++ show dictMatrix) Nothing
---     | otherwise =   Just $ (,) idxLeaving (fromJust idxEntering)
---     where
---         dictMatrix = dictionary^.dict
---         rows = nrows dictMatrix
---         cols = ncols dictMatrix
---         dim = cols - rows - 1
---         cobasic = (head.toLists.(submatrix' (0, 0) (rows, rows+dim-1))) dictMatrix 
---         idxEntering = fmap ((dictionary^._N) !!) (enteringVariable (dictionary^._N) cobasic)
---         idxLeaving = lexMinRatio dictionary (fromJust idxEntering)
-            --lexMinRatio dictionary (fromJust idxEntering)
--- trace ("Pivot>>>" ++ show (Just $ (,) idxLeaving (fromJust idxEntering)) ++ "\n Basis >>" ++ show (dictionary^._B) ++ "\t Cobasis >>" ++ show (dictionary^._N) ++ "\nDic>> \n" ++ show dictMatrix)
-
--- Int -> -- | Basic index 0...m-1 
--- Int -> -- | Cobasic index 0..d-1
-pivot ::    Int -> -- | Basic element
-            Int -> -- | Cobasic element
-            Dictionary -> 
-            Dictionary
-pivot r s dictionary
-    | a_t /= 0 = trace ("\nPivot>>" ++ show (r,s) ++ "\tVertex>>>" ++ show vertex ++ "\n")   newDic
-    | otherwise = dictionary
-    where
-        idxs_dic = dictionary^._B ++ dictionary^._N
-        id_cob = fromJust $ elemIndex s (dictionary^._N)
-        id_bas = fromJust $ elemIndex r (dictionary^._B)
-        idx_r = fromJust $ elemIndex r idxs_dic
-        idx_s = fromJust $ elemIndex s idxs_dic
-        dictMatrix = dictionary^.dict
-        col_s = dictMatrix ^. colAt (s)
-        a_t = col_s ^. elemAt (idx_r, 0)
-        eta = (mapCol' (\_ x -> -x/a_t) 0 col_s) & elemAt (idx_r,0) .~ (1/a_t)
-        _E = (identity (nrows dictMatrix)) & colAt (idx_r) .~ eta
-        newDic = Dict (dictionary^._B & element id_bas .~ s ) (dictionary^._N & element id_cob .~ r) (_E |*| dictMatrix)
-        vertex = getVertex newDic
--- trace ("\n\nNvec>>>" ++ show (dictionary^._N) ++ "\tReplaced>>>" ++ show (dictionary^._N & element id_cob .~ _B_r) ++ "\n s>>> " ++  show id_cob ++ "\t r>>>" ++ show id_bas ++ "\n")
--- trace ("\nDic>>>> \n" ++ show dictMatrix  ++ "\nCol_S>>>> \n" ++ show col_s ++ "\n a>>> " ++ show a_t )
-
-
-
-
--- lexmin :: Dictionary -> Int -> Bool
--- lexmin dictionary _
---     | s == Nothing = True
---     | otherwise = not $ _B_r>_N_s && (dictMatrix ^. elemAt (r,rows-1)) == 0 && (s_col ^. elemAt (r,0)) /= 0
---     where
---         sizeB = length $ dictionary^._B
---         dictMatrix = dictionary^.dict
---         rows = nrows dictMatrix
---         cols = ncols dictMatrix
---         dim = cols - rows - 1
---         cobasic = (head.toLists.(submatrix' (0, 0) (rows, rows+dim-1))) dictMatrix 
---         s = enteringVariable (dictionary^._N) cobasic
---         r = fromJust $ lexMinRatio dictionary (fromJust s)
---         _B_r = (dictionary ^._B) !! (r)
---         _N_s = (dictionary ^._N) !! (fromJust s)
---         s_col = dictMatrix ^. colAt (sizeB + (fromJust s))
-
-
-
-reverseRS' :: 
-    Dictionary ->
-    Int -> -- | Index of the element i the N
-    Maybe ([Int], Int)
-reverseRS' dictionary v
-    | v<0 || v>= length (dictionary^._N) = error "reverseRS: index of N out of bound"
-    | filtered == [] = trace ("\nPreFiltered>>>\n"++ show filt_aux) Nothing
-    | otherwise =  trace ("\nPreFiltered>>>\n"++ show filt_aux) Just ( map (snd) filtered, v_elem)
-    where
-        basis = dictionary^._B
-        cobasis = dictionary^._N
-        v_elem = cobasis!!v
-        dictMatrix = dictionary^.dict
-        possibleBasis = zip (map (\x -> pivot x v_elem dictionary ) basis) basis
-        getPivots = map (\dic ->  (selectPivot $  fst dic, snd dic) ) possibleBasis
-        filt_aux = filter (\(piv, u) ->  piv /= Nothing ) getPivots
-        filtered = filter (\(piv, u) ->   ( (fst $ fromJust piv) == v_elem) && (( snd $ fromJust piv ) == u) ) filt_aux
---trace ("\n\n Posible Basis >>>" ++ show possibleBasis ++ "\n\n Get Pivots>>>" ++ show getPivots  ++ "\nMatrix >>>" ++ show dictMatrix  ++ "\nDic B~ >>>\n" ++ show dic1 ++  "\nDic B>>>\n" ++ show dic2)
-        
-         
-
-
-
-reverseRS :: Dictionary -> Int -> Maybe ( [Int], Int)
+reverseRS :: 
+    Dictionary -> 
+    Int ->          -- element in N
+    Maybe Int
 reverseRS dictionary v
-    | v<0 || v>= length (dictionary^._N) = error "reverseRS: index of N out of bound"
-    | conditions == False = trace ("\nWro_U>>>" ++ show w_row_u ++ "\nDiff Ws" ++ show  diff_ws ++ "\nW0>>>" ++ show w_row_0 ++ "\n List>>>"++ show lista )  Nothing
-    | conditions == True = trace ("\nWro_U>>>" ++ show w_row_u ++ "\nDiff Ws" ++ show  diff_ws ++ "\nW0>>>" ++ show w_row_0 ++ "\n List>>>"++ show lista ) Just ([u], v_el )
+    | conditions == False = Nothing
+    | conditions == True = Just u
     where
-        v_el = (dictionary^._N)!!v
-        rows = numRows dictionary
-        cols = numCols dictionary
         dictMatrix = dictionary^.dict
-        v_col = dictMatrix ^. colAt (v_el)
+        v_col = dictMatrix ^. colAt (v)
         w_row_0 = dictMatrix ^. rowAt 0
-        u = fromJust $ lexMinRatio dictionary v
-        i = fromJust $ elemIndex u (dictionary^._B)
-        w_row_u = mapRow' (\_ w -> (v_col ^. elemAt (0,0))/(v_col ^. elemAt (i,0)) * w) 0 $ dictMatrix ^. rowAt (i)
-        diff_ws = (head.toLists) $ w_row_0 - w_row_u
-        lista = [(diff_ws!!((dictionary^._N)!!j))| j <- [0..(length (dictionary^._N))-1] , (dictionary^._N)!!j < u]
-        conditions = (w_row_0 ^. elemAt (0,v_el)) > 0 && u /= 0  && all (>=0) lista
+        u = lexMinRatio dictionary v
+        i = fromJust $ elemIndex u (dictionary ^. _B)
+        w_row_i = mapRow' (\_ x -> (v_col ^. elemAt (0,0))/(v_col ^. elemAt (i,0)) * x) 0 $ dictMatrix ^. rowAt (i)
+        diff_ws = (head.toLists) $ w_row_0 - w_row_i
+        lastCondition = all (>=0) [(diff_ws!!j)| j <- dictionary^._N , j < u]
+        conditions = (w_row_0 ^. elemAt (0,v)) > 0  && u /= 0  && lastCondition 
 
 
 
--- && u /= Nothing
---  && (dictionary^.idxs)!!(fromJust u) /= 0 
 
---[0..rows] [rows+1..rows+cols]
-
-sortDictionary :: Dictionary -> Dictionary
-sortDictionary (Dict _B _N dictMatrix) =  Dict [0..rows-1] [rows..rows+dim-1] ((identity (nrows dictMatrix)) <|> matN )
-    --
+reverseRS' :: -- reverse with pivot and selectPivot
+    Dictionary -> 
+    Int -> 
+    Maybe Int
+reverseRS' dictionary v
+    | newPivots == Nothing = Nothing
+    | condition == False = Nothing
+    | condition == True = Just u 
     where
-        dim = cols - rows - 1
-        rows = nrows dictMatrix
-        cols = ncols dictMatrix
-        aux = dictMatrix
-        idxs = _B ++ _N
-        sortCols currMatrix i auxMatrix = case elemIndex i idxs of
-                                    Just idx -> sortCols currMatrix (i+1) (auxMatrix & colAt i .~ (currMatrix ^. colAt idx))
-                                    Nothing -> auxMatrix
-        sortRows currMatrix i auxMatrix = case (if i < nrows currMatrix then elemIndex (_B !! i) (sort _B) else Nothing)  of
-                                    Just idx -> sortRows currMatrix (i+1) (auxMatrix & rowAt idx .~ (currMatrix ^. rowAt i))
-                                    Nothing -> auxMatrix
-        sortedDict = (sortRows (sortCols dictMatrix 0 aux) 0 aux )
-        matN = submatrix' (0, (nrows dictMatrix)-1) (nrows dictMatrix, (ncols dictMatrix)-1) $ sortedDict
--- trace ("\n Dic : \n"  ++ show aux ++ "\nDic Sorted: \n" ++ show (((identity (nrows dictMatrix)) <|> matN )))
+        u = lexMinRatio dictionary v
+        prev_B = pivot u v dictionary
+        newPivots = selectPivot prev_B
+        condition = fst (fromJust newPivots) == v && (snd (fromJust newPivots)) == u
 
-lrs :: Matrix Rational -> Col -> [Vertex]
-lrs matrix b = (sort.nub) $ revSearch dictionary
-    where
-        --dictionary = sortDictionary $ simplex $ getSortedDictionary matrix b
-        dictionary = simplex $ getSortedDictionary matrix b
--- sortDictionary $
+
 
 getVertex :: Dictionary -> Vertex
 getVertex dictionary = concat $ toLists $ submatrix' (1,dim) (cols-1, cols-1) (dictionary^.dict)
@@ -442,16 +270,37 @@ getVertex dictionary = concat $ toLists $ submatrix' (1,dim) (cols-1, cols-1) (d
         dim = cols-rows-1
 
 revSearch :: Dictionary -> [Vertex]
-revSearch dictionary@(Dict _B _N dictMatrix) =  getVertex dictionary : concatMap revSearch (pivoted)
- --   | isLexMin || not isLexMin = getVertex dictionary : concatMap revSearch pivoted
- --   | otherwise = concatMap revSearch pivoted
+revSearch dictionary@(Dict _B _N dictMatrix) = getVertex dictionary : concatMap revSearch pivoted
     where
-        --rows = numRows dictionary
-        --cols = numCols dictionary
-        -- isLexMin = lexmin dictionary 0
-        valid_N =  [ fromJust $ (reverseRS dictionary i) | i <- [0..(length _N)-1] , (reverseRS dictionary i) /= Nothing ]
-        pivoted =  concat $ map (\(r,s) ->   (map ( \u -> pivot u s dictionary) r )  ) valid_N
-        --pivoted =  map (\(r,s) ->  pivot (r!!0) s dictionary)   valid_N
-        -- valid_B = map (lexMinRatio dictionary) valid_N
-        -- interm = filter (\(a,b) -> a /= Nothing) $ zip valid_B valid_N
---  trace ("\nValid_N>>>" ++ show valid_N ++ "\nPivoted>>>\n" ++ show pivoted )        
+        rows = numRows dictionary
+        cols = numCols dictionary
+        valid_N = [i | i <- _N, (reverseRS dictionary i) /= Nothing]
+        valid_B = map (lexMinRatio dictionary) valid_N
+        pivoted = map (\(r, s) ->  pivot r s dictionary) $ zip valid_B valid_N
+
+
+lrs :: Matrix Rational -> Col -> Vertex-> [Vertex]
+lrs matrix b vertex = (sort.nub) $ revSearch dictionary
+    where
+        dictionary = simplex $ getDictionary matrix b vertex
+
+
+
+-- sortDictionary :: Dictionary -> Dictionary
+-- sortDictionary (Dict _B _N dictMatrix) = Dict [0..rows-1] [rows..rows+dim-1] ((identity (nrows dictMatrix)) <|> matN )
+    
+--     where
+--         dim = cols - rows - 1
+--         rows = nrows dictMatrix
+--         cols = ncols dictMatrix
+--         aux = dictMatrix
+--         idxs = _B ++ _N
+--         sortCols currMatrix i auxMatrix = case elemIndex i idxs of
+--                                     Just idx -> sortCols currMatrix (i+1) (auxMatrix & colAt i .~ (currMatrix ^. colAt idx))
+--                                     Nothing -> auxMatrix
+--         sortRows currMatrix i auxMatrix = case (if i < nrows currMatrix then elemIndex (_B !! i) (sort _B) else Nothing)  of
+--                                     Just idx -> sortRows currMatrix (i+1) (auxMatrix & rowAt idx .~ (currMatrix ^. rowAt i))
+--                                     Nothing -> auxMatrix
+--         sortedDict = (sortRows (sortCols dictMatrix 0 aux) 0 aux )
+--         matN = submatrix' (0, (nrows dictMatrix)-1) (nrows dictMatrix, (ncols dictMatrix)-1) $ sortedDict
+

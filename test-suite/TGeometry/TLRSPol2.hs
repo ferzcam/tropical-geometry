@@ -50,7 +50,7 @@ b = colFromList [0,0,0,1,1,2,1,2,1]
 
 
 lrsPoly :: Polynomial (Tropical Integer) Lex 2 -> [Vertex]
-lrsPoly poly = lrs matsHyp bHyp
+lrsPoly poly = lrs matsHyp bHyp (head points)
     where
         points = expVecs poly
         facetEnumerated = facetEnumeration $ extremalVertices points
@@ -66,7 +66,7 @@ testLRS = HU.testCase "Test for LRS in two variable polys" $ do
 
 testVertexEnum :: TestTree
 testVertexEnum = HU.testCase "Test for LRS in two variable polys" $ do
-        (sort.expVecs) f1 @?= lrsPoly f1
+--        (sort.expVecs) f1 @?= lrsPoly f1
         (sort.expVecs) f2 @?= lrsPoly f2
         (sort.expVecs) f3 @?= lrsPoly f3
   --      (sort.expVecs) f4 @?= lrsPoly f4
