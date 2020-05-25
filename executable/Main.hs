@@ -30,6 +30,7 @@ mat = fromLists [
 b = colFromList [0,0,0,1,1,2,1,2,1]
 
 dictio = getDictionary mat b
+dictiS = getSortedDictionary mat b
 ----------------------------------------------
 
 
@@ -56,6 +57,8 @@ facetEnumerated2 = facetEnumeration $ extremalVertices points2
 matsHyp2 = fromLists $ map (\(_,h,_) -> h) facetEnumerated2
 bHyp2 = colFromList $ map (\(_,_,b) -> b) facetEnumerated2
 
+tf2 = simplex $ getSortedDictionary matsHyp2 bHyp2
+
 resf2 = (sort points2) == ((sort.nub) $ lrs matsHyp2 bHyp2)
 
 mats = map fromLists $ MS.elems $ normalCones points
@@ -63,6 +66,16 @@ rays = map (\mat -> let b = colFromList $ replicate (nrows mat) 0 in lrs mat b) 
 
 mat1 = head mats
 
+f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+points3 = expVecs f3
+facetEnumerated3 = facetEnumeration $ extremalVertices points3
+matsHyp3 = fromLists $ map (\(_,h,_) -> h) facetEnumerated3
+bHyp3 = colFromList $ map (\(_,_,b) -> b) facetEnumerated3
+
+dicf3 = getDictionary matsHyp3 bHyp3
+
+ady3 = adjacencyMatrix $ extremalVertices points3
+resf3 = (sort points3) == ((sort.nub) $ lrs matsHyp3 bHyp3)
 
 lrs1 = lrs mat b
 res1 = (sort [[0,0,0],[1,0,0],[1,1,0],[1,1,1],[1,0,1],[0,1,0],[0,1,1],[0,0,1],[1/2,1/2,3/2]]) == (sort.nub) lrs1

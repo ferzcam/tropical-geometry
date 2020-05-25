@@ -34,6 +34,21 @@ f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6 + 6*
 f9 = x^2*y^2 + y^2 + x^2 + 0
 
 
+mat = fromLists [
+                        [-1,0,0],
+                        [0,-1,0],
+                        [0,0,-1],
+                        [1,0,0],
+                        [0,1,0],
+                        [0,1,1],
+                        [0,-1,1],
+                        [1,0,1],
+                        [-1,0,1]
+                    ]
+
+b = colFromList [0,0,0,1,1,2,1,2,1]
+
+
 lrsPoly :: Polynomial (Tropical Integer) Lex 2 -> [Vertex]
 lrsPoly poly = lrs matsHyp bHyp
     where
@@ -42,6 +57,11 @@ lrsPoly poly = lrs matsHyp bHyp
         matsHyp = fromLists $ map (\(_,h,_) -> h) facetEnumerated
         bHyp = colFromList $ map (\(_,_,b) -> b) facetEnumerated
 
+
+
+testLRS :: TestTree
+testLRS = HU.testCase "Test for LRS in two variable polys" $ do
+        lrs mat b @?= [[0,0,0]]
 
 
 testVertexEnum :: TestTree
@@ -57,5 +77,6 @@ testVertexEnum = HU.testCase "Test for LRS in two variable polys" $ do
         (sort.expVecs) f9 @?= lrsPoly f9
 
 testsVertexEnumPol2 :: TestTree
-testsVertexEnumPol2 = testGroup "Test for LRS in two variable polys" [testVertexEnum] 
+testsVertexEnumPol2 = testGroup "Test for LRS in two variable polys" [ testLRS] 
 
+--testVertexEnum,
