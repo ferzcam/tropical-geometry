@@ -14,6 +14,7 @@ import Data.List
 import Core
 import Data.Maybe
    
+import qualified Data.Map.Strict as MS
 
 v, w, x, y, z :: Polynomial (Tropical Integer) Lex 5
 v = variable 0
@@ -29,7 +30,7 @@ f1 = (x^2 + y^2 + (-1)*z^2)*(v^2+w^2+z^2 + (-1))
 
 testVertices5 :: TestTree
 testVertices5 = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
-        (sort.(map fromJust).vertices) f1 @?= sort [[-1/2,-1/2,-1/1,-1/1,-1/2]]
+        (sort.(MS.keys).vertices) f1 @?= sort [[-1/2,-1/2,-1/1,-1/1,-1/2]]
       --  (sort.(map fromJust).vertices) f2 @?= sort []
         
 testsHypersurface5 :: TestTree

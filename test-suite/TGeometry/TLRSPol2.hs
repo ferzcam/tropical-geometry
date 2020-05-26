@@ -42,19 +42,20 @@ lrsPoly poly = lrs matsHyp bHyp (head points)
         matsHyp = fromLists $ map (\(_,h,_) -> h) facetEnumerated
         bHyp = colFromList $ map (\(_,_,b) -> b) facetEnumerated
 
-
+mat1 = (fromLists [[1,0,-2],[1,-1,0],[0,-1,0],[-1,0,-1]])
 
 testVertexEnum :: TestTree
 testVertexEnum = HU.testCase "Test for LRS in two variable polys" $ do
+        lrs mat1 (colFromList [0,0,0,0]) [0,0,0] @?= [[(-2)/3,(-2)/3,(-1)/3],[0,(-1),0],[0,0,(-1)],[1,0,(-1)]]
 --        (sort.expVecs) f1 @?= lrsPoly f1
-        (sort.expVecs) f2 @?= lrsPoly f2
-        (sort.expVecs) f3 @?= lrsPoly f3
+        -- (sort.expVecs) f2 @?= lrsPoly f2
+        -- (sort.expVecs) f3 @?= lrsPoly f3
   --      (sort.expVecs) f4 @?= lrsPoly f4
  --       (sort.expVecs) f5 @?= lrsPoly f5
-        (sort.expVecs) f6 @?= lrsPoly f6
-        (sort.expVecs) f7 @?= lrsPoly f7
-        (sort.expVecs) f8 @?= lrsPoly f8
-        (sort.expVecs) f9 @?= lrsPoly f9
+        -- (sort.expVecs) f6 @?= lrsPoly f6
+        -- (sort.expVecs) f7 @?= lrsPoly f7
+        -- (sort.expVecs) f8 @?= lrsPoly f8
+        -- (sort.expVecs) f9 @?= lrsPoly f9
 
 testsVertexEnumPol2 :: TestTree
 testsVertexEnumPol2 = testGroup "Test for LRS in two variable polys" [testVertexEnum] 

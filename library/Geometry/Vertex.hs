@@ -1,6 +1,7 @@
 module Geometry.Vertex(
     -- * Types
     Vertex,
+    IVertex,
     AdjacencyMatrix,
 
     -- * Functions 
@@ -29,6 +30,7 @@ import Data.Maybe
 
 
 type Vertex = [Rational]
+type IVertex = [Integer]
 type AdjacencyMatrix = Matrix Bool
 
 -- | Analizes whether a point in a set is extremal or not.

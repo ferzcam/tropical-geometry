@@ -24,6 +24,8 @@ data Dictionary = Dict {
                         } 
     deriving (Show, Eq)
 
+data Extremal = Vertex Vertex | Ray Vertex
+
 makeLenses ''Dictionary
 
 numRows :: Dictionary -> Int
@@ -180,6 +182,7 @@ enteringVariable dictionary
 
 lexMinRatio :: Dictionary -> Int -> Int
 lexMinRatio dictionary s
+    | dim+1 == rows = 0
     | null indexed_s = 0
     | otherwise = (dictionary ^. _B) !! (fst $ indexed_s !! (fromJust $ elemIndex (minimum ratios) ratios))
     where
@@ -248,19 +251,19 @@ reverseRS dictionary v
 
 
 
-reverseRS' :: -- reverse with pivot and selectPivot
-    Dictionary -> 
-    Int -> 
-    Maybe Int
-reverseRS' dictionary v
-    | newPivots == Nothing = Nothing
-    | condition == False = Nothing
-    | condition == True = Just u 
-    where
-        u = lexMinRatio dictionary v
-        prev_B = pivot u v dictionary
-        newPivots = selectPivot prev_B
-        condition = fst (fromJust newPivots) == v && (snd (fromJust newPivots)) == u
+-- reverseRS :: -- reverse with pivot and selectPivot
+--     Dictionary -> 
+--     Int -> 
+--     Maybe Int
+-- reverseRS dictionary v
+--     | newPivots == Nothing = Nothing
+--     | condition == False = Nothing
+--     | condition == True = Just u 
+--     where
+--         u = lexMinRatio dictionary v
+--         prev_B = pivot u v dictionary
+--         newPivots = selectPivot prev_B
+--         condition = fst (fromJust newPivots) == v && (snd (fromJust newPivots)) == u
 
 
 
@@ -272,19 +275,44 @@ getVertex dictionary = concat $ toLists $ submatrix' (1,dim) (cols-1, cols-1) (d
         dim = cols-rows-1
 
 revSearch :: Dictionary -> [Vertex]
-revSearch dictionary@(Dict _B _N dictMatrix) = getVertex dictionary : concatMap revSearch pivoted
+revSearch dictionary@(Dict _B _N dictMatrix) -- = getVertex dictionary : concatMap revSearch pivoted
+    | (not.null) possibleRay = possibleRay ++ (concatMap revSearch pivoted)
+    | otherwise = getVertex dictionary : concatMap revSearch pivoted
     where
         rows = numRows dictionary
         cols = numCols dictionary
         valid_N = [i | i <- _N, (reverseRS dictionary i) /= Nothing]
         valid_B = map (lexMinRatio dictionary) valid_N
         pivoted = map (\(r, s) ->  pivot r s dictionary) $ zip valid_B valid_N
+        possibleRay = hasRay dictionary
+
+
+-- lexMin :: Dictionary -> Maybe Extremal
+-- lexMin dictionary
+
+
+hasRay :: Dictionary -> [Vertex]
+hasRay dictionary = rays
+    -- | idxsPivot == Nothing = Nothing
+    -- | r == 0 = Just ray
+    -- | otherwise = Nothing
+    where
+        dictMatrix = dictionary ^. dict
+        rows = numRows dictionary
+        dim = cols - rows -1
+        cols = numCols dictionary
+        nonPositive column = all (<=0) ((concat.toLists) column)
+        colsWithRays = if dim+1 == rows then
+                            [dictMatrix^.colAt j | j <- [rows..cols-2]]
+                        else [dictMatrix^.colAt j | j <- [rows..cols-2], nonPositive (submatrix' (dim+1,rows-1) (j,j) dictMatrix )]
+        rays =  map (concat . toLists . (submatrix' (1,dim) (0,0))) colsWithRays
+
 
 
 lrs :: Matrix Rational -> Col -> Vertex-> [Vertex]
 lrs matrix b vertex = (sort.nub) $ revSearch dictionary
     where
-        dictionary = simplex $ getDictionary matrix b vertex
+        dictionary = getDictionary matrix b vertex
 
 
 
