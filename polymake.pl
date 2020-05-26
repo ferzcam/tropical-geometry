@@ -66,7 +66,7 @@ sub s_f31{
 }
 
 sub s_f32{
-    my $f32 = toTropicalPolynomial("min(x, y, z, 1 + w)", qw(w x y z));
+    my $f32 = toTropicalPolynomial("min(x + w, y + w , y + x, 2 x, 1 + 2w)", qw(w x y));
     my $H32 = new Hypersurface<Min>(POLYNOMIAL=>$f32); 
     print $H32->VERTICES . "\n". "\n";
 }
@@ -90,6 +90,7 @@ sub s_f51{
      2y-1 +2u, 2v+2y,2w+2y,2y+2z,
       2z+ 2u-2,2z+2v-1,2z+2w-1,4z-1)", qw(u v w x y z));
     my $H51 = new Hypersurface<Min>(POLYNOMIAL=>$f51); 
+    print $H51->RAYS . "\n".  "\n";
     print $H51->VERTICES . "\n". "\n";
 }
 
@@ -102,7 +103,7 @@ sub s_f51{
 
 # s_f1();
 # s_f2();
-# s_f3();
+s_f3();
 # s_f4();
 # s_f5();
 # s_f6();
@@ -110,6 +111,6 @@ sub s_f51{
 #s_f8();
 
 #s_f31();
-#s_f32();
+s_f32();
 
-s_f51();
+#s_f51();
