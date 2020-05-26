@@ -93,3 +93,14 @@ instance Num Bool where
 
 sndThrd :: (a,b,c) -> (b,c)
 sndThrd (_,b,c) = (b,c)
+
+
+lcmList :: [Integer] -> Integer
+lcmList [] = error "lcmList: list must have at least one element"
+lcmList [x] = x
+lcmList (x:y:z) = lcmList ((lcm x y):z)
+
+gcdList :: [Integer] -> Integer
+gcdList [] = error "lcmList: list must have at least one element"
+gcdList [x] = x
+gcdList (x:y:z) = gcdList ((gcd x y):z)

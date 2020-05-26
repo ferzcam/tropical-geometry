@@ -14,8 +14,8 @@ set2 = [[1,0,0], [0,1,0], [0,0,1], [1,1,1], [0.5, 0.5, 0.5]]
 
 testNormalCones :: TestTree
 testNormalCones = HU.testCase "Test for vertices and their normals" $ do
-        normalCones set1 @?= MS.empty
-        normalCones set2 @?= MS.empty
+        _H_normalCones set1 @?= MS.empty
+        _H_normalCones set2 @?= MS.empty
 
 testsPolyhedral :: TestTree
 testsPolyhedral = testGroup "Test for computing polyhedral algorithms" []

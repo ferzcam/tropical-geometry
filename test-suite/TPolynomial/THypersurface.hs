@@ -13,6 +13,8 @@ import Test.Tasty.HUnit as HU
 import Data.List
 import Core
 import Data.Maybe
+
+import qualified Data.Map.Strict as MS
    
 
 x, y :: Polynomial (Tropical Integer) Lex 2
@@ -40,6 +42,7 @@ f10 = p1*p2
 
 testVertices :: TestTree
 testVertices = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
+<<<<<<< HEAD
         (sort.(map fromJust).vertices) f1 @?= sort [[2,2], [-1,0], [0,0], [0,-1]]
         (sort.(map fromJust).vertices) f2 @?= sort [[-1,1], [1,-1], [-2,1], [1,-2]]
         (sort.(map fromJust).vertices) f3 @?= sort [[-2,0], [-1,0], [0,1], [1,1], [2,2], [1,0], [0,-1], [0,-2], [-1,-1]]
@@ -50,6 +53,18 @@ testVertices = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
         (sort.(map fromJust).vertices) f8 @?= sort [[-6,-4],[-5,-4],[-4,0],[-2,-4],[-2,2],[-1,0],[-1,1],[0,-3],[0,0],[2,-2],[2,-1],[2,0],[10,8]]
         (sort.(map fromJust).vertices) f9 @?= sort [[0,0]]
         (sort.(map fromJust).vertices) f10 @?= sort [[0,0], [0, 1/2]]  
+=======
+        (sort.(MS.keys).vertices) f1 @?= sort [[2,2], [-1,0], [0,0], [0,-1]]
+        (sort.(MS.keys).vertices) f2 @?= sort [[-1,1], [1,-1], [-2,1], [1,-2]]
+        (sort.(MS.keys).vertices) f3 @?= sort [[-2,0], [-1,0], [0,1], [1,1], [2,2], [1,0], [0,-1], [0,-2], [-1,-1]]
+        (sort.(MS.keys).vertices) f4 @?= sort [[0,0]]
+        (sort.(MS.keys).vertices) f5 @?= sort [[0,4]]
+        (sort.(MS.keys).vertices) f6 @?= sort [[-4,-3],[-4,-2],[-2,-3],[-1,1],[0,-1],[0,0],[2,-1],[2,0],[5,3]]
+        (sort.(MS.keys).vertices) f7 @?= sort [[-2,2],[-1,0],[-1,1],[0,0],[2,-3],[2,-1],[2,0],[5,3]]
+        (sort.(MS.keys).vertices) f8 @?= sort [[-6,-4],[-5,-4],[-4,0],[-2,-4],[-2,2],[-1,0],[-1,1],[0,-3],[0,0],[2,-2],[2,-1],[2,0],[10,8]]
+        (sort.(MS.keys).vertices) f9 @?= sort [[0,0]]
+        verticesWithRays f1 @?= MS.empty
+>>>>>>> d634b9afd378fb426296cf991fb34d67fde2659c
 
 --    
 testsHypersurface :: TestTree

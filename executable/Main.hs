@@ -47,6 +47,17 @@ bHyp = colFromList $ map (\(_,_,b) -> b) facetEnumerated
 resf1 = (sort points) == ((sort.nub) $ lrs matsHyp bHyp [1,0,0])
 
 
+mats = map fromLists $ MS.elems $ _H_normalCones points
+rays = map (\mat -> let b = colFromList $ replicate (nrows mat) 0 in lrs mat b [0,0,0]) mats
+
+--mat1 = head mats
+
+mat1 = (fromLists [[1,0,-2],[1,-1,0],[0,-1,0],[-1,0,-1]]) :: Matrix Rational
+bbb1 = colFromList [0,0,0,0] :: Col
+
+mat2 = - ((head.tail) mats)
+
+
 f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
 points2 = expVecs f2
 facetEnumerated2 = facetEnumeration $ extremalVertices points2
@@ -54,13 +65,14 @@ matsHyp2 = fromLists $ map (\(_,h,_) -> h) facetEnumerated2
 bHyp2 = colFromList $ map (\(_,_,b) -> b) facetEnumerated2
 resf2 = (sort points2) == ((sort.nub) $ lrs matsHyp2 bHyp2 [0,0,0])
 
-f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + 1*x*y + 1*y^2 + 2*x + 1*y + 3
+f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
 points3 = extremalVertices $ expVecs f3
 facetEnumerated3 = facetEnumeration $ extremalVertices points3
 matsHyp3 = fromLists $ map (\(_,h,_) -> h) facetEnumerated3
 bHyp3 = colFromList $ map (\(_,_,b) -> b) facetEnumerated3
 resf3 = (sort points3) == ((sort.nub) $ lrs matsHyp3 bHyp3 [0,1,1])
 
+<<<<<<< HEAD
 -- mats = map fromLists $ MS.elems $ normalCones points
 -- rays = map (\mat -> let b = colFromList $ replicate (nrows mat) 0 in lrs mat b) mats
 
@@ -76,6 +88,8 @@ dicf3 = getDictionary matsHyp3 bHyp3
 
 ady3 = adjacencyMatrix $ extremalVertices points3
 resf3 = (sort points3) == ((sort.nub) $ lrs matsHyp3 bHyp3)
+=======
+>>>>>>> d634b9afd378fb426296cf991fb34d67fde2659c
 
 lrs1 = lrs mat b [0.5,0.5,1.5]
 res1 = (sort [[0,0,0],[1,0,0],[1,1,0],[1,1,1],[1,0,1],[0,1,0],[0,1,1],[0,0,1],[1/2,1/2,3/2]]) == (sort.nub) lrs1
