@@ -132,10 +132,21 @@ checkBranch ::
     ([Facet], [Maybe Hyperplane])  -- ^ resulting tuple (facets, hyperplanes)
 checkBranch dictIndexVertex ui branch (facets, hyperplanes) =
     if (not.(elem hyper)) hyperplanes && all (<= pure 1) equation12 && (((fmap dot hyper) <*> (pure ui)) > pure 0  || computedWithDet)
-    then (branch:facets,hyper:hyperplanes)
+    then  ((complete branch):facets,hyper:hyperplanes) --trace ("\n\nBRAANCH >>>" ++ show branch ++ "\n\nCOMPLETE BRANCH>> " ++ show (complete branch)) 
     else (facets,hyperplanes)
     where
         branchToVertices = map (\idx -> fromJust $ MS.lookup idx dictIndexVertex) branch
         (hyper, computedWithDet) = computeHyperplane branchToVertices
         set = map snd $ MS.toList dictIndexVertex
         equation12 = map (((fmap dot hyper) <*>) . pure) set
+        complete br = if computedWithDet then
+                            sortBySublist branch (MS.keys dictIndexVertex)
+                      else sortBySublist branch (MS.keys $ MS.filter (\v -> ((fmap dot hyper) <*> (pure v)) == pure 1) dictIndexVertex)
+
+
+
+sortBySublist :: (Eq a) => [a] -> [a] -> [a]
+sortBySublist [] bigList = bigList
+sortBySublist (x:xs) bigList
+    | elem x bigList = x : sortBySublist xs (delete x bigList)
+    | otherwise = error "sortBySublist: element is not found in bigger list"

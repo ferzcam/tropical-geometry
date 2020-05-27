@@ -23,6 +23,8 @@ import Data.Ratio
 import Debug.Trace
 
 
+data Extremal = V Vertex | R IVertex deriving (Show, Eq)
+
 expVecs :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> [Vertex]
 expVecs poly = safeZipWith (++) expVec (map return coeffs)
     where
@@ -61,7 +63,7 @@ lowerHull poly = pointSub
                     in  map ((map lookUp2).fst) subdivision
 
 -- verticesWithRays :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> MS.Map Vertex [IVertex]
--- verticesWithRays poly = trace ("RAYSSSS\n\n\n" ++ show rays ++ "\n\n\n") MS.map (flip selectRays rays) vertices
+-- verticesWithRays poly = MS.map (flip selectRays rays) vertices
 --     where
 --         terms = (MS.toList . getTerms) poly
 --         points = expVecs poly
@@ -77,8 +79,26 @@ lowerHull poly = pointSub
 --         rays = (_V_normalCones . _H_normalCones) extremal
 
 
-verticesWithRays :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> MS.Map Vertex [IVertex]
-verticesWithRays poly = vertices2 -- trace ("RAYSSSS\n\n\n" ++ show rays ++ "\n\n\n") MS.map (flip selectRays rays) vertices
+-- verticesWithRays :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> MS.Map Vertex [IVertex]
+-- verticesWithRays poly = vertices2 -- trace ("RAYSSSS\n\n\n" ++ show rays ++ "\n\n\n") MS.map (flip selectRays rays) vertices
+--     where
+--         terms = (MS.toList . getTerms) poly
+--         points = expVecs poly
+--         dictPointTerm = MS.fromList $ zip points terms
+--         extremal = sort $ extremalVertices points
+--         dictIndexPoint = MS.fromList $ zip [1..] extremal
+--         facetEnum = facetEnumeration extremal
+--         subdivision = lowerFacets $ map (\(a,b,_) -> (a,b)) facetEnum
+--         subdivVertices = map (map (project . fromJust . (flip MS.lookup dictIndexPoint))) (map fst subdivision)
+--         facetMons = let 
+--                         lookUp2 = ((MS.!) dictPointTerm) . ((MS.!) dictIndexPoint)
+--                     in  map ((map lookUp2).fst) subdivision
+--         vertices = MS.fromList $ safeZipWith (,) (map (fromJust.solveSystem) facetMons) subdivVertices -- map solveSystem facetMons)
+--         vertices2 = MS.map ((map ((map negate).standard)) . nub . _V_normalCones' . _H_normalCones) vertices
+--         rays = (_V_normalCones . _H_normalCones) extremal
+
+verticesWithRays :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> [Extremal]
+verticesWithRays poly = vertices' ++ rays'
     where
         terms = (MS.toList . getTerms) poly
         points = expVecs poly
@@ -92,10 +112,9 @@ verticesWithRays poly = vertices2 -- trace ("RAYSSSS\n\n\n" ++ show rays ++ "\n\
                         lookUp2 = ((MS.!) dictPointTerm) . ((MS.!) dictIndexPoint)
                     in  map ((map lookUp2).fst) subdivision
         vertices = MS.fromList $ safeZipWith (,) (map (fromJust.solveSystem) facetMons) subdivVertices -- map solveSystem facetMons)
-        vertices2 = MS.map ((map ((map negate).standard)) . nub . _V_normalCones' . _H_normalCones) vertices
-        rays = (_V_normalCones . _H_normalCones) extremal
-
-
+        rays = MS.elems $ MS.map ((map ((map negate).standard)) . nub . _V_normalCones' . _H_normalCones) vertices
+        rays' = ((map R).nub.concat) rays
+        vertices' = ((map V) . MS.keys) vertices 
 
 project :: Vertex -> Vertex
 project v = init v

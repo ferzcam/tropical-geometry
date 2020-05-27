@@ -43,12 +43,12 @@ _H_normalCones set = MS.mapKeys (fromJust . (flip BM.lookupR dict)) cones  -- BM
 
 
 _V_normalCones :: MS.Map Int [Hyperplane] -> MS.Map Int [Vertex]
-_V_normalCones set =  MS.map ((\mat -> lrs (-mat) b vertx) . fromLists) set
+_V_normalCones set =  MS.map ((\mat -> lrs (-mat) (getB mat) vertx) . fromLists) set
     where
         firstElem = (snd . head . MS.toList) set
         cols = (length.head) firstElem
-        rows = length firstElem
-        b = colFromList (replicate rows 0)
+    --    rows = length firstElem
+        getB mat = colFromList (replicate (nrows mat) 0)
         vertx = replicate cols 0
 
 _V_normalCones' :: MS.Map Int [Hyperplane] -> [Vertex]

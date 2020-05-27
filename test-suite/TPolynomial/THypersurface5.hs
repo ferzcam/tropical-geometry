@@ -30,7 +30,8 @@ f1 = (x^2 + y^2 + (-1)*z^2)*(v^2+w^2+z^2 + (-1))
 
 testVertices5 :: TestTree
 testVertices5 = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
-        (sort.(MS.keys).vertices) f1 @?= sort [[-1/2,-1/2,-1/1,-1/1,-1/2]]
+      verticesWithRays f1 @?= [V [(-1)/2,(-1)/2,(-1),(-1),(-1)/2],R [1,0,0,0,0],R [0,1,0,0,0],R [0,0,1,1,1],R [0,0,1,0,0],R [0,0,0,1,0],R [-1,-1,-1,-1,-1],R [0,0,-1,-1,0]]
+       -- (sort.(MS.keys).vertices) f1 @?= sort [[-1/2,-1/2,-1/1,-1/1,-1/2]]
       --  (sort.(map fromJust).vertices) f2 @?= sort []
         
 testsHypersurface5 :: TestTree

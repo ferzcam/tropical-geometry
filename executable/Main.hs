@@ -97,6 +97,7 @@ resCube = lrsCube == [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1]
 -- exf2 = (sortDictionary.simplex.getDictionary matsHyp2) bHyp2 == getSortedDictionary matsHyp2 bHyp2
 -- exCube = (sortDictionary.simplex.getDictionary cubeMat) cubeB == getSortedDictionary cubeMat cubeB
 
+f9 = x^2*y^2 + y^2 + x^2 + 0
 
 main :: IO ()
 main = putStrLn "Welcome to the tropical-geometry package"

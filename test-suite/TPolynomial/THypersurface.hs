@@ -42,29 +42,24 @@ f10 = p1*p2
 
 testVertices :: TestTree
 testVertices = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
-<<<<<<< HEAD
-        (sort.(map fromJust).vertices) f1 @?= sort [[2,2], [-1,0], [0,0], [0,-1]]
-        (sort.(map fromJust).vertices) f2 @?= sort [[-1,1], [1,-1], [-2,1], [1,-2]]
-        (sort.(map fromJust).vertices) f3 @?= sort [[-2,0], [-1,0], [0,1], [1,1], [2,2], [1,0], [0,-1], [0,-2], [-1,-1]]
-        (sort.(map fromJust).vertices) f4 @?= sort [[0,0]]
-        (sort.(map fromJust).vertices) f5 @?= sort [[0,4]]
-        (sort.(map fromJust).vertices) f6 @?= sort [[-4,-3],[-4,-2],[-2,-3],[-1,1],[0,-1],[0,0],[2,-1],[2,0],[5,3]]
-        (sort.(map fromJust).vertices) f7 @?= sort [[-2,2],[-1,0],[-1,1],[0,0],[2,-3],[2,-1],[2,0],[5,3]]
-        (sort.(map fromJust).vertices) f8 @?= sort [[-6,-4],[-5,-4],[-4,0],[-2,-4],[-2,2],[-1,0],[-1,1],[0,-3],[0,0],[2,-2],[2,-1],[2,0],[10,8]]
-        (sort.(map fromJust).vertices) f9 @?= sort [[0,0]]
-        (sort.(map fromJust).vertices) f10 @?= sort [[0,0], [0, 1/2]]  
-=======
-        (sort.(MS.keys).vertices) f1 @?= sort [[2,2], [-1,0], [0,0], [0,-1]]
-        (sort.(MS.keys).vertices) f2 @?= sort [[-1,1], [1,-1], [-2,1], [1,-2]]
-        (sort.(MS.keys).vertices) f3 @?= sort [[-2,0], [-1,0], [0,1], [1,1], [2,2], [1,0], [0,-1], [0,-2], [-1,-1]]
-        (sort.(MS.keys).vertices) f4 @?= sort [[0,0]]
-        (sort.(MS.keys).vertices) f5 @?= sort [[0,4]]
-        (sort.(MS.keys).vertices) f6 @?= sort [[-4,-3],[-4,-2],[-2,-3],[-1,1],[0,-1],[0,0],[2,-1],[2,0],[5,3]]
-        (sort.(MS.keys).vertices) f7 @?= sort [[-2,2],[-1,0],[-1,1],[0,0],[2,-3],[2,-1],[2,0],[5,3]]
-        (sort.(MS.keys).vertices) f8 @?= sort [[-6,-4],[-5,-4],[-4,0],[-2,-4],[-2,2],[-1,0],[-1,1],[0,-3],[0,0],[2,-2],[2,-1],[2,0],[10,8]]
-        (sort.(MS.keys).vertices) f9 @?= sort [[0,0]]
-        verticesWithRays f1 @?= MS.empty
->>>>>>> d634b9afd378fb426296cf991fb34d67fde2659c
+        -- (sort.(MS.keys).vertices) f1 @?= sort [[2,2], [-1,0], [0,0], [0,-1]]
+        -- (sort.(MS.keys).vertices) f2 @?= sort [[-1,1], [1,-1], [-2,1], [1,-2]]
+        -- (sort.(MS.keys).vertices) f3 @?= sort [[-2,0], [-1,0], [0,1], [1,1], [2,2], [1,0], [0,-1], [0,-2], [-1,-1]]
+        -- (sort.(MS.keys).vertices) f4 @?= sort [[0,0]]
+        -- (sort.(MS.keys).vertices) f5 @?= sort [[0,4]]
+        -- (sort.(MS.keys).vertices) f6 @?= sort [[-4,-3],[-4,-2],[-2,-3],[-1,1],[0,-1],[0,0],[2,-1],[2,0],[5,3]]
+        -- (sort.(MS.keys).vertices) f7 @?= sort [[-2,2],[-1,0],[-1,1],[0,0],[2,-3],[2,-1],[2,0],[5,3]]
+        -- (sort.(MS.keys).vertices) f8 @?= sort [[-6,-4],[-5,-4],[-4,0],[-2,-4],[-2,2],[-1,0],[-1,1],[0,-3],[0,0],[2,-2],[2,-1],[2,0],[10,8]]
+        -- (sort.(MS.keys).vertices) f9 @?= sort [[0,0]]
+        verticesWithRays f1 @?= [V [(-1),0],V [0,(-1)],V [0,0],V [2,2],R [1,0],R [0,1],R [-1,-1],R [1,1],R [0,-1],R [-1,0]]
+        verticesWithRays f2 @?= [V [(-2),1],V [(-1),1],V [1,(-2)],V [1,(-1)],R [1,0],R [0,1],R [-1,-1],R [1,-1],R [-1,0],R [-1,1],R [0,-1]]
+        verticesWithRays f3 @?= [V [(-2),0],V [(-1),(-1)],V [(-1),0],V [0,(-2)],V [0,(-1)],V [0,1],V [1,0],V [1,1],V [2,2],R [1,0],R [0,1],R [-1,-1],R [1,1],R [0,-1],R [-1,0]]
+        verticesWithRays f4 @?= [V [0,0],R [1,0],R [0,1],R [-1,-1]]
+        verticesWithRays f5 @?= [V [0,4],R [1,0],R [0,1],R [-1,-1]]
+        verticesWithRays f6 @?= [V [(-4),(-3)],V [(-4),(-2)],V [(-2),(-3)],V [(-1),1],V [0,(-1)],V [0,0],V [2,(-1)],V [2,0],V [5,3],R [1,0],R [0,1],R [-1,-1],R [1,1],R [0,-1],R [2,1],R [-1,0],R [1,-1],R [-1,1],R [-2,-1]]
+        verticesWithRays f7 @?= [V [(-2),2],V [(-1),0],V [(-1),1],V [0,0],V [2,(-3)],V [2,(-1)],V [2,0],V [5,3],R [1,-1],R [0,1],R [-1,-1],R [1,0],R [0,-1],R [-1,1],R [2,-1],R [-1,0],R [-2,1],R [1,1]]
+        verticesWithRays f8 @?= [V [(-6),(-4)],V [(-5),(-4)],V [(-4),0],V [(-2),(-4)],V [(-2),2],V [(-1),0],V [(-1),1],V [0,(-3)],V [0,0],V [2,(-2)],V [2,(-1)],V [2,0],V [10,8],R [1,2],R [1,0],R [-1,-1],R [1,1],R [-1,0],R [-1,-2],R [0,1],R [2,1],R [1,-1],R [0,-1],R [-1,1],R [-2,-1],R [2,-1],R [-2,1]]
+        verticesWithRays f9 @?= [V [0,0],R [1,0],R [0,1],R [0,-1],R [-1,0]]
 
 --    
 testsHypersurface :: TestTree
