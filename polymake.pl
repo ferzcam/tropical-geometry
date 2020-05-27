@@ -1,7 +1,6 @@
 use Benchmark qw(:all);
 use application 'tropical';
 
-
 sub s_f1{
     my $f1 = toTropicalPolynomial("min(2x+1, x+y, 2y+1, x+z, y+z, 2z+2)", qw(z x y));
     my $H1 = new Hypersurface<Min>(POLYNOMIAL=>$f1);
@@ -12,14 +11,14 @@ sub s_f1{
     # print $H1 -> WEIGHTS
 }
 
-sub s_f2{
-    my $f2 = toTropicalPolynomial("min(2x+3, x+y, 2y+3, x+1+z, y+1+z,2z)", qw(z x y));
-    my $H2 = new Hypersurface<Min>(POLYNOMIAL=>$f2);
-    my $ds = $H->dual_subdivision();
-    my $cells = transpose($ds->MAXIMAL_CELLS) 
-    print $H2->VERTICES . "\n". "\n";
-    print $cells . "\n". "\n";
-}
+# sub s_f2{
+#     my $f2 = toTropicalPolynomial("min(2x+3, x+y, 2y+3, x+1+z, y+1+z,2z)", qw(z x y));
+#     my $H2 = new Hypersurface<Min>(POLYNOMIAL=>$f2);
+#     my $ds = $H->dual_subdivision();
+#     my $cells = transpose($ds->MAXIMAL_CELLS) 
+#     print $H2->VERTICES . "\n". "\n";
+#     print $cells . "\n". "\n";
+# }
 sub s_f3{
     my $f3 = toTropicalPolynomial("min(3x+3, 2x+y+1, x+2y+1, 3y+3, 2x+1+z, x+y+z, 2y+1+z, x+1+2z, y+1+2z, 3z+3 )", qw(z x y));
     my $H3 = new Hypersurface<Min>(POLYNOMIAL=>$f3); 
@@ -91,15 +90,22 @@ sub s_f42{
 }
 
 sub s_f51{
-    my $f51 = toTropicalPolynomial("min(2x -1 +2u , 2x+2v, 2x+2w, 2x+2z,
-     2y-1 +2u, 2v+2y,2w+2y,2y+2z,
-      2z+ 2u-2,2z+2v-1,2z+2w-1,4z-1)", qw(u v w x y z));
+    my $f51 = toTropicalPolynomial("min(2x  + 1 + 2u , 2y +1 + 2u , 2x + 2y +1, 3y + 2 + u, 3x +2 + u, x + y + 3 + 2u, 2y + x + 3 + u, 1 + 4u )", qw(u x y));
     my $H51 = new Hypersurface<Min>(POLYNOMIAL=>$f51); 
     print $H51->RAYS . "\n".  "\n";
     print $H51->VERTICES . "\n". "\n";
 }
 
 
+
+
+# sub s_p1{
+#     my $p1 = toTropicalPolynomial("min(2x  + 1 + 2u , 2y +1 + 2u , 2x + 2y +1, 3y + 2 + u, 3x +2 + u, x + y + 3 + 2u, 2y + x + 3 + u, 1 + 4u )", qw(u x y z));
+#     my $p1 = new Hypersurface<Min>(POLYNOMIAL=>$p1); 
+#     print $p1->VERTICES . "\n". "\n";
+# }
+
+ # 1*x^2 + 1*y^2 +  1*x^2*y^2 +  2*y^3 + 2*x^3 + 3*x*y + 3*y^2 * x +   1
 #(x^2 + y^2 + (-1)*z^2)*(v^2+w^2+z^2 + (-1))
 
 #(x^2 + y^2 + (-1)*z^2)*(v^2+w^2+z^2 + (-1))
@@ -107,15 +113,15 @@ sub s_f51{
 #y^2*w - x^2*w - z^2*w - x^3
 
 #s_f1();
- s_f2();
+# s_f2();
 #s_f3();
 # s_f4();
 # s_f5();
 # s_f6();
 #s_f7();
 #s_f8();
-
+#s_p1();
 #s_f31();
-s_f32();
+#s_f32();
 
-#s_f51();
+s_f51();

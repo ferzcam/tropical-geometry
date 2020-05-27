@@ -8,7 +8,8 @@ module Core (
     module Geometry.Facet,
     module Geometry.Polyhedral,
     module Graphics.Drawings,
-    module Geometry.LRS
+    module Geometry.LRS,
+    module Mathematica.PrintMathematica
     
     )
 
@@ -24,4 +25,5 @@ where
     import Geometry.LRS
     import Polynomial.Hypersurface
     import Graphics.Drawings
+    import Mathematica.PrintMathematica
 

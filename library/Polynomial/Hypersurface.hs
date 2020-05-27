@@ -46,6 +46,19 @@ vertices poly = MS.fromList $ safeZipWith (,) (map (fromJust . solveSystem) face
                     in  map ((map lookUp2).fst) subdivision
 
 
+lowerHull :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> [[Vertex]]
+lowerHull poly = pointSub
+    where
+        terms = (MS.toList . getTerms) poly
+        points = expVecs poly
+        dictPointTerm = MS.fromList $ zip points terms
+        extremal = sort $ extremalVertices points
+        dictIndexPoint = MS.fromList $ zip [1..] extremal
+        facetEnum = facetEnumeration extremal
+        subdivision = lowerFacets $ map (\(a,b,_) -> (a,b)) facetEnum
+        pointSub = let 
+                        lookUp2 = ((MS.!) dictIndexPoint)
+                    in  map ((map lookUp2).fst) subdivision
 
 -- verticesWithRays :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> MS.Map Vertex [IVertex]
 -- verticesWithRays poly = trace ("RAYSSSS\n\n\n" ++ show rays ++ "\n\n\n") MS.map (flip selectRays rays) vertices

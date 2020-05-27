@@ -30,7 +30,7 @@ mat = fromLists [
 b = colFromList [0,0,0,1,1,2,1,2,1]
 
 dictio = getDictionary mat b
-dictiS = getSortedDictionary mat b
+--dictiS = getSortedDictionary mat b
 ----------------------------------------------
 
 
@@ -39,7 +39,7 @@ x, y :: Polynomial (Tropical Integer) Lex 2
 x = variable 0
 y = variable 1
 
-f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+f1 = 1*x^2 + 1*y^2 +  1*x^2*y^2 +  2*y^3 + 2*x^3 + 3*x*y + 3*y^2 * x +   1
 points = expVecs f1
 facetEnumerated = facetEnumeration $ extremalVertices points
 matsHyp = fromLists $ map (\(_,h,_) -> h) facetEnumerated
@@ -72,24 +72,6 @@ matsHyp3 = fromLists $ map (\(_,h,_) -> h) facetEnumerated3
 bHyp3 = colFromList $ map (\(_,_,b) -> b) facetEnumerated3
 resf3 = (sort points3) == ((sort.nub) $ lrs matsHyp3 bHyp3 [0,1,1])
 
-<<<<<<< HEAD
--- mats = map fromLists $ MS.elems $ normalCones points
--- rays = map (\mat -> let b = colFromList $ replicate (nrows mat) 0 in lrs mat b) mats
-
--- mat1 = head mats
-
-f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
-points3 = expVecs f3
-facetEnumerated3 = facetEnumeration $ extremalVertices points3
-matsHyp3 = fromLists $ map (\(_,h,_) -> h) facetEnumerated3
-bHyp3 = colFromList $ map (\(_,_,b) -> b) facetEnumerated3
-
-dicf3 = getDictionary matsHyp3 bHyp3
-
-ady3 = adjacencyMatrix $ extremalVertices points3
-resf3 = (sort points3) == ((sort.nub) $ lrs matsHyp3 bHyp3)
-=======
->>>>>>> d634b9afd378fb426296cf991fb34d67fde2659c
 
 lrs1 = lrs mat b [0.5,0.5,1.5]
 res1 = (sort [[0,0,0],[1,0,0],[1,1,0],[1,1,1],[1,0,1],[0,1,0],[0,1,1],[0,0,1],[1/2,1/2,3/2]]) == (sort.nub) lrs1
