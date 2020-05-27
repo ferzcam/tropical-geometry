@@ -27,16 +27,17 @@ main = defaultMain allTests
 allTests ::   TestTree
 allTests = testGroup "Tasty tests" [
         testGroup "List of tests:" [
-            testsNumbers, 
-            testsMatrices, 
-            testsMonomial, 
-            testsPrelude, 
-            testsPolyhedral, 
+            -- testsNumbers, 
+            -- testsMatrices, 
+            -- testsMonomial, 
+            -- testsPrelude, 
+            -- testsPolyhedral, 
             testsHypersurface,
             testsHypersurface3,
             testsHypersurface4,
-            testsHypersurface5,
-            testsSimplex,
-            testsVertexEnumPol2]
+            testsHypersurface5
+            -- testsSimplex,
+            -- testsVertexEnumPol2
+            ]
            -- testsFacet]
     ]

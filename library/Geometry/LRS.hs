@@ -24,7 +24,6 @@ data Dictionary = Dict {
                         } 
     deriving (Show, Eq)
 
-data Extremal = Vertex Vertex | Ray Vertex
 
 makeLenses ''Dictionary
 

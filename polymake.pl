@@ -6,7 +6,7 @@ sub s_f1{
     my $f1 = toTropicalPolynomial("min(2x+1, x+y, 2y+1, x+z, y+z, 2z+2)", qw(z x y));
     my $H1 = new Hypersurface<Min>(POLYNOMIAL=>$f1);
     print $H1->VERTICES . "\n". "\n";
-    print $H1->RAYS . "\n". "\n";
+
     
     # print $H1 -> MAXIMAL_POLYTOPES. "\n". "\n";
     # print $H1 -> WEIGHTS
@@ -15,10 +15,8 @@ sub s_f1{
 sub s_f2{
     my $f2 = toTropicalPolynomial("min(2x+3, x+y, 2y+3, x+1+z, y+1+z,2z)", qw(z x y));
     my $H2 = new Hypersurface<Min>(POLYNOMIAL=>$f2);
-    my $ds = $H->dual_subdivision();
-    my $cells = transpose($ds->MAXIMAL_CELLS) 
+
     print $H2->VERTICES . "\n". "\n";
-    print $cells . "\n". "\n";
 }
 sub s_f3{
     my $f3 = toTropicalPolynomial("min(3x+3, 2x+y+1, x+2y+1, 3y+3, 2x+1+z, x+y+z, 2y+1+z, x+1+2z, y+1+2z, 3z+3 )", qw(z x y));
@@ -57,6 +55,13 @@ sub s_f8{
 }
 
 
+
+sub s_f9{
+    my $f9 = toTropicalPolynomial("min(2x+2y, 2y+2z, 2x+2z, 4z)", qw(z x y));
+    my $H9 = new Hypersurface<Min>(POLYNOMIAL=>$f9); 
+    print $H9->VERTICES . "\n". "\n";
+}
+
 sub s_f31{
     my $f31 = toTropicalPolynomial("min(x+y+z+3, x + 2w, y + 2w, 2+z + 2w, -2 + 3w)", qw(w x y z));
     my $H31 = new Hypersurface<Min>(POLYNOMIAL=>$f31); 
@@ -69,6 +74,11 @@ sub s_f32{
     print $H32->VERTICES . "\n". "\n";
 }
 
+sub s_f33{
+    my $f33 = toTropicalPolynomial("min(2y+1+w, 2x-1+w, 2z-1+w, 3x-1)", qw(w x y z));
+    my $H33 = new Hypersurface<Min>(POLYNOMIAL=>$f33); 
+    print $H33->VERTICES . "\n". "\n";
+}
 
 sub s_f41{
     my $f41 = toTropicalPolynomial("min(x+w+3+2v, 2x+2w+2, x+y-5+2v, z+3v, 2x+y+w+10, y+z+2v, -3+4v)", qw(v w x y z));
@@ -76,12 +86,6 @@ sub s_f41{
     print $H41->VERTICES . "\n". "\n";
 }
 
-
-sub s_f42{
-    my $f42 = toTropicalPolynomial("min(2y + 1 + w, 2x + w - 1, 2z + w -1, 3x -1 )", qw(w x y z));
-    my $H42 = new Hypersurface<Min>(POLYNOMIAL=>$f42); 
-    print $H42->VERTICES . "\n". "\n";
-}
 
 sub s_f51{
     my $f51 = toTropicalPolynomial("min(2x -1 +2u , 2x+2v, 2x+2w, 2x+2z,
@@ -99,15 +103,17 @@ sub s_f51{
 #y^2*w - x^2*w - z^2*w - x^3
 
 #s_f1();
- s_f2();
+
+# s_f2();
 #s_f3();
 # s_f4();
 # s_f5();
-# s_f6();
+#s_f6();
 #s_f7();
 #s_f8();
-
+#s_f9();
 #s_f31();
 #s_f32();
-
-#s_f51();
+#s_f33();
+#s_f41();
+s_f51();
