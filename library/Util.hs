@@ -2,11 +2,13 @@
 
 module Util where
 
-import Data.List (nub, sort)
+import Data.List (nub, sort, findIndex)
 import Data.Matrix hiding (trace)
 import qualified Data.Vector as V
 import Data.Traversable
 import Debug.Trace
+import Control.Arrow
+import Data.Maybe
 
 combinations :: (Eq a, Ord a) => [a] -> Int -> [[a]]
 combinations list k = nub $ map sort $ filter ((k==).length.nub) $ mapM (const list) [1..k]
@@ -104,3 +106,65 @@ gcdList :: [Integer] -> Integer
 gcdList [] = error "lcmList: list must have at least one element"
 gcdList [x] = x
 gcdList (x:y:z) = gcdList ((gcd x y):z)
+
+
+{- |
+
+Given two points p1 and p2, the parameterized line between them is of the form 
+    x_i = p1_i + (p2_i - p1_i)t
+where t is the parameter.
+
+We return a cured version of the parameterization:
+    t = (x_i - p1_i) / (p2_i - p1_i)
+ -}
+ 
+-- line :: (Fractional a) => [a] -> [a] -> [a->a]
+-- line p1 p2
+--     | length p1 /= length p2 = error "line: Points must have de the same dimension in order to construct the line between them."
+--     | otherwise = safeZipWith parameterize p1 p2
+--     where
+--         parameterize ai bi = \x -> (x-ai)/(bi-ai) 
+
+
+{- |
+
+Given a points p and a direction vector v, the parameterized line is of the form 
+    x_i = p_i + v_i * t
+where t is the parameter.
+
+ -}
+ 
+line :: [Rational] -> [Integer] -> [Rational-> Rational]
+line p v
+    | length p /= length v = error "line: Points must have de the same dimension in order to construct the line between them."
+    | otherwise = safeZipWith parameterize p (map toRational v)
+    where
+        parameterize pi vi = \t -> pi + vi*t
+
+{- 
+    If the direction primitive vector contains a zero in the ith position, 
+    that means that the line does not depend on the ith variable. We remove that for the computation
+    to avoid a exception caused by division by zero.
+ -}
+
+
+getParameter ::
+        [Rational]  -- | Point from which the ray emanates
+    ->  [Integer]  -- | Emanating vector
+    ->  [Rational]  -- | Point to evaluate
+    ->  Rational
+getParameter p v x
+    | length p /= length v = error "getParameter: Points must have de the same dimension in order to construct the line between them."
+    | idx == Nothing = error "getParameter: primitive vector must not be 0" 
+    | otherwise = let i = fromJust idx in (x!!i - p!!i)/(toRational (v!!i))
+    where
+        idx = findIndex (/=0) v
+
+
+removeZeros :: (Fractional a, Eq a) => [a] -> [a] -> ([a],[a])
+removeZeros [] [] = error "removeZeros: Point representation cannot be an empty list."
+removeZeros [x] [y] = if y == 0 then ([],[]) else ([x],[y]) 
+removeZeros p@(x:xs) v@(y:ys) 
+    | length p /= length v = error "removeZeros: Points must have the same dimension."
+    | y == 0 = removeZeros xs ys
+    | y /= 0 = ((x:) *** (y:)) (removeZeros xs ys) 

@@ -36,6 +36,7 @@ library
       Polynomial.Prelude
       Polynomial.Hypersurface
       Polynomial.System
+      Polynomial.Variety
       Arithmetic.Numbers
       Arithmetic.Matrix
       Geometry.Facet
@@ -53,19 +54,19 @@ library
                 -freverse-errors
                 -ferror-spans
   build-depends:
-    algebra >=4.3.1 && <4.4,
-    base >=4.11.1.0 && <4.12,
-    criterion,
-    containers >=0.5.11.0 && <0.6,
-    gloss >=1.12.0.0 && <1.13,
-    lens >=4.16.1 && <4.17,
-    matrix >=0.3.6.1 && <0.4,
+    algebra,
+    base,
+    -- criterion,
+    containers,
+    gloss,
+    lens,
+    matrix,
     vector,
-    numeric-prelude >=0.4.3.1 && <0.5,
-    semiring-simple >=1.0.0.1 && <1.1,
-    singletons >=2.4.1 && <2.5,
-    sized >=0.3.0.0 && <0.4,
-    type-natural >=0.8.2.0 && <0.9,
+    -- numeric-prelude >=0.4.3.1 && <0.5,
+    -- semiring-simple >=1.0.0.1 && <1.1,
+    singletons,
+    sized,
+    type-natural,
     hmatrix-glpk,
     linear,
     bimap
@@ -84,12 +85,13 @@ executable tropical-geometry
       executable
   ghc-options: -Wall -rtsopts  -freverse-errors
   build-depends:
+    algebra,
     tropical-geometry,
     base,
     criterion,
     matrix,
     vector,
-    containers >=0.5.11.0 && <0.6
+    containers
   default-language: Haskell2010
 
 test-suite tropical-geometry-test-suite
@@ -112,6 +114,7 @@ test-suite tropical-geometry-test-suite
   ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
   build-depends:
       tropical-geometry
+    , algebra
     , base
     , tasty
     , tasty-hspec
@@ -129,7 +132,7 @@ benchmark tropical-geometry-benchmarks
       Paths_tropical_geometry
   hs-source-dirs:
       benchmark
-  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
+  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N1 -freverse-errors
   build-depends:
       tropical-geometry
     , base

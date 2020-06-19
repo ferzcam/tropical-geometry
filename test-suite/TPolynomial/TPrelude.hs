@@ -1,4 +1,4 @@
-{-# LANGUAGE AllowAmbiguousTypes, DataKinds #-}
+{-# LANGUAGE AllowAmbiguousTypes, DataKinds, NoImplicitPrelude #-}
 
 {-# LANGUAGE TypeFamilies, FlexibleContexts, FlexibleInstances #-}
 {-# LANGUAGE ConstrainedClassMethods, UndecidableInstances, MultiParamTypeClasses #-}
@@ -6,12 +6,13 @@
 
 module TPolynomial.TPrelude (testsPrelude) where 
 
-
+import Prelude (Integer, ($), show)
 import Test.Tasty
 import Test.Tasty.HUnit as HU
 import Data.List
 import Core
 import Data.Map.Strict
+import Numeric.Algebra
 
 testVariables :: TestTree
 testVariables = HU.testCase "Creation of variables" $ do
@@ -33,6 +34,7 @@ testShowPolynomialLex =   HU.testCase "Show polynomial with Lex order" $ do
         show (x*y*z^2) @?= "X_0X_1X_2^2"
         show (x^2+x*y+z) @?= "X_0^2 + X_0X_1 + X_2"
         show ((-3)*x + 0*y^2 + (-1)*x*z) @?= "-1X_0X_2 + -3X_0 + X_1^2"
+        show (x+0) @?= "X_0 + 0"
 
 
 x1, y1, z1 :: Polynomial (Tropical Integer) Revlex 3

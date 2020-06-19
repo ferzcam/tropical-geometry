@@ -8,8 +8,11 @@ module Arithmetic.Numbers
 ) where
 
 import Data.Function
-import Numeric.Algebra hiding (negate, fromInteger)
-import Numeric.Algebra.Class as AC
+import Numeric.Algebra
+import qualified Numeric.Algebra.Class as AC
+import Numeric.Ring.Class
+import Data.Ratio
+
 
 
 
@@ -36,6 +39,7 @@ Inf .*. t = Inf
 t1 .*. t2 = Tropical $ ((Prelude.+) `on` value) t1 t2 
 
 
+
 instance (Num a) => Unital (Tropical a) where
   one = Tropical 0
 
@@ -54,21 +58,43 @@ instance (Num a, Ord a, Rig a) => Monoidal (Tropical a) where
 instance (Num a) => Multiplicative (Tropical a) where 
   (*) = (.*.)
 
-instance (Num a) => Commutative (Tropical a)
+instance Num a => Commutative (Tropical a)
 
-instance (Rig a, Num a, Ord a) => Rig (Tropical a) where
+instance (Num a, Rig a, Ord a) => Rig (Tropical a) where
   fromNatural a = Tropical $ fromNatural a
 
 instance (Ord a) => Additive (Tropical a) where
   (+) = (.+.)
 instance (Ord a) => Abelian (Tropical a)
-instance (Ord a, Num a) => Semiring (Tropical a) 
+instance (Num a, Ord a) => Semiring (Tropical a) 
+
+instance (Num a, Ord a, Rig a) => Group (Tropical a) 
+
+instance (Num a, Ord a, Rig a, Ring a)  => Ring (Tropical a) where
+  fromInteger a = Tropical $ Prelude.fromInteger a
+
+instance (Ord a, Num a) => RightModule Integer (Tropical a) where
+  t *. i = t AC.* (Prelude.fromInteger i)
+
+instance (Ord a, Num a) => LeftModule Integer (Tropical a) where
+  (.*) = flip (*.)
 
 instance (Ord a, Num a) => Num (Tropical a) where
   (+) = (.+.)
   (*) = (.*.)
   fromInteger a = Tropical $ Prelude.fromInteger a
-  negate = fmap negate
+  negate = fmap Prelude.negate
+
+
+instance (Num a, Ord a) => Division (Tropical a) where
+  recip (Tropical a) = Tropical (-a)
+
+
+
+-- instance Fractional (Tropical Integer) where
+--   fromRational a = Tropical $ (numerator a) Prelude.- (denominator a)
+--   recip (Tropical a) = Tropical (-a)
+
 
 -- | Not neccesary to implement since it is already defined  
 instance (Num a, Ord a, Rig a) => DecidableZero (Tropical a) 
@@ -76,14 +102,14 @@ instance Functor Tropical where
   fmap f (Tropical a) = Tropical (f a)
 
 
-instance Integral (Tropical Integer) where
-  toInteger (Tropical a) = a
-  toInteger Inf = 0
+-- instance Integral (Tropical Integer) where
+--   toInteger (Tropical a) = a
+--   toInteger Inf = 0
 
-instance Enum (Tropical Integer) where
-  toEnum a = Tropical (toInteger a)
-  fromEnum (Tropical a) = fromInteger a
-  fromEnum Inf = 0
+-- instance Enum (Tropical Integer) where
+--   toEnum a = Tropical (toInteger a)
+--   fromEnum (Tropical a) = fromInteger a
+--   fromEnum Inf = 0
 
 instance Real (Tropical Integer) where
   toRational (Tropical a) = toRational a
