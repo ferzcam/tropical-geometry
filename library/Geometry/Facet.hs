@@ -101,25 +101,25 @@ goDeep adjacency dim b@(x:xs)
 
 
 
--- | Given a set of points of dimension d, we return a list of d points that include all the coordinates.
-properVertices :: [Vertex] -> [Vertex]
-properVertices vertices
-    | length vertices < dim = error "properVertices: not enough points"
-    | otherwise = niceVertices vertices (replicate dim False) [] 0
-    where
-        dim = length $ head vertices
-        niceVertices vertxs bools accVertxs pos
-            | and bools = accVertxs ++ (take (dim-(length accVertxs)) (reverse $ sort vertxs))
-            | pos >= dim = error "properVertices.niceVertices: dimension underflow"
-            | chosenPoint == Nothing && (bools!!pos) == False = error "properVertices.niceVertices: dimension underflow"
-            | otherwise = if bools!!pos then 
-                            niceVertices vertxs bools accVertxs (pos+1)
-                        else
-                            niceVertices (delete (fromJust chosenPoint) vertxs) newBools ((fromJust chosenPoint):accVertxs) (pos+1) 
-            where
-                chosenPoint = find (\v -> v!!pos /= 0) vertxs
-                varsEnabled = [i | i <- [0..(dim-1)], (fromJust chosenPoint)!!i /= 0]
-                newBools = foldr (\i acc -> acc & element i .~ True) bools varsEnabled
+-- -- | Given a set of points of dimension d, we return a list of d points that include all the coordinates.
+-- properVertices :: [Vertex] -> [Vertex]
+-- properVertices vertices
+--     | length vertices < dim = error "properVertices: not enough points"
+--     | otherwise = niceVertices vertices (replicate dim False) [] 0
+--     where
+--         dim = length $ head vertices
+--         niceVertices vertxs bools accVertxs pos
+--             | and bools = accVertxs ++ (take (dim-(length accVertxs)) (reverse $ sort vertxs))
+--             | pos >= dim = error "properVertices.niceVertices: dimension underflow"
+--             | chosenPoint == Nothing && (bools!!pos) == False = error "properVertices.niceVertices: dimension underflow"
+--             | otherwise = if bools!!pos then 
+--                             niceVertices vertxs bools accVertxs (pos+1)
+--                         else
+--                             niceVertices (delete (fromJust chosenPoint) vertxs) newBools ((fromJust chosenPoint):accVertxs) (pos+1) 
+--             where
+--                 chosenPoint = find (\v -> v!!pos /= 0) vertxs
+--                 varsEnabled = [i | i <- [0..(dim-1)], (fromJust chosenPoint)!!i /= 0]
+--                 newBools = foldr (\i acc -> acc & element i .~ True) bools varsEnabled
 
 isEmbedded :: [Vertex] -> Bool
 isEmbedded vertices
@@ -128,7 +128,7 @@ isEmbedded vertices
     | otherwise = all (\p -> detLU ((fromLists (p:firstD)) <|> e) == 0 ) rest
     where
         dim = length $ head vertices
-        firstD = properVertices vertices 
+        firstD = take dim vertices 
         rest = vertices\\firstD
         e = colFromList $ replicate (dim+1) 1
 
@@ -144,12 +144,6 @@ facetEnumeration ::
     [(Facet, Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a], a)
 facetEnumeration vertices  =  safeZipWith3 (,,) newFacets cleanedHypers b
     where
-        dim = length $ head vertices
-        niceVertices = properVertices vertices 
-        hyper = computeHyperplane' (take dim (properVertices vertices))
-
-
-
         uSet = sort $ toOrigin vertices
         center = centroid vertices
         adjacency = adjacencyMatrix uSet
