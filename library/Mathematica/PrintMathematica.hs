@@ -124,7 +124,7 @@ printTrop poly file = do
 cleanFiles :: String -> IO ()
 cleanFiles  file = callCommand string
         where
-            string = "rm ~/Proyectos/Tropical/Code/tropical-geometry/Outputs/"++"*"++file++".txt"++" &"
+            string = "rm ~/Proyectos/Tropical/Tropical Geometry Package/Code/tropical-geometry/Outputs/"++"*"++file++".txt"++" &"
 
 runMathematica :: IO ()
-runMathematica = callCommand "mathematica ~/Proyectos/Tropical/Code/tropical-geometr/MathematicaCode/TropicalGraphics.nb  &"
+runMathematica = callCommand "mathematica ~/Proyectos/Tropical/Tropical Geometry Package/Code/tropical-geometry/MathematicaCode/TropicalGraphics.nb  &"

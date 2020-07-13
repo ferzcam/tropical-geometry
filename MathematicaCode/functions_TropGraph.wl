@@ -30,11 +30,11 @@ polygonHyp[H0_, b_, center_, \[Lambda]_] :=
       center[[1]] - \[Lambda], center[[1]] + \[Lambda]}, {x2, 
       center[[2]] - \[Lambda], center[[2]] + \[Lambda]}, {x3, 
       center[[3]] - \[Lambda], center[[3]] + \[Lambda]}, 
-     MaxRecursion -> 10, PlotPoints -> 60, Mesh -> 0, 
-     BoundaryStyle -> Black, PlotStyle -> Opacity[0.8], 
+     MaxRecursion -> 0, PlotPoints -> 100, Mesh -> 0, 
+     BoundaryStyle -> Black, PlotStyle -> Opacity[0.4], 
      ColorFunction -> "Pastel", Boxed -> True, 
      AxesLabel -> {"X", "Y", "Z"}, AxesStyle -> Black, 
-     Ticks -> Automatic,  BaseStyle -> {FontSize -> 20, 
+     Ticks -> False,  BaseStyle -> {FontSize -> 20, 
              FontFamily -> "Latin Modern Roman", 
                    Black, Bold}]
     ];
@@ -48,7 +48,7 @@ coneHyp[H0_, b_, center_, \[Lambda]_] :=
     MaxRecursion -> 10, PlotPoints -> 60, BoundaryStyle -> Black, 
     PlotStyle -> {{Black, Opacity[0.3]}}, Mesh -> None, Boxed -> True,
      AxesLabel -> {"X", "Y", "Z"}, AxesStyle -> Black, 
-    Ticks -> Automatic, 
+    Ticks -> False, 
     BaseStyle -> {FontSize -> 20, FontFamily -> "Latin Modern Roman", Black, Bold} 
     ]
  ];
@@ -68,10 +68,10 @@ polWithCones[H0_, b0_, conH_, vert_, center_, \[Lambda]_] :=
 facet[pts_, color_, opc_] := 
  Module[
  {chull}, 
-  chull = ConvexHullMesh[pts];
+  chull = Polygon[pts];
   Graphics3D[
    GraphicsComplex[
-    MeshCoordinates[chull], 
+    PolygonCoordinates[chull], 
     {PointSize[0.015], 
     Black, Thick, 
     MeshCells[chull, 0],
@@ -83,16 +83,18 @@ facet[pts_, color_, opc_] :=
     ], 
    Boxed -> False]]
 conv[pts_, color_, opc_] := 
- Module[{chull}, chull = ConvexHullMesh[pts];
+ Module[{chull,offpts},
+ offpts = offset[pts];
+  chull = ConvexHullMesh[offpts];
   Graphics3D[
    GraphicsComplex[
-    MeshCoordinates[chull], 
+   MeshCoordinates[chull], 
     {PointSize[0.002],
      Black, 
      Thick, 
      MeshCells[chull, 0], 
-     Opacity[0], 
-     Thickness[0], 
+     Opacity[opc],
+     color, 
      MeshCells[chull, 1], 
      Opacity[opc], 
      color, 
@@ -108,6 +110,22 @@ Black,Thick]}];*)
 (*Plots Subdivision with Convex Hull and Hyperplanes*)
 
 
+plotProjSub[subdiv_] := Module[{zpProj},
+      zpProj = 
+        Table[{Map[proj[#1] &, subdiv[[i]]], 
+            ColorData["BlueGreenYellow"][i/(Length[subdiv]*2)]}, 
+            {i, 1, Length[subdiv]}];
+      Show[
+        Map[facet[#1[[1]], #1[[2]], 0.5] &, zpProj],
+        Axes -> False,
+        AxesStyle-> Black,
+        AxesEdge->Black,
+        Ticks-> False,
+        AxesLabel -> {"X", "Y", "Z"}, BaseStyle -> {FontSize -> 20, 
+     FontFamily -> "Latin Modern Roman", Black, Bold} ,
+         GridBox -> {1, 1, 1} ]];
+
+
 plotSubdiv[subdiv_, evert_] := Module[{zpLF, zpProj},
       zpLF = 
         Table[{subdiv[[i]], 
@@ -117,15 +135,17 @@ plotSubdiv[subdiv_, evert_] := Module[{zpLF, zpProj},
         Table[{Map[proj[#1] &, subdiv[[i]]], 
             ColorData["BlueGreenYellow"][i/(Length[subdiv]*2)]}, 
             {i, 1, Length[subdiv]}];
-      Show[
+      Show[ Map[facet[#1[[1]], #1[[2]], 0.8] &, zpLF], 
         Map[facet[#1[[1]], #1[[2]], 0.9] &, zpProj],
-        conv[evert, ColorData["Pastel"][0.2], 0.2], 
-        Map[facet[#1[[1]], #1[[2]], 0.9] &, zpLF], 
-        Axes -> True,
+        conv[evert, ColorData["Pastel"][0.8], 0.2], 
+       
+        Axes -> False,
         AxesStyle-> Black,
+        AxesEdge->Black,
+        Ticks-> False,
         AxesLabel -> {"X", "Y", "Z"}, BaseStyle -> {FontSize -> 20, 
      FontFamily -> "Latin Modern Roman", Black, Bold} ,
-         GridBox -> {1, 1, 1} ]];
+         GridBox -> {1, 1, 1},PlotRange->All ]];
 plotSubdivHyp[subdiv_, H_, b_, center_, \[Lambda]_] := 
   Module[{zpLF, zpProj, surf},
     surf = polygonHyp[H, b, center, \[Lambda]];
@@ -139,7 +159,7 @@ plotSubdivHyp[subdiv_, H_, b_, center_, \[Lambda]_] :=
     Show[
       Map[facet[#1[[1]], #1[[2]], 0.9] &, zpProj], surf, 
       Map[facet[#1[[1]], #1[[2]], 0.9] &, zpLF],
-      Axes -> True,
+      Axes -> False,
         AxesStyle-> Black,
         AxesLabel -> {"X", "Y", "Z"}, BaseStyle -> {FontSize -> 20, 
      FontFamily -> "Latin Modern Roman", Black, Bold} ,
@@ -165,4 +185,8 @@ rayPlot[x0_, y0_, z0_, vert_, \[Lambda]_] :=
 		{s, -\[Lambda], \[Lambda]}, 
 		PlotStyle -> {{Red, Thick}}, 
 		BoundaryStyle -> {{Red, Thickness[0.008]}}
-		]
+		];
+offset[pts_]:=Module[{centroid},
+centroid = Fold[#1+#2&,pts]/(Length[pts]);
+Map[#1+(centroid - #1)* 0.0001 &,pts]
+]
