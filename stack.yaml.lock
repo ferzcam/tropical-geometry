@@ -5,33 +5,33 @@
 
 packages:
 - completed:
-    hackage: sized-0.3.0.0@sha256:d723d3a44a0d3db7185e33d3513cf8c97625c557fcaf2241abfd8e2dbc7aa62a,1797
+    hackage: sized-0.4.0.0@sha256:b83ddf55ea1588795a623963328f08d228c2b2506653362dfe8df90abec7a504,1839
     pantry-tree:
       size: 452
-      sha256: ed6e4cdd1a423a1b87ffcf3fa6ff0e7b0f35dcea8ff5b345897ee828487b1e32
+      sha256: 7c60fabeae7f97eb4c7f7f7856cc45fcfe9b323c3d9adbf7b8e4ea9193862f32
   original:
-    hackage: sized-0.3.0.0
+    hackage: sized-0.4.0.0
 - completed:
-    hackage: equational-reasoning-0.6.0.0@sha256:e47ae43f74173e9084d1b09e3c3e378be3710b5eeeda2136f158bf73aceaaba5,1824
+    hackage: equational-reasoning-0.6.0.3@sha256:a59f45b15118add889948c3a3b25ed8cc324e01c088616302a5265db9ac451c8,1772
     pantry-tree:
-      size: 563
-      sha256: 841d2c161ea2a9f587a5784fa01092eb9e7b5c2cfa5f3c6de59cab9221b47ae2
+      size: 496
+      sha256: dcc6f905630156b0c7581abf770f99af110eabd2809945a20ef90407a391d2b2
   original:
-    hackage: equational-reasoning-0.6.0.0
+    hackage: equational-reasoning-0.6.0.3
 - completed:
-    hackage: ghc-typelits-presburger-0.2.0.5@sha256:5f46bd260db08053845547202e356d6f63cc02af066a1990e39346d90cb7ea06,2217
+    hackage: ghc-typelits-presburger-0.3.0.0@sha256:a4c24ce3ed2bc46f91e5dd544429fc9caa42da5c3effbc09b2e4e064d325004e,2724
     pantry-tree:
-      size: 438
-      sha256: bc2462ed1091a3e2d734e451ad6de39be33fd002eda1d4a65be96e45ac623e66
+      size: 528
+      sha256: 20fecd68ff0be5884bf8bf5b8cfd52eb6be9d6f197c5735294e6079803a4263e
   original:
-    hackage: ghc-typelits-presburger-0.2.0.5
+    hackage: ghc-typelits-presburger-0.3.0.0
 - completed:
-    hackage: type-natural-0.8.2.0@sha256:fb69402932813da1cdedb537b3f81b68740629264b71de30bd981396abebb0b1,2619
+    hackage: type-natural-0.8.3.1@sha256:cad5dbfa5ac95cb0d68c09d58cfca5c3e154cc786f0dfd2684c53f36203f1bda,3031
     pantry-tree:
-      size: 1003
-      sha256: 90f509eec4773b873b43fd7c4a37c7c4833dda3b33445734bfeaf3bb48053a56
+      size: 1004
+      sha256: 1843ae1ac6d5b529206ab93f6ab10b11f233fb99b799e19a50ea04b607fb0f39
   original:
-    hackage: type-natural-0.8.2.0
+    hackage: type-natural-0.8.3.1
 - completed:
     hackage: hlint-test-0.1.0.0@sha256:e427c0593433205fc629fb05b74c6b1deb1de72d1571f26142de008f0d5ee7a9,1814
     pantry-tree:
@@ -40,10 +40,10 @@ packages:
   original:
     hackage: hlint-test-0.1.0.0
 - completed:
-    hackage: algebra-4.3.1@sha256:bfaddc70ffd7f3e72a832854c6a509af81bcdc765b83ed4c9d3438bde25abdd3,4129
+    hackage: algebra-4.3.1@sha256:323cf20c508e0b71422b767ff3a89e4188f68aa59b2df9d0fe6e9f9bae7938fb,4129
     pantry-tree:
       size: 5556
-      sha256: eab9c8585cb156b168928ff24fd9139d820e45af564c54dfc1f29303d7ded88b
+      sha256: 2dea7d23304c09c902fb1f90f45b1b22df6ded47fb717742cca119f9f3667b21
   original:
     hackage: algebra-4.3.1
 - completed:
@@ -62,7 +62,7 @@ packages:
     hackage: linear-1.21
 snapshots:
 - completed:
-    size: 509471
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/12/26.yaml
-    sha256: 95f014df58d0679b1c4a2b7bf2b652b61da8d30de5f571abb0d59015ef678646
-  original: lts-12.26
+    size: 495801
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/13/11.yaml
+    sha256: 835062158db2b3ebb8b9525d9662a02ebf9783e8f6a08a64684cd5546f847152
+  original: lts-13.11

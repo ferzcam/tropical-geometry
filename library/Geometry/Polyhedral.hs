@@ -62,7 +62,8 @@ _V_normalCones' set = concat $ MS.elems $ MS.map ((\mat -> lrs (-mat) b vertx) .
 
 lowerFacets :: [(Facet, Hyperplane)] -> [(Facet,Hyperplane)]
 lowerFacets [] = []
-lowerFacets ((f,h):xs) = if last h < 0 then (f,h) : lowerFacets xs else lowerFacets xs
+lowerFacets [a] = [a]
+lowerFacets facets = filter (\(f,h) -> last h < 0) facets
 
 projection :: [(Facet, Hyperplane)] -> [(Facet,Hyperplane)]
 projection [] = []

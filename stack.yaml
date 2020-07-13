@@ -18,7 +18,7 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver: lts-12.26
+resolver: lts-13.11
 #lts-11.17
 
 # User packages to be built.
@@ -40,10 +40,10 @@ packages:
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
 extra-deps:
-- sized-0.3.0.0
-- equational-reasoning-0.6.0.0
-- ghc-typelits-presburger-0.2.0.5
-- type-natural-0.8.2.0
+- sized-0.4.0.0
+- equational-reasoning-0.6.0.3
+- ghc-typelits-presburger-0.3.0.0
+- type-natural-0.8.3.1
 - hlint-test-0.1.0.0
 - algebra-4.3.1       
 - hmatrix-glpk-0.19.0.0

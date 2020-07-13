@@ -15,7 +15,6 @@ import Control.Arrow
 
 solveSystem :: (IsMonomialOrder ord, Real k, Show k) => [(Monomial ord n, k)] -> Maybe [Rational]
 solveSystem terms =  fmap V.toList $ solveLS (fromLists leftSide) (V.fromList rightSide)
--- trace ("\n\nTERMS>>> " ++ show (termsInNumbers) ++ "\nLEFTSIDE>> " ++ show leftSide ++ "\nRIGHTSIDE>> " ++ show rightSide )
     where
         arity' = (length . DS.toList . getMonomial . fst . head) terms 
         termsInNumbers = take (arity'+1) $ map (((map fromIntegral).DS.toList.getMonomial.fst) &&& (toRational.negate.snd)) terms
