@@ -37,6 +37,7 @@ library
       Polynomial.Hypersurface
       Polynomial.System
       Polynomial.Variety
+      Polynomial.GraphGen
       Arithmetic.Numbers
       Arithmetic.Matrix
       Geometry.Facet

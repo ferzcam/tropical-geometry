@@ -1,6 +1,7 @@
 use Benchmark qw(:all);
 use application 'tropical';
 
+
 sub s_f1{
     my $f1 = toTropicalPolynomial("min(2x+1, x+y, 2y+1, x+z, y+z, 2z+2)", qw(z x y));
     my $H1 = new Hypersurface<Min>(POLYNOMIAL=>$f1);
@@ -131,46 +132,9 @@ sub s_f51{
 
 #y^2*w - x^2*w - z^2*w - x^3
 
+s_f31();
 #s_f1();
-<<<<<<< HEAD
-=======
-
->>>>>>> 8926a126647f80ffc73880c9c4bb2e6b22c855a2
 # s_f2();
 #s_f3();
 # s_f4();
 # s_f5();
-<<<<<<< HEAD
-#s_f6();
-#s_f7();
-#s_f8();
-<<<<<<< HEAD
-#s_p1();
-#s_f31();
-#s_f32();
-
-s_f51();
-=======
-#s_f9();
-#s_f31();
-#s_f32();
-#s_f33();
-#s_f41();
-s_f51();
->>>>>>> 8926a126647f80ffc73880c9c4bb2e6b22c855a2
-=======
-# s_f6();
-# s_f7();
-# s_f8();
-# s_f9();
-#  s_f10();
-# s_f31();
-# s_f32();
-# s_f33();
-# s_f41();
-s_f42();
-
-# s_f51();
-
-# s_f1f2();
->>>>>>> dc5f1cfa89fa19c10ee6f17137ed685ee66dc16d

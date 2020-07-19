@@ -19,11 +19,12 @@ import Polynomial.Variety
 
 ----------
 
-x, y :: Polynomial (Tropical Integer) Lex 2
+x, y, z:: Polynomial (Tropical Integer) Lex 3
 x = variable 0
 y = variable 1
+z = variable 2
 
-f9 = x^2*y^2 + y^2 + x^2 + 0
+f2 =  3*x*y*z + x + y + 2*z + (-2)
 
 
 main :: IO ()

@@ -9,6 +9,7 @@ import Polynomial.System
 import Polynomial.Prelude
 import Polynomial.Monomial
 import Polynomial.Variety
+import Polynomial.GraphGen
 import Geometry.Facet
 import Geometry.Polyhedral
 
@@ -22,6 +23,7 @@ import Data.List
 import Data.Ratio
 import Control.Arrow
 import Debug.Trace
+
 
 
 data Extremal = V Vertex | R IVertex deriving (Eq, Ord)
@@ -191,3 +193,10 @@ standard v = map (numerator . (/commDiv)) noRational
         commDiv = toRational $ gcdList (map numerator noRational)
      
 
+---------------------------------------------------------------------------------------------------------------------------------------------
+hyperSurfaceGraph :: MS.Map Vertex [IVertex] -> Graph Rational
+hyperSurfaceGraph dicVertRays = createGraph nodes
+    where 
+        listVertRays = MS.toList dicVertRays
+        nodes = map (\dic -> Node{pos=fst dic, rays= map (map toRational) (snd dic)}) listVertRays
+        
