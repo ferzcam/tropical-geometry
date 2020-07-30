@@ -65,6 +65,11 @@ lowerFacets [] = []
 lowerFacets [a] = [a]
 lowerFacets facets = filter (\(f,h) -> last h < 0) facets
 
+lowerFacets' :: [([Vertex], Hyperplane)] -> [([Vertex],Hyperplane)]
+lowerFacets' [] = []
+lowerFacets' [a] = [a]
+lowerFacets' facets = filter (\(f,h) -> last h < 0) facets
+
 projection :: [(Facet, Hyperplane)] -> [(Facet,Hyperplane)]
 projection [] = []
 projection ((f,h):xs) = (f, init h) : projection xs

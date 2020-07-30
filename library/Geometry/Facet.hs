@@ -154,6 +154,25 @@ facetEnumeration vertices  =  safeZipWith3 (,,) newFacets cleanedHypers b
         cleanedHypers = map fromJust $ remove Nothing newHyperplanes
         b = map (succ . (dot center)) cleanedHypers
 
+
+facetEnumeration' :: 
+    [Vertex] ->    -- set of vertices (not centered to origin)
+    [([Vertex], Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a], a)
+facetEnumeration' vertices  =  safeZipWith3 (,,) newFacetsVertex cleanedHypers b
+    where
+        uSet = sort $ toOrigin vertices
+        center = centroid vertices
+        adjacency = adjacencyMatrix uSet
+        dictVertexIndex = MS.fromList $ zip uSet [1..]
+        dictIndexVertex = MS.fromList $ zip [1..] uSet
+        dictIndexOriginalVertex = MS.fromList $ zip [1..] (sort vertices)
+        embedded = isEmbedded vertices
+        (_,newFacets, newHyperplanes) = foldr (checkVertex dictIndexVertex dictVertexIndex embedded) (adjacency,[], []) uSet
+        cleanedHypers = map fromJust $ remove Nothing newHyperplanes
+        b = map (succ . (dot center)) cleanedHypers
+        newFacetsVertex = map (map (\x -> (MS.!) dictIndexOriginalVertex x)) newFacets
+
+
 checkVertex ::
     MS.Map Int Vertex ->    -- ^ dictionany of indices and vertices
     MS.Map Vertex Int ->    -- ^ dictionany of vertices and indices

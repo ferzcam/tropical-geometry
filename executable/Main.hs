@@ -19,13 +19,23 @@ import Polynomial.Variety
 
 ----------
 
-x, y, z:: Polynomial (Tropical Integer) Lex 3
-x = variable 0
-y = variable 1
-z = variable 2
+-- x, y, z:: Polynomial (Tropical Integer) Lex 3
+-- x = variable 0
+-- y = variable 1
+-- z = variable 2
 
-f2 =  3*x*y*z + x + y + 2*z + (-2)
+-- f2 =  3*x*y*z + x + y + 2*z + (-2)
 
+
+v, w, x, y, z :: Polynomial (Tropical Integer) Lex 5
+v = variable 0
+w = variable 1
+x = variable 2
+y = variable 3
+z = variable 4
+
+
+f1 = (x^2 + y^2 + (-1)*z^2)*(v^2+w^2+z^2 + (-1))
 
 main :: IO ()
 main = putStrLn "Welcome to the tropical-geometry package"

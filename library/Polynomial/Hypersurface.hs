@@ -139,6 +139,27 @@ verticesWithRays poly =  (map V vertices') ++ rays
         vertices' = map fst vertices 
 
 
+
+verticesWithRaysGraph :: (IsMonomialOrder ord, Real k, Show k) => Polynomial k ord n -> MS.Map Vertex [IVertex]
+verticesWithRaysGraph poly = vertices2
+    where
+        terms = (MS.toList . getTerms) poly
+        points = expVecs poly
+        dictPointTerm = MS.fromList $ zip points terms
+        extremal = sort $ extremalVertices points
+        dictIndexPoint = MS.fromList $ zip [1..] extremal
+        facetEnum = facetEnumeration' extremal
+        subdivision = map fst $ lowerFacets' $ map (\(a,b,_) -> (a,b)) facetEnum
+        facetMons = let 
+                        lookUp2 = ((MS.!) dictPointTerm) 
+                    in  map ((map lookUp2)) subdivision
+        subdivisionProjected = map (map project) subdivision
+        verticesWithCells_V = MS.fromList $ safeZipWith (,) (map (fromJust.solveSystem) facetMons) subdivisionProjected -- map solveSystem facetMons)
+        verticesWithCells_H = MS.map facetEnumeration' verticesWithCells_V
+
+        vertices2 = MS.map (map (\(_,b,_) -> ((map negate) . standard) b)) verticesWithCells_H
+
+
 onlyRays :: 
         [(Vertex,[IVertex])]    -- | Dictionary with vertices and their corresponding locally emanating rays
     ->  [Vertex]                -- | List of vertices only
@@ -149,7 +170,7 @@ onlyRays dict vertices = map R $ foldr (\vertEdges rays -> rays ++ (takeRays ver
 
 
 project :: Vertex -> Vertex
-project v = init v
+project = init
 
 
 

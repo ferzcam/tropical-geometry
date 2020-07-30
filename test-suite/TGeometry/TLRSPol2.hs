@@ -59,9 +59,9 @@ lrsPoly poly = lrs matsHyp bHyp (head points)
 
 mat1 = (fromLists [[1,0,-2],[1,-1,0],[0,-1,0],[-1,0,-1]])
 
-testLRS :: TestTree
-testLRS = HU.testCase "Test for LRS in two variable polys" $ do
-        lrs mat b @?= [[0,0,0]]
+-- testLRS :: TestTree
+-- testLRS = HU.testCase "Test for LRS in two variable polys" $ do
+--         (lrs mat b) @?= [[0,0,0]]
 
 
 testVertexEnum :: TestTree
@@ -78,6 +78,6 @@ testVertexEnum = HU.testCase "Test for LRS in two variable polys" $ do
         -- (sort.expVecs) f9 @?= lrsPoly f9
 
 testsVertexEnumPol2 :: TestTree
-testsVertexEnumPol2 = testGroup "Test for LRS in two variable polys" [ testLRS] 
+testsVertexEnumPol2 = testGroup "Test for LRS in two variable polys" [] 
 
 --testVertexEnum,
