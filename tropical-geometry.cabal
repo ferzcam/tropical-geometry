@@ -141,5 +141,6 @@ benchmark tropical-geometry-benchmarks
   build-depends:
       tropical-geometry
     , base
+    , algebra
     , criterion -any
   default-language: Haskell2010

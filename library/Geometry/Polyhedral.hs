@@ -1,7 +1,7 @@
 module Geometry.Polyhedral where
 
 import Util
-import Geometry.Vertex (Vertex, extremalVertices, adjacencyMatrix)
+import Geometry.Vertex (Vertex, IVertex, extremalVertices, adjacencyMatrix)
 import Geometry.Facet
 import Geometry.LRS
 
@@ -28,10 +28,10 @@ fromAdjacency adjacency = MS.fromList $ zip [1..] $ map indices [1..(nrows adjac
 
 -- | Computes the normal cones of a set non necessary extremal.
 
-_H_normalCones :: [Vertex] -> MS.Map Int [Hyperplane]
-_H_normalCones set = MS.mapKeys (fromJust . (flip BM.lookupR dict)) cones  -- BM.toMap cones
+_H_normalCones :: [IVertex] -> MS.Map Int [Hyperplane]
+_H_normalCones set = MS.map (map (map toRational)) $ MS.mapKeys (fromJust . (flip BM.lookupR dict)) cones  -- BM.toMap cones
     where
-        xtremeSet = extremalVertices set
+        xtremeSet = map (map toRational) $ extremalVertices set
         dict = BM.fromList $ zip [1..] (sort xtremeSet)
         adjacency = adjacencyMatrix xtremeSet
         vertexNeighs = MS.map (map (fromJust . (flip BM.lookup dict))) $ MS.mapKeys (fromJust . (flip BM.lookup dict)) $ fromAdjacency adjacency
@@ -65,7 +65,7 @@ lowerFacets [] = []
 lowerFacets [a] = [a]
 lowerFacets facets = filter (\(f,h) -> last h < 0) facets
 
-lowerFacets' :: [([Vertex], Hyperplane)] -> [([Vertex],Hyperplane)]
+lowerFacets' :: [([IVertex], Hyperplane)] -> [([IVertex],Hyperplane)]
 lowerFacets' [] = []
 lowerFacets' [a] = [a]
 lowerFacets' facets = filter (\(f,h) -> last h < 0) facets

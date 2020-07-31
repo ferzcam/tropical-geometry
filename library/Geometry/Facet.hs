@@ -28,13 +28,17 @@ type Hyperplane = [Rational]
 remove :: Eq a => a -> [a] -> [a]
 remove elem = (delete elem).nub
 
-centroid :: [Vertex] -> Vertex
-centroid set = let n = fromIntegral $ length set 
-                in map (/n) (foldr1 (safeZipWith (+)) set)
+centroid :: [IVertex] -> Vertex
+centroid set = let 
+                    n = fromIntegral $ length set 
+                    fractionalSet = map (map toRational) set 
+                in map (/n) (foldr1 (safeZipWith (+)) fractionalSet)
 
-toOrigin :: [Vertex] -> [Vertex]
-toOrigin set = let center = centroid set
-                in map ($-$ center) set
+toOrigin :: [IVertex] -> [Vertex]
+toOrigin set = let 
+                    fractionalSet = map (map toRational) set 
+                    center = centroid set
+                in map ($-$ center) fractionalSet
 
 
 
@@ -121,15 +125,16 @@ goDeep adjacency dim b@(x:xs)
 --                 varsEnabled = [i | i <- [0..(dim-1)], (fromJust chosenPoint)!!i /= 0]
 --                 newBools = foldr (\i acc -> acc & element i .~ True) bools varsEnabled
 
-isEmbedded :: [Vertex] -> Bool
+isEmbedded :: [IVertex] -> Bool
 isEmbedded vertices
     | all (==0) (map last vertices) = True 
     | length vertices <= dim = True
     | otherwise = all (\p -> detLU ((fromLists (p:firstD)) <|> e) == 0 ) rest
     where
-        dim = length $ head vertices
-        firstD = take dim vertices 
-        rest = vertices\\firstD
+        fractionalVertices =  map (map toRational) vertices
+        dim = length $ head fractionalVertices
+        firstD = take dim fractionalVertices
+        rest = fractionalVertices\\firstD
         e = colFromList $ replicate (dim+1) 1
 
 
@@ -140,7 +145,7 @@ isEmbedded vertices
 
  -}
 facetEnumeration :: 
-    [Vertex] ->    -- set of vertices (not centered to origin)
+    [IVertex] ->    -- set of vertices (not centered to origin)
     [(Facet, Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a], a)
 facetEnumeration vertices  =  safeZipWith3 (,,) newFacets cleanedHypers b
     where
@@ -156,8 +161,8 @@ facetEnumeration vertices  =  safeZipWith3 (,,) newFacets cleanedHypers b
 
 
 facetEnumeration' :: 
-    [Vertex] ->    -- set of vertices (not centered to origin)
-    [([Vertex], Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a], a)
+    [IVertex] ->    -- set of vertices (not centered to origin)
+    [([IVertex], Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a], a)
 facetEnumeration' vertices  =  safeZipWith3 (,,) newFacetsVertex cleanedHypers b
     where
         uSet = sort $ toOrigin vertices

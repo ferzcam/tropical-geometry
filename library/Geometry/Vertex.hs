@@ -47,7 +47,7 @@ isExtremeVertex point set = feasibleNNegative objectiveFunc constraintsLeft cons
         constraintsRight = (replicate (length set2) 0)
 
 
-extremalVertices :: [Vertex] -> [Vertex]
+extremalVertices :: [IVertex] -> [IVertex]
 extremalVertices set = filter (\x -> isExtremeVertex x set) set
 
 

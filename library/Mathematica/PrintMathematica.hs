@@ -108,10 +108,11 @@ lfToFile vertices file = do
                     return ()
 
 
-printTrop ::  (IsMonomialOrder ord, Real k, Show k)  => Polynomial k ord n -> String -> IO ()
+printTrop ::  (IsMonomialOrder ord, Real k, Show k, Integral k)  => Polynomial k ord n -> String -> IO ()
 printTrop poly file = do
                     let points = expVecs poly
                     let hull = extremalVertices points
+                    let fractionalHull = map (map toRational) $ extremalVertices points
                     let facetEnumerated = facetEnumeration $ hull
                     let matsHyp = fromLists $ map (\(_,h,_) -> h) facetEnumerated
                     let bHyp = colFromList $ map (\(_,_,b) -> b) facetEnumerated
@@ -119,7 +120,7 @@ printTrop poly file = do
                     printHyp matsHyp file
                     printB bHyp file
                     lfToFile  lwFacets file
-                    printVerticesFile hull file
+                    printVerticesFile fractionalHull file
             
 cleanFiles :: String -> IO ()
 cleanFiles  file = callCommand string

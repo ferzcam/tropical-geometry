@@ -119,3 +119,9 @@ instance Ord (Tropical Integer) where
   compare Inf a = LT
   compare a Inf = GT
   compare (Tropical a) (Tropical b) = compare a b
+
+
+instance Enum (Tropical Integer)
+
+instance Integral (Tropical Integer) where
+  toInteger (Tropical a) = a

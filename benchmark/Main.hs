@@ -12,8 +12,8 @@ import Hyper5
 
 main :: IO ()
 main = defaultMain [
-        -- benchHyper,
+        benchHyper
         -- benchHyper3,
         -- benchHyper4,
-        benchHyper5
+        -- benchHyper5
     ] 
