@@ -9,7 +9,6 @@ import Polynomial.System
 import Polynomial.Prelude
 import Polynomial.Monomial
 import Polynomial.Variety
-import Polynomial.GraphGen
 import Geometry.Facet
 import Geometry.Polyhedral
 
@@ -23,26 +22,52 @@ import Data.List
 import Data.Ratio
 import Control.Arrow
 import Debug.Trace
-
-
+import Data.Either
 
 data Extremal = V Vertex | R IVertex deriving (Eq, Ord)
 
 type EdgeSubdivision = (IVertex, IVertex)
 
-data EdgeHypersurface = Internal (Vertex,Vertex) | External (Vertex,IVertex) deriving (Eq)
+data EdgeHypersurface = Internal (Vertex,Vertex) | External (Vertex,IVertex) 
+
+data Subdivision = Subdiv{vert::[IVertex], edges::[EdgeSubdivision] }
+
+data Hypersurface = HyperS{vertHyp::[Vertex], edHyp::[EdgeHypersurface], rays:: MS.Map Vertex [IVertex]} 
+
+instance Show Subdivision where
+    show (Subdiv{vert=verts, edges= edgs}) = "\n--Subdivision--\n" ++ "\nVertices:\n" ++ (intercalate "\n" $ map prettyIVertex verts) ++ "\n\nEdges:\n" ++ (intercalate "\n" $ map showEdg filtEd)
+        where 
+            filtEd = foldr (\ed acc -> ed : filter (\y -> ed /= y || ( (fst ed) /= (snd y) || (snd ed) /= (fst y) )  ) acc ) [] edgs
+            showEdg tup = prettyIVertex (fst tup) ++ " : " ++ prettyIVertex (snd tup)
+
+
+instance Show Hypersurface where 
+    show (HyperS{vertHyp=verts, edHyp=edges, rays=rays}) = "\n--Hypersurface--\n" ++ "\nVertices:\n" ++ (intercalate "\n" $ map prettyVertex verts) ++ "\n\nEdges:\n" ++ (intercalate "\n" $ map show edges) ++ "\n\nRays:\n" ++ (intercalate "\n" $ map showRays raysList)
+        where
+            raysList = MS.toList rays
+            showRays tup = "V: " ++ prettyVertex (fst tup) ++ "\t R:" ++ (intercalate " " $ map show (snd tup) )
 
 instance Show Extremal where
     show (V vertex) = prettyVertex vertex
-    show (R ray) = "R " ++ show ray
+    show (R ray) = show ray
 
 instance Show EdgeHypersurface where
-    show (Internal e) = "I " ++ show e
-    show (External e) = "E " ++ show e 
+    show (Internal (ini,out)) = prettyVertex ini ++ " : " ++ prettyVertex out
+    show (External (pos, ray)) = prettyVertex pos ++ "\t R:" ++ prettyIVertex ray
 
+instance Eq EdgeHypersurface where 
+    (==) (Internal (ini1, out1)) (Internal (ini2, out2)) = ( ini1 == ini2 && out1 == out2 ) || (ini1 == out2 && out1 == ini2)
+    (==) (External (pos1, ray1)) (External (pos2, ray2)) =  pos1 == pos2 && ray1 == ray2 
+    (==) (Internal _ ) (External _ ) = False
+    (==) (External _ ) (Internal _ ) = False
+
+prettyIVertex :: IVertex -> String
+prettyIVertex vertex = "(" ++ (init rawString) ++ ")"
+    where
+        rawString = foldl (\acc x -> acc ++ (show x ++ ",") ) "" vertex
 
 prettyVertex :: Vertex -> String
-prettyVertex vertex = "V [" ++ (init rawString) ++ "]"
+prettyVertex vertex = "(" ++ (init rawString) ++ ")"
     where
         num = numerator
         den = denominator
@@ -167,9 +192,11 @@ verticesWithRaysGraph poly = vertices2
         vertices2 = MS.map (map (\(_,b,_) -> ((map negate) . standard) b)) verticesWithCells_H
 
 
-hypersurface :: (IsMonomialOrder ord, Real k, Show k, Integral k) => Polynomial k ord n -> ([EdgeSubdivision], [EdgeHypersurface])
-hypersurface poly = (graphSubdivision subdivisionProjected, graphHypersurface verticesWithCells_H)
+hypersurface :: (IsMonomialOrder ord, Real k, Show k, Integral k) => Polynomial k ord n -> (Subdivision, Hypersurface)
+hypersurface poly = (getSubdiv preSubdiv, getHyper preHyp)
     where
+        preSubdiv = graphSubdivision subdivisionProjected
+        preHyp = graphHypersurface verticesWithCells_H
         terms = (MS.toList . getTerms) poly
         points = expVecs poly
         dictPointTerm = MS.fromList $ zip points terms
@@ -196,7 +223,7 @@ graphHypersurface dictionary = MS.foldrWithKey analyzeCell [] dictionary
             where
                 findEdges [] [] = []
                 findEdges [] c
-                    | length cell == length c = error "graphHypersurface.analyzeCell.findEdges: cell must produce at least one internal edge" 
+                    | length cell + 1 == length c = error "graphHypersurface.analyzeCell.findEdges: cell must produce at least one internal edge" 
                     | otherwise = map (\(_, hyper) -> External (vertex, ((map negate) . standard) hyper)) c
                 findEdges ((v2,c2):xs) c
                     | length adjacent == 1 = [Internal (vertex,v2)] ++ findEdges xs (delete (fst $ head adjacent) c)
@@ -216,9 +243,6 @@ onlyRays dict vertices = map R $ foldr (\vertEdges rays -> rays ++ (takeRays ver
 
 project :: [a] -> [a]
 project = init
-
-
-
 
 
 
@@ -259,10 +283,32 @@ standard v = map (numerator . (/commDiv)) noRational
         commDiv = toRational $ gcdList (map numerator noRational)
      
 
----------------------------------------------------------------------------------------------------------------------------------------------
-hyperSurfaceGraph :: MS.Map Vertex [IVertex] -> Graph Rational
-hyperSurfaceGraph dicVertRays = createGraph nodes
+
+--------------------------------------------------FUNCTIONS TO SHOW HYPERSURFACE AND SUBDIV-----------------------------------------------
+
+getSubdiv :: [EdgeSubdivision] -> Subdivision
+getSubdiv edgeSubdiv = Subdiv{vert=vert, edges=edgeSubdiv}
+    where
+        vert =  (nub . foldl1 (++) . map (\(x,y) -> [x]++[y])) edgeSubdiv
+
+getHyper :: [EdgeHypersurface] -> Hypersurface
+getHyper edgeHyp = HyperS{vertHyp=vert, edHyp= edges, rays = rays}
     where 
-        listVertRays = MS.toList dicVertRays
-        nodes = map (\dic -> Node{pos=fst dic, rays= map (map toRational) (snd dic)}) listVertRays
-        
+        vert = (nub . foldl1 (++) . map (fromEdgeHyper) ) edgeHyp
+        edges =  (nub . filter (isInternal)) edgeHyp
+        preRays = filter (\ed -> not $ isInternal ed) edgeHyp
+        rays = raysToMap preRays MS.empty
+
+raysToMap :: [EdgeHypersurface] -> MS.Map Vertex [IVertex] -> MS.Map Vertex [IVertex]
+raysToMap [r@( External (pos, ray)) ] prevMap = MS.insertWith (++) pos [ray] prevMap
+raysToMap (r@( External (pos, ray)):rs) prevMap = raysToMap rs newMap
+    where 
+        newMap = MS.insertWith (++) pos [ray] prevMap
+ 
+isInternal :: EdgeHypersurface -> Bool 
+isInternal (Internal _ ) = True 
+isInternal (External _ ) = False
+
+fromEdgeHyper :: EdgeHypersurface -> [Vertex]
+fromEdgeHyper (Internal (ini, out)) = [ini]++[out]
+fromEdgeHyper (External (vert, ray)) = [vert] ++ [map toRational ray]
