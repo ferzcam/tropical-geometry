@@ -42,10 +42,10 @@ allTests = testGroup "Tasty tests" [
             -- testsMonomial, 
             -- testsPrelude, 
             -- testsPolyhedral, 
-            testsHypersurface
-            -- testsHypersurface3,
-            -- testsHypersurface4,
-            -- testsHypersurface5,
+            testsHypersurface,
+            testsHypersurface3,
+            testsHypersurface4,
+            testsHypersurface5
             -- testsSimplex,
             -- testsVertexEnumPol2
             ]

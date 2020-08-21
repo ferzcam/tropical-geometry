@@ -50,7 +50,7 @@ b = colFromList [0,0,0,1,1,2,1,2,1]
 
 
 lrsPoly :: Polynomial (Tropical Integer) Lex 2 -> [Vertex]
-lrsPoly poly = lrs matsHyp bHyp (head points)
+lrsPoly poly = lrs matsHyp bHyp (map toRational $ head points)
     where
         points = expVecs poly
         facetEnumerated = facetEnumeration $ extremalVertices points

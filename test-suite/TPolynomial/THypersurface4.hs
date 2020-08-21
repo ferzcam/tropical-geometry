@@ -8,7 +8,7 @@ module TPolynomial.THypersurface4 (testsHypersurface4) where
 
 import Polynomial.Hypersurface
 
-import Prelude (Integer, ($), (/))
+import Prelude (Integer, ($), (/), (.))
 import Test.Tasty
 import Test.Tasty.HUnit as HU
 import Data.List
@@ -34,9 +34,11 @@ f2 = w + x + y + z + 0
 
 testVertices4 :: TestTree
 testVertices4 = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
-      sort (verticesWithRays f1) @?= sort [V [(-9)/2,2,0,(-3)],V [8,(-23),0,(-28)],R [1,-1,1,0],R [1,0,0,0],R [-1,1,0,0],R [-1,1,-1,1],R [1,-1,0,-1],R [0,-1,0,-2]]
-      sort (verticesWithRays f2) @?= sort [V [0,0,0,0],R [1,0,0,0],R [0,1,0,0],R [0,0,1,0],R [0,0,0,1],R [-1,-1,-1,-1]]
-        
+      -- sort (verticesWithRays f1) @?= sort [V [(-9)/2,2,0,(-3)],V [8,(-23),0,(-28)],R [1,-1,1,0],R [1,0,0,0],R [-1,1,0,0],R [-1,1,-1,1],R [1,-1,0,-1],R [0,-1,0,-2]]
+      -- sort (verticesWithRays f2) @?= sort [V [0,0,0,0],R [1,0,0,0],R [0,1,0,0],R [0,0,1,0],R [0,0,0,1],R [-1,-1,-1,-1]]
+      MS.map (sort . nub ) (verticesWithRaysIndexed f1) @?=  MS.map (sort) (verticesWithRaysGraph f1)
+      MS.map (sort . nub ) (verticesWithRaysIndexed f2) @?=  MS.map (sort) (verticesWithRaysGraph f2)
+
 testsHypersurface4 :: TestTree
 testsHypersurface4 = testGroup "Test for Computing Hypersurfaces 4" [testVertices4] 
 

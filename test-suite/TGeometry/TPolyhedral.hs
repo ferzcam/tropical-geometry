@@ -10,7 +10,7 @@ import qualified Data.Map.Strict as MS
 
 
 set1 = [[5,1], [6,3], [6,5], [1,5], [2,2], [5,2], [3,4]]
-set2 = [[1,0,0], [0,1,0], [0,0,1], [1,1,1], [0.5, 0.5, 0.5]]
+set2 = [[2,0,0], [0,2,0], [0,0,2], [2,2,2], [1, 1, 1]]
 
 testNormalCones :: TestTree
 testNormalCones = HU.testCase "Test for vertices and their normals" $ do

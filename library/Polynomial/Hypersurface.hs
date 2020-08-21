@@ -30,7 +30,9 @@ type EdgeSubdivision = (IVertex, IVertex)
 
 data EdgeHypersurface = Internal (Vertex,Vertex) | External (Vertex,IVertex) 
 
-data Subdivision = Subdiv{vert::[IVertex], edges::[EdgeSubdivision] }
+data Subdivision = Subdiv {vert::[IVertex], edges::[EdgeSubdivision] }
+
+data Cells = Cells [[[IVertex]]]
 
 data Hypersurface = HyperS{vertHyp::[Vertex], edHyp::[EdgeHypersurface], rays:: MS.Map Vertex [IVertex]} 
 
@@ -40,7 +42,15 @@ instance Show Subdivision where
             filtEd = foldr (\ed acc -> ed : filter (\y -> ed /= y || ( (fst ed) /= (snd y) || (snd ed) /= (fst y) )  ) acc ) [] edgs
             showEdg tup = prettyIVertex (fst tup) ++ " : " ++ prettyIVertex (snd tup)
 
-
+instance Show Cells where
+    show (Cells []) = ""
+    show (Cells cells) = "-- Subdivision cells--\n" ++ (prettyShow cells 1)
+        where
+            prettyShow [] _ = ""
+            prettyShow (c:cs) i = "Cell " ++ show i ++ ":\n" ++ prettyShow2 c ++ "\n" ++ (prettyShow cs (i+1))
+                where
+                    prettyShow2 [] = ""
+                    prettyShow2 (v:vs) = ((init.tail) $ show v) ++ "\n" ++ prettyShow2 vs
 instance Show Hypersurface where 
     show (HyperS{vertHyp=verts, edHyp=edges, rays=rays}) = "\n--Hypersurface--\n" ++ "\nVertices:\n" ++ (intercalate "\n" $ map prettyVertex verts) ++ "\n\nEdges:\n" ++ (intercalate "\n" $ map show edges) ++ "\n\nRays:\n" ++ (intercalate "\n" $ map showRays raysList)
         where
@@ -192,10 +202,10 @@ verticesWithRaysGraph poly = vertices2
         vertices2 = MS.map (map (\(_,b,_) -> ((map negate) . standard) b)) verticesWithCells_H
 
 
-hypersurface :: (IsMonomialOrder ord, Real k, Show k, Integral k) => Polynomial k ord n -> (Subdivision, Hypersurface)
-hypersurface poly = (getSubdiv preSubdiv, getHyper preHyp)
+hypersurface :: (IsMonomialOrder ord, Real k, Show k, Integral k) => Polynomial k ord n -> (Cells, Hypersurface)
+hypersurface poly = (preSubdiv, getHyper preHyp)
     where
-        preSubdiv = graphSubdivision subdivisionProjected
+        preSubdiv = cellsSubdivision subdivisionProjected
         preHyp = graphHypersurface verticesWithCells_H
         terms = (MS.toList . getTerms) poly
         points = expVecs poly
@@ -216,15 +226,18 @@ graphSubdivision :: [[IVertex]] -> [EdgeSubdivision]
 graphSubdivision [] = []
 graphSubdivision (x:xs) = nub $ [(i,j) | i <- x, j <- x, i < j, isOneFace i j x] ++ graphSubdivision xs
 
+cellsSubdivision :: [[IVertex]] -> Cells
+cellsSubdivision cells = Cells $ map ((map (\(a,_,_) -> a)) . facetEnumeration') cells
+
 graphHypersurface :: MS.Map Vertex [([IVertex], Hyperplane)] -> [EdgeHypersurface]
 graphHypersurface dictionary = MS.foldrWithKey analyzeCell [] dictionary
     where
         analyzeCell vertex cell edges = (findEdges (MS.toList (MS.delete vertex dictionary)) cell) ++ edges
             where
                 findEdges [] [] = []
-                findEdges [] c
-                    | length cell + 1 == length c = error "graphHypersurface.analyzeCell.findEdges: cell must produce at least one internal edge" 
-                    | otherwise = map (\(_, hyper) -> External (vertex, ((map negate) . standard) hyper)) c
+                findEdges [] c = map (\(_, hyper) -> External (vertex, ((map negate) . standard) hyper)) c
+                --    | length cell + 1 == length c = error "graphHypersurface.analyzeCell.findEdges: cell must produce at least one internal edge" 
+                    -- | otherwise = 
                 findEdges ((v2,c2):xs) c
                     | length adjacent == 1 = [Internal (vertex,v2)] ++ findEdges xs (delete (fst $ head adjacent) c)
                     | length adjacent == 0 = findEdges xs c
