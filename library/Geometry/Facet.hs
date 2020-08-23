@@ -162,7 +162,7 @@ facetEnumeration vertices  =  safeZipWith3 (,,) newFacets cleanedHypers b
 
 facetEnumeration' :: 
     [IVertex] ->    -- set of vertices (not centered to origin)
-    [([IVertex], Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a], a)
+    [([IVertex], Vertex, Rational)]       -- set of hyperplanes ([[a]], [a], a)
 facetEnumeration' vertices  =  safeZipWith3 (,,) newFacetsVertex cleanedHypers b
     where
         uSet = sort $ toOrigin vertices

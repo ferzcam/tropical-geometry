@@ -32,7 +32,7 @@ data EdgeHypersurface = Internal (Vertex,Vertex) | External (Vertex,IVertex)
 
 data Subdivision = Subdiv {vert::[IVertex], edges::[EdgeSubdivision] }
 
-data Cells = Cells [[[IVertex]]]
+data Cells = Cells [[([IVertex], Vertex)]]
 
 data Hypersurface = HyperS{vertHyp::[Vertex], edHyp::[EdgeHypersurface], rays:: MS.Map Vertex [IVertex]} 
 
@@ -50,7 +50,7 @@ instance Show Cells where
             prettyShow (c:cs) i = "Cell " ++ show i ++ ":\n" ++ prettyShow2 c ++ "\n" ++ (prettyShow cs (i+1))
                 where
                     prettyShow2 [] = ""
-                    prettyShow2 (v:vs) = ((init.tail) $ show v) ++ "\n" ++ prettyShow2 vs
+                    prettyShow2 ((vertxs,normal):vs) = "Vertices: " ++ ((init.tail) $ show vertxs) ++ "\tNormal: " ++ show (standard normal) ++ "\n" ++ prettyShow2 vs
 instance Show Hypersurface where 
     show (HyperS{vertHyp=verts, edHyp=edges, rays=rays}) = "\n--Hypersurface--\n" ++ "\nVertices:\n" ++ (intercalate "\n" $ map prettyVertex verts) ++ "\n\nEdges:\n" ++ (intercalate "\n" $ map show edges) ++ "\n\nRays:\n" ++ (intercalate "\n" $ map showRays raysList)
         where
@@ -227,7 +227,7 @@ graphSubdivision [] = []
 graphSubdivision (x:xs) = nub $ [(i,j) | i <- x, j <- x, i < j, isOneFace i j x] ++ graphSubdivision xs
 
 cellsSubdivision :: [[IVertex]] -> Cells
-cellsSubdivision cells = Cells $ map ((map (\(a,_,_) -> a)) . facetEnumeration') cells
+cellsSubdivision cells = Cells $ map ((map (\(a,b,_) -> (a,b))) . facetEnumeration') cells
 
 graphHypersurface :: MS.Map Vertex [([IVertex], Hyperplane)] -> [EdgeHypersurface]
 graphHypersurface dictionary = MS.foldrWithKey analyzeCell [] dictionary
@@ -288,12 +288,7 @@ takeParallel (x:y:z) = map fst equals
         equals = filter (\(a,b) -> a == b) pairs
 
 
-standard :: Vertex -> IVertex
-standard v = map (numerator . (/commDiv)) noRational 
-    where
-        commDenom = toRational $ lcmList $ map denominator v
-        noRational = (map (*commDenom) v)
-        commDiv = toRational $ gcdList (map numerator noRational)
+
      
 
 

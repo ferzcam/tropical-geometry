@@ -8,7 +8,8 @@ module Geometry.Vertex(
     isExtremeVertex,
     extremalVertices,
     isOneFace,
-    adjacencyMatrix
+    adjacencyMatrix,
+    standard
 )
 
 where
@@ -22,6 +23,7 @@ import Data.Matrix
 import qualified Data.Map.Strict as MS
 import Data.List
 import Data.Maybe
+import Data.Ratio
 
 {- 
     Module that implements functions for the finding of all the extreme vertices in the Newton polyhedron of a polynomial f.
@@ -108,3 +110,11 @@ adjacencyMatrix set = foldr insertNeighbors (zero nPoints nPoints) pairs
             where
                 i = fromJust $ MS.lookup ui dictVertexIdx
                 j = fromJust $ MS.lookup uj dictVertexIdx
+
+
+standard :: Vertex -> IVertex
+standard v = map (numerator . (/commDiv)) noRational 
+    where
+        commDenom = toRational $ lcmList $ map denominator v
+        noRational = (map (*commDenom) v)
+        commDiv = toRational $ gcdList (map numerator noRational)
