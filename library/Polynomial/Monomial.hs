@@ -25,8 +25,9 @@ import Numeric.Algebra hiding ((+),(>))
 import Prelude hiding (lex)
 import qualified Data.Sized as DS
 import qualified Data.Sequence as Seq
-import           Data.Singletons.Prelude
-import              GHC.TypeLits
+-- import           Data.Singletons.Prelude
+import Prelude.Singletons
+import              GHC.TypeLits (Nat, KnownNat)
 import Control.Lens (makeLenses, makeWrapped)
 
 

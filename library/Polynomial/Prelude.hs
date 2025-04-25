@@ -24,10 +24,10 @@ import qualified Numeric.Additive.Class as AD
 import Debug.Trace
 import Data.List
 import qualified Data.Sized as DS
-import GHC.TypeLits
+import GHC.TypeLits (Nat, KnownNat)
 import Data.Type.Ordinal.Builtin
-import Data.Singletons.Prelude
-
+-- import Data.Singletons.Prelude
+import Prelude.Singletons
 
 import Polynomial.Monomial
 import Arithmetic.Numbers
