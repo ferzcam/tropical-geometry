@@ -27,19 +27,20 @@ f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6 + 6*
 
 
 main :: IO ()
-main = defaultMain [
-        bgroup "Vertices and normals"
-        [
-            bench "f1" $ whnf verticesNormals f1
-        ,   bench "f2" $ whnf verticesNormals f2
-        ,   bench "f3" $ whnf verticesNormals f3
-        ,   bench "f4" $ whnf verticesNormals f4
-        ,   bench "f5" $ whnf verticesNormals f5
-        ,   bench "f6" $ whnf verticesNormals f6
-        ,   bench "f7" $ whnf verticesNormals f7
-        ,   bench "f8" $ whnf verticesNormals f8
-        ]
-    ] 
+main = putStrLn "Hi"
+  -- defaultMain [
+        -- bgroup "Vertices and normals"
+        -- [
+            -- bench "f1" $ whnf verticesNormals f1
+        -- ,   bench "f2" $ whnf verticesNormals f2
+        -- ,   bench "f3" $ whnf verticesNormals f3
+        -- ,   bench "f4" $ whnf verticesNormals f4
+        -- ,   bench "f5" $ whnf verticesNormals f5
+        -- ,   bench "f6" $ whnf verticesNormals f6
+        -- ,   bench "f7" $ whnf verticesNormals f7
+        -- ,   bench "f8" $ whnf verticesNormals f8
+        -- ]
+    -- ] 
 
 -- main :: IO ()
 -- main = putStrLn "Welcome to the tropical-geometry package"
