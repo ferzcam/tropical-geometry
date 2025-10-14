@@ -80,7 +80,8 @@ tests:
     main: Main.hs
     dependencies:
     - base
-    # - Tropical
+    - tropical-geometry
+    - containers
     - tasty
     - tasty-hspec
     - tasty-hunit

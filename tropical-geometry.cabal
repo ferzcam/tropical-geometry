@@ -86,9 +86,11 @@ test-suite tropical-geometry-test-suite
   ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
   build-depends:
       base
+    , containers
     , tasty
     , tasty-hspec
     , tasty-hunit
+    , tropical-geometry
   default-language: Haskell2010
 
 benchmark tropical-geometry-benchmarks
