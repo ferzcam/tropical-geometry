@@ -155,7 +155,10 @@ getDictionary _A b vertex = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+
         cols = ncols newA
         slack = identity rows
         dictionary = newA <|> slack
-        topRow = rowFromList $ 1 : replicate cols 1 ++ replicate rows 0
+        -- LRS objective (Avis 1999, eq 3.6): coefficient 1 on each cobasic
+        -- (decision) variable, 0 on basics (slacks). Layout is
+        --   [obj | basic_cols (rows of them) | cobasic_cols (cols of them)].
+        topRow = rowFromList $ 1 : replicate rows 0 ++ replicate cols 1
         c_B = submatrix' (0,0) (1,rows) topRow
         c_N = submatrix' (0,0) (rows+1, rows+cols) topRow
         _A_B = submatrix' (0,rows-1) (0,rows-1) dictionary
