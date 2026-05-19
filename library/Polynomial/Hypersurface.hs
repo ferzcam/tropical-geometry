@@ -14,6 +14,8 @@ import Debug.Trace
 import Data.List
 import Geometry.ConvexHull3 (Point3D)
 import Geometry.Polytope
+import Geometry.Vertex (IVertex)
+import Util (safeZipWith)
 
 -- | The tropical hypersurface of a polynomial f is the n-1 skeleton of the Newton polyotpe of f with a regular subdivision induced by a vector w in R^n. The hypersurface will be stored as a set of points.
 
@@ -166,3 +168,11 @@ hypersurface poly = nub $ computeEdges (convertMap neighbors pointTriangles) poi
         pointNormals = verticesNormals poly
         neighbors = neighborTriangles (map sort $ subdivision poly) MS.empty
         pointTriangles = pointsWithTriangles poly
+-- | Exponent vectors of a polynomial, each suffixed with the term's
+-- coefficient. Ported from origin/generalTropHyp.
+expVecs :: (IsMonomialOrder ord, Real k, Show k, Integral k) => Polynomial k ord n -> [IVertex]
+expVecs poly = safeZipWith (++) expVec (map return coeffs)
+    where
+        terms = (MS.toList . getTerms) poly
+        expVec = map ((map toInteger) . DS.toList . getMonomial . fst) terms
+        coeffs = map (toInteger . snd) terms

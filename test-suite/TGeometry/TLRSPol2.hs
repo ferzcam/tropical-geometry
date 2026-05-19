@@ -5,9 +5,14 @@ module TGeometry.TLRSPol2 (testsVertexEnumPol2) where
 import Test.Tasty
 import Test.Tasty.HUnit as HU
 
+import Data.List (sort)
 import Data.Matrix (Matrix, fromLists)
 
+import Core hiding (Vertex)
 import Geometry.LRS (lrs, colFromList)
+import Geometry.Facet (facetEnumeration)
+import Geometry.Vertex (extremalVertices, Vertex)
+import Polynomial.Hypersurface (expVecs)
 
 -- =============================================================================
 -- Active test: cone in R^3
@@ -63,9 +68,59 @@ testTesseract = HU.testCase "lrs on R^4 unit tesseract enumerates 16 vertices" $
     lrs tesseractMat (colFromList [0,0,0,0,-1,-1,-1,-1]) [0,0,0,0]
         @?= [[a,b,c,d] | a <- [0,1], b <- [0,1], c <- [0,1], d <- [0,1]]
 
+-- Bounded 3D polytope: the standard simplex in R^3.
+-- {x_1, x_2, x_3 >= 0; x_1 + x_2 + x_3 <= 1}
+-- Vertices: origin and three unit basis vectors. 4 facets, non-cubic.
+simplexMat :: Matrix Rational
+simplexMat = fromLists [[1,0,0],[0,1,0],[0,0,1],[-1,-1,-1]]
+
+testSimplex3 :: TestTree
+testSimplex3 = HU.testCase "lrs on R^3 standard simplex enumerates 4 vertices" $ do
+    lrs simplexMat (colFromList [0,0,0,-1]) [0,0,0]
+        @?= [[0,0,0],[0,0,1],[0,1,0],[1,0,0]]
+
+-- =============================================================================
+-- Polynomial Newton-polytope tests (f1..f9)
+-- =============================================================================
+-- Each f_i is a 2-variable tropical polynomial. expVecs lifts each term to a
+-- 3D point (exp_x, exp_y, coef); the Newton polytope is the convex hull. We
+-- run extremalVertices -> facetEnumeration to get an H-representation, then
+-- lrs to enumerate the vertices.
+--
+-- Per-polynomial contract: every expVec is itself a vertex of the polytope,
+-- so (sort . map toRational . expVecs) f_i should equal lrs's output.
+
+x, y :: Polynomial (Tropical Integer) Lex 2
+x = variable 0
+y = variable 1
+
+f1, f9 :: Polynomial (Tropical Integer) Lex 2
+f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+-- f9 has all coefs == 0; lifted points are coplanar → 2D Newton polytope in
+-- R^3. LRS as implemented requires a full-dimensional polytope (sortSystem
+-- demands at least `dim` tight constraints at the starting vertex), so f9 is
+-- expected to fail until LRS handles lower-dimensional polytopes explicitly.
+f9 = x^2*y^2 + y^2 + x^2 + 0
+
+lrsPoly :: Polynomial (Tropical Integer) Lex 2 -> [Vertex]
+lrsPoly poly = lrs matsHyp bHyp (map toRational (head points))
+    where
+        points          = expVecs poly
+        facetEnumerated = facetEnumeration (extremalVertices points)
+        matsHyp         = fromLists   $ map (\(_,h,_) -> h) facetEnumerated
+        bHyp            = colFromList $ map (\(_,_,b) -> b) facetEnumerated
+
+testPolyF1 :: TestTree
+testPolyF1 = HU.testCase "lrs on Newton polytope of f1" $ do
+    -- expVecs f1 includes all terms including interior ones; we expect lrs to
+    -- recover the extremal subset.
+    let allTerms = sort $ map (map toRational) $ expVecs f1
+        extremal = sort $ map (map toRational) $ extremalVertices (expVecs f1)
+    lrsPoly f1 @?= extremal
+
 testsVertexEnumPol2 :: TestTree
 testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
-    [testVertexEnum, testSquare, testCube, testTesseract]
+    [testVertexEnum, testSquare, testCube, testTesseract, testSimplex3, testPolyF1]
 
 -- =============================================================================
 -- Pending tests: full polytope path (lrsPoly)
