@@ -230,40 +230,25 @@ simplex dictionary
 
 
 
-reverseRS :: 
-    Dictionary -> 
+-- | Is the LRS pivot (u = lexMinRatio v, v) at `dictionary` a tree edge
+-- to a child in the reverse-search tree? Per Avis 1999 (Prop 5.6): take
+-- the pivot, then verify the LRS rule applied to the child selects
+-- exactly the reverse pivot — leaving = v, entering = u. If so, return
+-- Just u (the leaving variable that defines the edge).
+reverseRS ::
+    Dictionary ->
     Int ->          -- element in N
     Maybe Int
 reverseRS dictionary v
-    | conditions == False = Nothing
-    | conditions == True = Just u
+    | u == 0 = Nothing
+    | otherwise = case selectPivot child of
+        Nothing -> Nothing
+        Just (leaving, entering)
+            | leaving == v && entering == u -> Just u
+            | otherwise -> Nothing
     where
-        dictMatrix = dictionary^.dict
-        v_col = dictMatrix ^. colAt (v)
-        w_row_0 = dictMatrix ^. rowAt 0
         u = lexMinRatio dictionary v
-        i = fromJust $ elemIndex u (dictionary ^. _B)
-        w_row_i = mapRow' (\_ x -> (v_col ^. elemAt (0,0))/(v_col ^. elemAt (i,0)) * x) 0 $ dictMatrix ^. rowAt (i)
-        diff_ws = (head.toLists) $ w_row_0 - w_row_i
-        lastCondition = all (>=0) [(diff_ws!!j)| j <- dictionary^._N , j < u]
-        conditions = (w_row_0 ^. elemAt (0,v)) > 0  && u /= 0  && lastCondition 
-
-
-
-
--- reverseRS :: -- reverse with pivot and selectPivot
---     Dictionary -> 
---     Int -> 
---     Maybe Int
--- reverseRS dictionary v
---     | newPivots == Nothing = Nothing
---     | condition == False = Nothing
---     | condition == True = Just u 
---     where
---         u = lexMinRatio dictionary v
---         prev_B = pivot u v dictionary
---         newPivots = selectPivot prev_B
---         condition = fst (fromJust newPivots) == v && (snd (fromJust newPivots)) == u
+        child = pivot u v dictionary
 
 
 
