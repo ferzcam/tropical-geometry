@@ -22,3 +22,6 @@ cabal.project.local~
 .ghc.environment.*
 .vscode/
 .LICENSE*
+*.txt~
+*_bench.txt
+*.pdf
