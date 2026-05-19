@@ -26,8 +26,24 @@ testVertexEnum = HU.testCase "lrs on R^3 cone enumerates extreme rays" $ do
     lrs mat1 (colFromList [0,0,0,0]) [0,0,0]
         @?= [[(-2)/3,(-2)/3,(-1)/3],[0,(-1),0],[0,0,(-1)],[1,0,(-1)]]
 
+-- Bounded 2D polytope: the unit square in R^2.
+-- Constraints (Ax >= b convention used by lrs):
+--   [ 1, 0] x >=  0   (x >= 0)
+--   [ 0, 1] x >=  0   (y >= 0)
+--   [-1, 0] x >= -1   (x <= 1)
+--   [ 0,-1] x >= -1   (y <= 1)
+-- Vertices: (0,0), (1,0), (1,1), (0,1).
+squareMat :: Matrix Rational
+squareMat = fromLists [[1,0],[0,1],[-1,0],[0,-1]]
+
+testSquare :: TestTree
+testSquare = HU.testCase "lrs on R^2 unit square enumerates 4 vertices" $ do
+    lrs squareMat (colFromList [0,0,-1,-1]) [0,0]
+        @?= [[0,0],[0,1],[1,0],[1,1]]
+
 testsVertexEnumPol2 :: TestTree
-testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration" [testVertexEnum]
+testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
+    [testVertexEnum, testSquare]
 
 -- =============================================================================
 -- Pending tests: full polytope path (lrsPoly)
