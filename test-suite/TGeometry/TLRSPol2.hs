@@ -41,9 +41,31 @@ testSquare = HU.testCase "lrs on R^2 unit square enumerates 4 vertices" $ do
     lrs squareMat (colFromList [0,0,-1,-1]) [0,0]
         @?= [[0,0],[0,1],[1,0],[1,1]]
 
+-- Bounded 3D polytope: the unit cube in R^3.
+-- 6 facets, 8 vertices.
+cubeMat :: Matrix Rational
+cubeMat = fromLists [[1,0,0],[0,1,0],[0,0,1],[-1,0,0],[0,-1,0],[0,0,-1]]
+
+testCube :: TestTree
+testCube = HU.testCase "lrs on R^3 unit cube enumerates 8 vertices" $ do
+    lrs cubeMat (colFromList [0,0,0,-1,-1,-1]) [0,0,0]
+        @?= [[0,0,0],[0,0,1],[0,1,0],[0,1,1],[1,0,0],[1,0,1],[1,1,0],[1,1,1]]
+
+-- Bounded 4D polytope: the unit hypercube in R^4.
+-- 8 facets, 16 vertices. This is the real R^n contract.
+tesseractMat :: Matrix Rational
+tesseractMat = fromLists
+    [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]
+    ,[-1,0,0,0],[0,-1,0,0],[0,0,-1,0],[0,0,0,-1]]
+
+testTesseract :: TestTree
+testTesseract = HU.testCase "lrs on R^4 unit tesseract enumerates 16 vertices" $ do
+    lrs tesseractMat (colFromList [0,0,0,0,-1,-1,-1,-1]) [0,0,0,0]
+        @?= [[a,b,c,d] | a <- [0,1], b <- [0,1], c <- [0,1], d <- [0,1]]
+
 testsVertexEnumPol2 :: TestTree
 testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
-    [testVertexEnum, testSquare]
+    [testVertexEnum, testSquare, testCube, testTesseract]
 
 -- =============================================================================
 -- Pending tests: full polytope path (lrsPoly)
