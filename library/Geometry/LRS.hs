@@ -310,9 +310,14 @@ hasRay dictionary = rays
 
 
 lrs :: Matrix Rational -> Col -> Vertex-> [Vertex]
-lrs matrix b vertex = (sort.nub) $ revSearch dictionary
+lrs matrix b vertex = (sort.nub) $ revSearch lexOptimum
     where
+        -- Avis 1999: reverse search must start at the unique lex-optimum
+        -- dictionary B*. `getDictionary` builds the dictionary at the
+        -- user-supplied vertex; `simplex` walks it to B* along the
+        -- Bland/lex-min-ratio path.
         dictionary = getDictionary matrix b vertex
+        lexOptimum = simplex dictionary
 
 
 
