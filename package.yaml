@@ -31,9 +31,13 @@ library:
   - Geometry.ConvexHull3
   - Geometry.Polytope
   - Geometry.Polyhedral
+  - Geometry.Vertex
+  - Geometry.Facet
+  - Geometry.LRS
   - Graphics.Drawings
+  - Util
   - Core
- 
+
   dependencies:
   - base
   - containers
@@ -46,6 +50,9 @@ library:
   - lens
   - matrix
   - gloss
+  - vector
+  - hmatrix-glpk
+  - linear
   source-dirs: library
 
 
@@ -85,6 +92,7 @@ tests:
     - tasty
     - tasty-hspec
     - tasty-hunit
+    - matrix
     ghc-options:
     - -rtsopts
     - -threaded

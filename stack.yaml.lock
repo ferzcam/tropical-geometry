@@ -3,7 +3,14 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    hackage: hmatrix-glpk-0.19.0.0@sha256:cf46c54bc3878bd207674ad88c3389083809f4df862df68ee64c6708dc517a52,1683
+    pantry-tree:
+      sha256: 8e781b7b10d93e1def514c48da663b1b046ed5c23857938bad1229e9f4a589c1
+      size: 660
+  original:
+    hackage: hmatrix-glpk-0.19.0.0@sha256:cf46c54bc3878bd207674ad88c3389083809f4df862df68ee64c6708dc517a52,1683
 snapshots:
 - completed:
     sha256: 296a7960c37efa382432ab497161a092684191815eb92a608c5d6ea5f894ace3

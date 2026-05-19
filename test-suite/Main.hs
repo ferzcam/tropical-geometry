@@ -14,6 +14,7 @@ import TGeometry.TConvexHull2
 import TGeometry.TConvexHull3
 import TGeometry.TPolyhedral
 import TGeometry.TPolytope
+import TGeometry.TLRSPol2
 import TPolynomial.THypersurface
 
 main :: IO ()
@@ -30,7 +31,8 @@ allTests = testGroup "Tasty tests" [
             testsPrelude, 
             testsConvexHull2, 
             testsConvexHull3, 
-            testsPolyhedral, 
+            testsPolyhedral,
             testsPolytope,
+            testsVertexEnumPol2,
             testsHypersurface]
     ]

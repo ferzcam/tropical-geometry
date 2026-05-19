@@ -34,7 +34,11 @@ library
       Geometry.ConvexHull3
       Geometry.Polytope
       Geometry.Polyhedral
+      Geometry.Vertex
+      Geometry.Facet
+      Geometry.LRS
       Graphics.Drawings
+      Util
       Core
   other-modules:
       Paths_tropical_geometry
@@ -46,13 +50,16 @@ library
     , base
     , containers
     , gloss
+    , hmatrix-glpk
     , lens
+    , linear
     , matrix
     , numeric-prelude
     , semiring-simple
     , singletons-base
     , sized
     , type-natural
+    , vector
   default-language: Haskell2010
 
 executable tropical-geometry
@@ -75,6 +82,7 @@ test-suite tropical-geometry-test-suite
       TArithmetic.TNumbers
       TGeometry.TConvexHull2
       TGeometry.TConvexHull3
+      TGeometry.TLRSPol2
       TGeometry.TPolyhedral
       TGeometry.TPolytope
       TPolynomial.THypersurface
@@ -87,6 +95,7 @@ test-suite tropical-geometry-test-suite
   build-depends:
       base
     , containers
+    , matrix
     , tasty
     , tasty-hspec
     , tasty-hunit

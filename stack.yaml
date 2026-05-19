@@ -40,6 +40,7 @@ packages:
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
 extra-deps:
+- hmatrix-glpk-0.19.0.0@sha256:cf46c54bc3878bd207674ad88c3389083809f4df862df68ee64c6708dc517a52,1683
 # - algebra-4.3.1@sha256:5bb7e0db14ee455e54005a6948fb9dd4440a1e5dc766480c2ac46cda01a6d2b1,4129
 # - equational-reasoning-0.6.0.0
 # - ghc-typelits-presburger-0.2.0.5
