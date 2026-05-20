@@ -4,15 +4,12 @@ module Geometry.LRS where
 
 import Geometry.Vertex
 
-import Data.Matrix hiding (trace)
+import Data.Matrix
 import qualified Data.Vector as V
 import Data.Maybe
 import Data.List
 import Util
-import Control.Lens 
-import Debug.Trace
-import Numeric.LinearProgramming hiding (simplex)
-import Data.List
+import Control.Lens
 
 type Row = Matrix Rational
 type Col = Matrix Rational
@@ -33,7 +30,8 @@ numRows dictionary = nrows $ dictionary^.dict
 numCols :: Dictionary -> Int
 numCols dictionary = ncols $ dictionary^.dict
 
-(|*|) = multStrassen
+(|*|) :: Num a => Matrix a -> Matrix a -> Matrix a
+(|*|) = multStd
 
 
 colFromList :: [a] -> Matrix a
@@ -111,18 +109,7 @@ mapRow' f row m
 
 
 
-getOptimumVertex :: Matrix Rational -> Col -> Maybe Vertex
-getOptimumVertex mat col = trace ("Problem: " ++ show (replicate (ncols mat) (-1))  ++ "\n\n Result :" ++ show result ) fmap (map toRational) $ feasNOpt result
-    where
-        problem = Maximize $ replicate (ncols mat) (-1)
-        constraints = Dense $ safeZipWith (:<=:) (map (map fromRational) $ toLists mat) (map fromRational $ concat $ toLists col)
-        result = exact problem constraints (map Free [1..ncols mat])
-        feasNOpt (Optimal (_, vertex)) = Just vertex
-        feasNOpt _ = Nothing
-
-
-
-{- 
+{-
     Dictionary form
 
                 p21     p31
@@ -163,7 +150,7 @@ getDictionary _A b vertex = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+
         c_N = submatrix' (0,0) (rows+1, rows+cols) topRow
         _A_B = submatrix' (0,rows-1) (0,rows-1) dictionary
         _A_N = submatrix' (0,rows-1) (rows, rows+cols-1) dictionary
-        Right invA_B = inverse _A_B
+        invA_B = either (\e -> error ("getDictionary: A_B is not invertible: " ++ e)) id (inverse _A_B)
         p21 = (c_N - c_B |*| invA_B |*| _A_N)
         p22 = invA_B |*| _A_N
         p31 = -c_B |*| invA_B |*| newb
