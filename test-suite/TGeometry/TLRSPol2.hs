@@ -12,7 +12,6 @@ import Core hiding (Vertex)
 import Geometry.LRS (lrs, colFromList)
 import Geometry.Facet (facetEnumeration)
 import Geometry.Vertex (extremalVertices, Vertex)
-import Polynomial.Hypersurface (expVecs)
 
 -- =============================================================================
 -- Active test: cone in R^3
@@ -94,8 +93,28 @@ x, y :: Polynomial (Tropical Integer) Lex 2
 x = variable 0
 y = variable 1
 
-f1, f9 :: Polynomial (Tropical Integer) Lex 2
+f1, f2, f3, f4, f6, f7, f8, f9 :: Polynomial (Tropical Integer) Lex 2
 f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
+f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3
+   + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+-- f4 has all implicit coefficients (= Tropical 0); like f9, every lifted
+-- point sits at z=0, so the Newton polytope is coplanar in R^3 and LRS's
+-- sortSystem precondition (≥ dim tight constraints at the start vertex)
+-- can't be met. Excluded from the active test group.
+f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+   + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+   + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
+f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+   + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+   + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+   + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
+f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+   + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+   + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+   + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+   + 2*x^2 + x*y + 3*y^2 + x + 2*y + 10
 -- f9 has all coefs == 0; lifted points are coplanar → 2D Newton polytope in
 -- R^3. LRS as implemented requires a full-dimensional polytope (sortSystem
 -- demands at least `dim` tight constraints at the starting vertex), so f9 is
@@ -110,17 +129,25 @@ lrsPoly poly = lrs matsHyp bHyp (map toRational (head points))
         matsHyp         = fromLists   $ map (\(_,h,_) -> h) facetEnumerated
         bHyp            = colFromList $ map (\(_,_,b) -> b) facetEnumerated
 
-testPolyF1 :: TestTree
-testPolyF1 = HU.testCase "lrs on Newton polytope of f1" $ do
-    -- expVecs f1 includes all terms including interior ones; we expect lrs to
-    -- recover the extremal subset.
-    let allTerms = sort $ map (map toRational) $ expVecs f1
-        extremal = sort $ map (map toRational) $ extremalVertices (expVecs f1)
-    lrsPoly f1 @?= extremal
+-- lrs should recover exactly the extremal subset of expVecs (interior terms
+-- excluded).
+polyTest :: String -> Polynomial (Tropical Integer) Lex 2 -> TestTree
+polyTest name poly = HU.testCase ("lrs on Newton polytope of " ++ name) $ do
+    let extremal = sort $ map (map toRational) $ extremalVertices (expVecs poly)
+    lrsPoly poly @?= extremal
 
 testsVertexEnumPol2 :: TestTree
 testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
-    [testVertexEnum, testSquare, testCube, testTesseract, testSimplex3, testPolyF1]
+    [ testVertexEnum
+    , testSquare, testCube, testTesseract, testSimplex3
+    , polyTest "f1" f1
+    , polyTest "f2" f2
+    , polyTest "f3" f3
+    -- f4 and f9 are degenerate (coplanar lifted points); see definitions above
+    , polyTest "f6" f6
+    , polyTest "f7" f7
+    , polyTest "f8" f8
+    ]
 
 -- =============================================================================
 -- Pending tests: full polytope path (lrsPoly)
