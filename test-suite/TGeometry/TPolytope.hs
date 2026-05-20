@@ -21,12 +21,18 @@ subdivisionF2 = [[(3,0),(2,0),(2,1)],[(2,1),(2,0),(1,1)],[(1,2),(2,1),(1,1)],[(0
 subdivisionF4 = [[(3,0), (0,0), (0,3)]]
 subdivisionF5 = [[(1,-1), (0,-1), (0,0)]]
 
+-- A subdivision is a set of triangles, each triangle a set of three
+-- vertices: vertex order within a triangle and triangle order in the list
+-- are not semantically meaningful. Normalize both before comparing.
+normalizeSubdivision :: Ord a => [[a]] -> [[a]]
+normalizeSubdivision = sort . map sort
+
 testProjectionToR2 :: TestTree
 testProjectionToR2 =   HU.testCase "Project 2D ConvexHull to produce 2D subdivision" $ do
-        sort (projectionToR2 $ fromJust $ convexHull3 newF1) @?= sort subdivisionF1
-        sort (projectionToR2 $ fromJust $ convexHull3 newF2) @?= sort subdivisionF2
-        --sort (projectionToR2 $ fromJust $ convexHull3 newF4) @?= sort subdivisionF4
-        --sort (projectionToR2 $ fromJust $ convexHull3 newF5) @?= sort subdivisionF5
+        normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF1) @?= normalizeSubdivision subdivisionF1
+        normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF2) @?= normalizeSubdivision subdivisionF2
+        --normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF4) @?= normalizeSubdivision subdivisionF4
+        --normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF5) @?= normalizeSubdivision subdivisionF5
 
 
 
