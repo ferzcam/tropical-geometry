@@ -79,6 +79,48 @@ testSimplex3 = HU.testCase "lrs on R^3 standard simplex enumerates 4 vertices" $
         @?= [[0,0,0],[0,0,1],[0,1,0],[1,0,0]]
 
 -- =============================================================================
+-- Polytope-family tests (disabled: degenerate vertices)
+-- =============================================================================
+-- Cross polytope X_n = { x in R^n : sum |x_i| <= 1 } would be the natural
+-- next test family, but every cross-polytope vertex has 2^(n-1) facets
+-- meeting (8 in R^4, 16 in R^5), which our LRS doesn't handle correctly.
+-- Two issues compound:
+--   1. getDictionary's initial basis A_B is singular when more than `dim`
+--      tight constraints exist at the start vertex (smart basis selection
+--      can fix this).
+--   2. Simplex and reverseRS need lex-positive bases (symbolic perturbation
+--      of b by ε powers, stored as an extra A_B^{-1} block in the
+--      dictionary, with vector-valued lex-min ratio comparisons) to
+--      navigate degenerate optima correctly. Without this, half the
+--      vertices are missed.
+-- Implementing (2) is real LRS surgery (~150-200 LOC across getDictionary,
+-- pivot, lexMinRatio, getVertex, hasRay). Cross-polytope-style polytopes
+-- with degenerate vertices are deliberately out of scope until that lands.
+
+-- crossPolytopeMat :: Int -> Matrix Rational
+-- crossPolytopeMat n = fromLists $ map (map negate) signVectors
+--     where signVectors = sequence (replicate n [-1, 1])
+--
+-- crossPolytopeB :: Int -> Matrix Rational
+-- crossPolytopeB n = colFromList $ replicate (2 ^ n) (-1)
+--
+-- crossPolytopeVertices :: Int -> [Vertex]
+-- crossPolytopeVertices n = sort
+--     [ [ if j == i then fromIntegral s else 0 | j <- [0..n-1] ]
+--     | i <- [0..n-1], s <- [(-1), 1 :: Integer]
+--     ]
+--
+-- testCrossR4 :: TestTree
+-- testCrossR4 = HU.testCase "lrs on R^4 cross polytope enumerates 8 vertices" $ do
+--     lrs (crossPolytopeMat 4) (crossPolytopeB 4) (1 : replicate 3 0)
+--         @?= crossPolytopeVertices 4
+--
+-- testCrossR5 :: TestTree
+-- testCrossR5 = HU.testCase "lrs on R^5 cross polytope enumerates 10 vertices" $ do
+--     lrs (crossPolytopeMat 5) (crossPolytopeB 5) (1 : replicate 4 0)
+--         @?= crossPolytopeVertices 5
+
+-- =============================================================================
 -- Polynomial Newton-polytope tests (f1..f9)
 -- =============================================================================
 -- Each f_i is a 2-variable tropical polynomial. expVecs lifts each term to a
@@ -140,6 +182,7 @@ testsVertexEnumPol2 :: TestTree
 testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
     [ testVertexEnum
     , testSquare, testCube, testTesseract, testSimplex3
+    -- cross polytope tests disabled — degenerate vertices, see above
     , polyTest "f1" f1
     , polyTest "f2" f2
     , polyTest "f3" f3
