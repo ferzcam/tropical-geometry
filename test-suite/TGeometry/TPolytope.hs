@@ -21,7 +21,7 @@ subdivisionF2 = [[(3,0),(2,0),(2,1)],[(2,1),(2,0),(1,1)],[(1,2),(2,1),(1,1)],[(0
 subdivisionF4 = [[(3,0), (0,0), (0,3)]]
 subdivisionF5 = [[(1,-1), (0,-1), (0,0)]]
 
--- A subdivision is a set of triangles, each triangle a set of three
+-- A subdivision is a set of polygon cells, each cell a set of
 -- vertices: vertex order within a triangle and triangle order in the list
 -- are not semantically meaningful. Normalize both before comparing.
 normalizeSubdivision :: Ord a => [[a]] -> [[a]]
@@ -47,4 +47,13 @@ testThreePointSubdivision = HU.testCase "Subdivision of three lifted points" $
 
 
 testsPolytope :: TestTree
-testsPolytope = testGroup "Test for polytopes" [testProjectionToR2, testCoplanarSubdivision, testThreePointSubdivision]
+testsPolytope = testGroup "Test for polytopes" [testProjectionToR2, testCoplanarSubdivision, testThreePointSubdivision, testSquareLowerFace]
+
+
+-- A square lower face of a genuinely three-dimensional lifted hull must
+-- remain one cell, with no artificial diagonal.
+testSquareLowerFace :: TestTree
+testSquareLowerFace = HU.testCase "Square lower facet is preserved as one polygon" $
+    normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3
+        [(0,0,0),(2,0,0),(2,2,0),(0,2,0),(1,1,2)])
+        @?= [[(0,0),(0,2),(2,0),(2,2)]]

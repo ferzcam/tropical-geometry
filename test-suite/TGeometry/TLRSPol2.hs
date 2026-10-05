@@ -150,18 +150,10 @@ testPermutohedronP3 = HU.testCase "lrs on R^2 permutohedron P_3 enumerates 6 ver
         @?= permutohedronP3Vertices
 
 -- =============================================================================
--- Polytope-family tests (disabled: degenerate vertices)
+-- Historical cross-polytope fixtures
 -- =============================================================================
--- Cross polytope X_n = { x in R^n : sum |x_i| <= 1 } would be the natural
--- next test family, but every cross-polytope vertex has 2^(n-1) facets
--- meeting (8 in R^4, 16 in R^5), which our LRS doesn't handle correctly.
--- The final d tight rows chosen by sortSystem can be dependent even when
--- another independent choice exists, making getDictionary's basis singular.
--- These historical tests remain disabled pending independent basis selection
--- and a review of lex-positive traversal at degenerate vertices.
--- The dictionary already carries the inverse-derived columns used in its
--- lexicographic ratio comparisons; an additional perturbation block is not
--- assumed to be necessary.
+-- Corrected inequalities and all-start regressions are active in TLRSDegenerate.
+-- These original declarations are retained for provenance only.
 
 -- crossPolytopeMat :: Int -> Matrix Rational
 -- crossPolytopeMat n = fromLists $ map (map negate) signVectors
@@ -194,23 +186,20 @@ testPermutohedronP3 = HU.testCase "lrs on R^2 permutohedron P_3 enumerates 6 ver
 -- run extremalVertices -> facetEnumeration to get an H-representation, then
 -- lrs to enumerate the vertices.
 --
--- Per-polynomial contract: every expVec is itself a vertex of the polytope,
--- so (sort . map toRational . expVecs) f_i should equal lrs's output.
+-- The expected result is the extremal subset of the lifted support.
 
 x, y :: Polynomial (Tropical Integer) Lex 2
 x = variable 0
 y = variable 1
 
-f1, f2, f3, f4, f6, f7, f8, f9 :: Polynomial (Tropical Integer) Lex 2
+f1, f2, f3, f4, f5, f6, f7, f8, f9 :: Polynomial (Tropical Integer) Lex 2
 f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
 f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
 f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3
    + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
--- f4 has all implicit coefficients (= Tropical 0); like f9, every lifted
--- point sits at z=0, so the Newton polytope is coplanar in R^3 and LRS's
--- sortSystem precondition (≥ dim tight constraints at the start vertex)
--- can't be met. Excluded from the active test group.
+-- Flat lifted supports exercise affine-hull equalities.
 f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
 f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
@@ -223,10 +212,6 @@ f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 10
--- f9 has all coefs == 0; lifted points are coplanar → 2D Newton polytope in
--- R^3. LRS as implemented requires a full-dimensional polytope (sortSystem
--- demands at least `dim` tight constraints at the starting vertex), so f9 is
--- expected to fail until LRS handles lower-dimensional polytopes explicitly.
 f9 = x^2*y^2 + y^2 + x^2 + 0
 
 lrsPoly :: Polynomial (Tropical Integer) Lex 2 -> [Vertex]
@@ -249,18 +234,20 @@ testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
     [ testVertexEnum
     , testSquare, testCube, testTesseract, testSimplex3
     , testPermutohedronP3, testPermutohedronP4
-    -- cross polytope tests disabled — degenerate vertices, see above
+    -- Cross-polytope coverage is in TLRSDegenerate.
     , polyTest "f1" f1
     , polyTest "f2" f2
     , polyTest "f3" f3
-    -- f4 and f9 are degenerate (coplanar lifted points); see definitions above
+    , polyTest "f4" f4
+    , polyTest "f5" f5
+    , polyTest "f9" f9
     , polyTest "f6" f6
     , polyTest "f7" f7
     , polyTest "f8" f8
     ]
 
 -- =============================================================================
--- Pending tests: full polytope path (lrsPoly)
+-- Historical port notes: full polytope path (now active above)
 -- =============================================================================
 -- These exercise the bounded-polytope branch of LRS via Newton polytopes of
 -- 2-variable tropical polynomials f1..f9. They were written on generalTropHyp
@@ -269,10 +256,9 @@ testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
 --   - Geometry.Facet.facetEnumeration
 --   - Geometry.Vertex.extremalVertices
 -- Historical port notes retained below; these dependencies and the
--- full-dimensional polynomial cases above are now active.
+-- polynomial cases above, including flat supports, are now active.
 --
--- Re-enable once `simplex` is wired into `lrs` and the lex-pivot rule is
--- correct; expect at least f1, f4, f9 to pass first.
+-- The following is preserved historical source, not pending test coverage.
 --
 --   import Polynomial.Hypersurface (expVecs)
 --   import Geometry.Facet (facetEnumeration)

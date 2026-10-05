@@ -1,12 +1,12 @@
 module TGeometry.TLRSInputValidation (testsLRSInputValidation) where
 
 import Control.Exception (ErrorCall, evaluate, try)
-import Data.List (isInfixOf)
+import Data.List (isInfixOf, sort)
 import Data.Matrix (Matrix, fromLists)
 import Geometry.LRS (colFromList, lrs)
 import Geometry.Facet (facetEnumeration, facetEnumeration')
 import Test.Tasty (TestTree, testGroup)
-import Test.Tasty.HUnit (Assertion, assertBool, assertFailure, testCase)
+import Test.Tasty.HUnit (Assertion, assertBool, assertFailure, testCase, (@?=))
 
 -- Force the whole lazy result, and accept only the intended ErrorCall category.
 -- Matrix indexing errors or unrelated exceptions must not make a test pass.
@@ -61,18 +61,36 @@ testsLRSInputValidation = testGroup "LRS input validation"
             "lrs: unbounded non-homogeneous input requires separate vertex and ray output"
             (fromLists [[-1,0],[0,-1]])
             (colFromList [-1,-1]) [1,1]
-    , testCase "facetEnumeration rejects the planar support of f4" $
-        assertErrorContaining "facetEnumeration: lower-dimensional input requires affine reduction"
-            (facetEnumeration f4Support)
-    , testCase "facetEnumeration rejects the planar support of f9" $
-        assertErrorContaining "facetEnumeration: lower-dimensional input requires affine reduction"
-            (facetEnumeration f9Support)
-    , testCase "facetEnumeration' rejects the planar support of f4" $
-        assertErrorContaining "facetEnumeration': lower-dimensional input requires affine reduction"
-            (facetEnumeration' f4Support)
-    , testCase "facetEnumeration' rejects the planar support of f9" $
-        assertErrorContaining "facetEnumeration': lower-dimensional input requires affine reduction"
-            (facetEnumeration' f9Support)
+    , testCase "facetEnumeration enumerates the planar support of f4" $
+        enumerate f4Support @?= [[0,0,0],[0,3,0],[3,0,0]]
+    , testCase "facetEnumeration enumerates the planar support of f9" $
+        enumerate f9Support @?= sort (map (map toRational) f9Support)
+    , testCase "facetEnumeration' preserves ambient facet vertices for f4" $
+        checkFacets f4Support
+    , testCase "facetEnumeration' preserves ambient facet vertices for f9" $
+        checkFacets f9Support
+    , testCase "Historical f5 lifted triangle with negative coordinates" $
+        enumerate [[0,0,-2],[0,-1,2],[1,-1,2]] @?=
+            [[0,-1,2],[0,0,-2],[1,-1,2]]
+    , testCase "Tilted translated plane with rational affine coefficients and edge points" $
+        enumerate [[2,3,5],[4,3,6],[4,7,10],[2,7,9],[2,5,7]] @?=
+            [[2,3,5],[2,7,9],[4,3,6],[4,7,10]]
+    , testCase "Plane whose first coordinate is constant" $
+        enumerate [[7,0,0],[7,2,0],[7,0,2],[7,1,1]] @?=
+            [[7,0,0],[7,0,2],[7,2,0]]
+    , testCase "Translated segment discards interior and duplicate points" $
+        enumerate [[3,6,6],[4,8,9],[2,4,3],[4,8,9]] @?=
+            [[2,4,3],[4,8,9]]
+    , testCase "Planar reordered support with duplicate corners and interior point first" $
+        enumerate [[1,1,0],[2,2,0],[0,0,0],[2,0,0],[0,2,0],[2,2,0]] @?=
+            [[0,0,0],[0,2,0],[2,0,0],[2,2,0]]
+    , testCase "Ambient one-dimensional segment" $
+        enumerate [[2],[5],[-1],[2]] @?= [[-1],[5]]
+    , testCase "Origin singleton has no nonzero ray directions" $
+        enumerate [[0,0,0]] @?= [[0,0,0]]
+    , testCase "Singleton is represented by affine equalities" $
+        enumerate [[2,-3,5],[2,-3,5]] @?= [[2,-3,5]]
+
     ]
 
 -- Exact lifted supports, bypassing extremalVertices and its GLPK backend.
@@ -82,3 +100,22 @@ f4Support, f9Support :: [[Integer]]
 f4Support = [[3,0,0],[2,1,0],[1,2,0],[0,3,0],[2,0,0],
              [1,1,0],[0,2,0],[1,0,0],[0,1,0],[0,0,0]]
 f9Support = [[2,2,0],[0,2,0],[2,0,0],[0,0,0]]
+
+
+-- The lexicographic minimum of a finite point set is always an extreme point.
+enumerate :: [[Integer]] -> [[Rational]]
+enumerate points =
+    let hs = facetEnumeration points
+    in lrs (fromLists [h | (_,h,_) <- hs])
+           (colFromList [b | (_,_,b) <- hs])
+           (map toRational (minimum points))
+
+checkFacets :: [[Integer]] -> Assertion
+checkFacets points = do
+    let indexed = facetEnumeration points
+        explicit = facetEnumeration' points
+    explicit @?= [(map ((sort points !!) . subtract 1) ids,h,b) | (ids,h,b) <- indexed]
+    assertBool "Every facet vertex lies on its plane and every support point satisfies every inequality"
+        (all (\(vs,h,b) -> not (null vs) &&
+            all (\v -> sum (zipWith (*) h (map toRational v)) == b) vs &&
+            all (\v -> sum (zipWith (*) h (map toRational v)) <= b) points) explicit)

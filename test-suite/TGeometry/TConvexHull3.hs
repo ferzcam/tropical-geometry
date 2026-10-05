@@ -52,12 +52,6 @@ module TGeometry.TConvexHull3 (testsConvexHull3) where
     list1 = take 23 list
     testsConvexHull3D :: TestTree
     testsConvexHull3D = HU.testCase "Compute convex hull 3D" $ do
-       -- Historical projected expectations below change z coordinates. They
-       -- do not specify a geometric full-hull contract; retain for reference.
-       -- fmap fromConvexHull (convexHull3 [(3,0,0), (2,1,0), (1,2,0), (0,3,0), (2,0,0), (1,1,0), (0,2,0), (1,0,0), (0,1,0), (0,0,0)]) @?= Just ( sort [(3,0,1),(0,0,1),(0,3,1)])
-       -- fmap fromConvexHull (convexHull3 [(3,0,1),(0,0,2),(0,3,1)]) @?= Just (sort [(3,0,1),(0,0,1),(0,3,1)])
-       -- fmap fromConvexHull (convexHull3 [(1,2,3), (2,1,3), (5,3,1)]) @?= Just (sort [(1,2,1), (2,1,1), (5,3,1)])
-       -- fmap fromConvexHull (convexHull3 [(0,0,0), (0,2,0), (2,0,0), (1,1,0)]) @?= Just (sort [(0,0,1), (0,2,1), (2,0,1)])
 
 
         fmap fromConvexHull (convexHull3 [(1,1,2),(0,0,0),(3,3,3),(0,4,0),(4,0,0),(2,1,3),(2,2,2),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)]) @?= Just (sort [(0,0,0),(0,4,0),(4,0,0),(0,0,4),(4,4,0),(0,4,4),(4,0,4),(4,4,4)])
@@ -93,5 +87,42 @@ module TGeometry.TConvexHull3 (testsConvexHull3) where
         fmap fromConvexHull (convexHull3 [(0,0,0),(4,0,0),(0,4,0),(0,0,4),(1,1,1)])
             @?= Just (sort [(0,0,0),(4,0,0),(0,4,0),(0,0,4)])
 
+    -- Historical assertions flattened z to 1. These restored cases instead
+    -- require the actual 3D extreme points of each coplanar input.
+    testsCoplanarHull :: TestTree
+    testsCoplanarHull = testGroup "Coplanar hull preserves coordinates"
+        [ hullCase "historical z=0 lattice"
+            [(3,0,0),(2,1,0),(1,2,0),(0,3,0),(2,0,0),(1,1,0),(0,2,0),(1,0,0),(0,1,0),(0,0,0)]
+            [(3,0,0),(0,0,0),(0,3,0)]
+        , hullCase "historical tilted triangle"
+            [(3,0,1),(0,0,2),(0,3,1)] [(3,0,1),(0,0,2),(0,3,1)]
+        , hullCase "historical three-point plane"
+            [(1,2,3),(2,1,3),(5,3,1)] [(1,2,3),(2,1,3),(5,3,1)]
+        , hullCase "historical triangle with edge midpoint"
+            [(0,0,0),(0,2,0),(2,0,0),(1,1,0)] [(0,0,0),(0,2,0),(2,0,0)]
+        , hullCase "vertical x-constant square"
+            [(4,0,0),(4,2,0),(4,2,2),(4,0,2),(4,1,1)]
+            [(4,0,0),(4,2,0),(4,2,2),(4,0,2)]
+        , hullCase "vertical y-constant square"
+            [(0,4,0),(2,4,0),(2,4,2),(0,4,2),(1,4,1)]
+            [(0,4,0),(2,4,0),(2,4,2),(0,4,2)]
+        , hullCase "tilted square with interior and edge points"
+            [(0,0,3),(2,0,5),(2,2,9),(0,2,7),(1,1,6),(1,0,4)]
+            [(0,0,3),(2,0,5),(2,2,9),(0,2,7)]
+        , hullCase "vertical collinear endpoints"
+            [(4,4,5),(4,4,1),(4,4,3),(4,4,1)] [(4,4,1),(4,4,5)]
+        , hullCase "tilted collinear endpoints"
+            [(1,2,3),(2,4,6),(3,6,9),(0,0,0)] [(0,0,0),(3,6,9)]
+        , hullCase "single point" [(2,3,4)] [(2,3,4)]
+        , hullCase "repeated single point" (replicate 4 (2,3,4)) [(2,3,4)]
+        , HU.testCase "empty input has no hull" $
+            fmap fromConvexHull (convexHull3 []) @?= Nothing
+        ]
+        where
+            hullCase name points expected = HU.testCase name $ do
+                fmap fromConvexHull (convexHull3 points) @?= Just (sort expected)
+                fmap fromConvexHull (convexHull3 (reverse points)) @?= Just (sort expected)
+
     testsConvexHull3 :: TestTree
-    testsConvexHull3 = testGroup "Test for convex hull in 3D" [testComputeSegment, testComputeTriangle, testComputeTetrahedron, testIsBetween3D, testsMergePoints, testsConvexHull3D, testTetrahedronHull, testCubeHullInterior, testList1FullHull, testFivePointHull]
+    testsConvexHull3 = testGroup "Test for convex hull in 3D" [testComputeSegment, testComputeTriangle, testComputeTetrahedron, testIsBetween3D, testsMergePoints, testsConvexHull3D, testTetrahedronHull, testCubeHullInterior, testList1FullHull, testFivePointHull, testsCoplanarHull]
+

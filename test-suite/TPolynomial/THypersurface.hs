@@ -9,8 +9,10 @@ module TPolynomial.THypersurface (testsHypersurface) where
 
 import Test.Tasty
 import Test.Tasty.HUnit as HU
+import Control.Exception (ErrorCall, evaluate, try)
 import Data.List
 import Core
+import Geometry.Polytope (subdivision)
 import qualified Data.Map.Strict as MS 
 
 x, y :: Polynomial (Tropical Integer) Lex 2
@@ -91,4 +93,43 @@ testHypersurfaceF5 = HU.testCase "Laurent triangle has three translated tropical
         @?= sort [((0,4),(0,1)),((0,4),(1,0)),((0,4),(-1,-1))]
 
 testsHypersurface :: TestTree
-testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticesNormals, testHypersurfaceF4, testHypersurfaceF5]
+testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticesNormals, testHypersurfaceF4, testHypersurfaceF5, testsPolygonal]
+
+
+
+-- These expected cells/dual edges follow directly from the minimum of the
+-- displayed affine terms, independently of the implementation.
+testsPolygonal :: TestTree
+testsPolygonal = testGroup "Polygonal subdivisions"
+    [ HU.testCase "Coplanar square gives four rays and no diagonal" $ do
+        let p = 0 + x + y + x*y
+        sort (map sort (subdivision p)) @?= [[(0,0),(0,1),(1,0),(1,1)]]
+        sort (map primitiveRay (hypersurface p)) @?=
+            sort [((0,0),(1,0)),((0,0),(-1,0)),((0,0),(0,1)),((0,0),(0,-1))]
+    , HU.testCase "Affine square heights translate its fan" $ do
+        let p = 0 + 2*x + 3*y + 5*x*y
+        sort (map primitiveRay (hypersurface p)) @?=
+            sort [((-2,-3),(1,0)),((-2,-3),(-1,0)),((-2,-3),(0,1)),((-2,-3),(0,-1))]
+    , HU.testCase "Adjacent square and triangle have one actual bounded edge" $ do
+        let p = 0 + x + y + x*y + 1*x^2
+        sort (map sort (subdivision p)) @?=
+            sort [[(0,0),(0,1),(1,0),(1,1)],[(1,0),(1,1),(2,0)]]
+        sort (hypersurface p) @?= sort
+            [((-1,0),(0,0)), ((0,0),(10,0)), ((0,0),(0,10)),
+             ((0,0),(0,-10)), ((-1,0),(-1,10)), ((-1,0),(-11,-10))]
+    , HU.testCase "Nonintegral fan vertex is rejected instead of truncated" $ do
+        let p = 0 + 1*x^2 + y
+        result <- try (evaluate (sum [a+b+c+d | ((a,b),(c,d)) <- hypersurface p])) :: IO (Either ErrorCall Int)
+        case result of
+            Left err -> assertBool "diagnostic explains integral coordinate limitation" ("nonintegral" `isInfixOf` show err)
+            Right _ -> assertFailure "Expected explicit rejection of vertex (-1/2,0)"
+    , HU.testCase "Normal matching uses exact direction and orientation" $ do
+        isInverse (0,0) (2,1) (3,2) (-2,-1) @?= False
+        isInverse (0,0) (2,1) (4,2) (-2,-1) @?= True
+        isInverse (0,0) (-2,-1) (4,2) (2,1) @?= False
+        isInverse (0,0) (2,1) (4,2) (2,1) @?= False
+    , HU.testCase "Shared diagonal vertices do not imply cell adjacency" $ do
+        let square = [(0,0),(0,2),(2,0),(2,2)]
+            triangle = [(0,0),(1,3),(2,2)]
+        neighborTriangles [square,triangle] MS.empty @?= MS.fromList [(square,[]),(triangle,[])]
+    ]
