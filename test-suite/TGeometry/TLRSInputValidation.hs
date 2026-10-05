@@ -51,6 +51,16 @@ testsLRSInputValidation = testGroup "LRS input validation"
             (colFromList [0,0,-1,-1]) [0,0]
     , testCase "A feasible interior point is not a starting vertex" $
         assertLrsError "independent tight constraints" square squareRhs [1/2,1/2]
+    , testCase "An unbounded strip needs separate vertex and ray output" $
+        assertLrsError
+            "lrs: unbounded non-homogeneous input requires separate vertex and ray output"
+            (fromLists [[-1,0],[0,-1],[0,1]])
+            (colFromList [0,0,1]) [0,0]
+    , testCase "A shifted quadrant needs separate vertex and ray output" $
+        assertLrsError
+            "lrs: unbounded non-homogeneous input requires separate vertex and ray output"
+            (fromLists [[-1,0],[0,-1]])
+            (colFromList [-1,-1]) [1,1]
     , testCase "facetEnumeration rejects the planar support of f4" $
         assertErrorContaining "facetEnumeration: lower-dimensional input requires affine reduction"
             (facetEnumeration f4Support)
