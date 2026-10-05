@@ -2,7 +2,7 @@
 
 ## Current status — 2026-10-05
 
-**All 97 enabled tests pass.** There are no expected-failure wrappers or skipped
+**All 133 enabled tests pass.** There are no expected-failure wrappers or skipped
 registered cases. The baseline had 36 enabled tests.
 
 The source is on `fix/lrs-correctness`, reviewed in [draft PR #3](https://github.com/ferzcam/tropical-geometry/pull/3).
@@ -12,9 +12,9 @@ P3/P4 fixtures. The original local branch contained 13 commits beyond the remote
 `upgrade_lts`; the separate PR base preserves that history without updating an
 existing remote branch. Integrating the PR into `upgrade_lts` is a separate step.
 
-Final evidence: [full test log](validation/final-supported-suite/stack-test.log),
-[command, timing and source hashes](validation/final-supported-suite/metadata.json),
-[enabled test inventory](validation/final-supported-suite/test-inventory.json).
+Final evidence: [full test log](validation/polygon-support/stack-test.log),
+[command, timing and source hashes](validation/polygon-support/metadata.json),
+[enabled test inventory](validation/polygon-support/test-inventory.json).
 
 Validation used Stack 3.1.1, GHC 9.8.4 and lts-23.19 with installed dependencies.
 Changed Haskell modules were rebuilt, but this is not a clean-environment or
@@ -36,11 +36,21 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
    final-d-row basis is retained where possible; redundant rows retain their
    order and multiplicity. The existing lexicographic block was sufficient.
 5. Added explicit errors for malformed RHS/start data and rank-deficient starts.
-   Both facet APIs reject unsupported lower-dimensional inputs by exact affine rank.
+   Facet APIs now reduce lower-dimensional hulls using exact affine coordinates
+   and lift intrinsic inequalities plus paired affine-hull equalities.
 6. Fixed the four/five-point hull empty-list crash and merged whole coplanar facet
    groups into correctly oriented convex boundaries, removing facet-interior points.
 7. Rejected unbounded non-homogeneous inputs whose vertices would otherwise be
    silently lost in the flat vertex/ray output API.
+
+8. Restored Newton f4/f5/f9 tests and added translated/tilted planes, segments,
+   singletons, duplicate/interior supports, facet incidence and all-start checks.
+9. Reused an injective planar projection for coplanar 3D hulls and lifted original
+   coordinates; restored four historical cases with corrected expectations.
+10. Preserved polygonal lower facets and constructed tropical edges from shared
+    cell boundaries. Added square/hexagon/prism/mixed-cell regressions. Exact
+    determinant and normal arithmetic replace truncated division and overflowing
+    orientation products; nonintegral fan vertices fail explicitly.
 
 ## Recorded progression
 
@@ -56,7 +66,12 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
 | Complete coplanar merging | 2d7df36 | 88 / 88 | [log](validation/coplanar-hulls/stack-test.log) |
 | Cyclic polytopes and cone invariance | 0bd16f3 | 95 / 95 | [log](validation/final-coverage/stack-test.log) |
 | Exposed mixed-output limitation | f52352b | 95 / 97 | [failures](validation/unbounded-red/stack-test.log) |
-| Explicit mixed-output rejection | See PR head | 97 / 97 | [log](validation/final-supported-suite/stack-test.log) |
+| Explicit mixed-output rejection | 2f162bd | 97 / 97 | [log](validation/final-supported-suite/stack-test.log) |
+| New affine/polygon regressions | 48bce54 | 93 / 127 | [failures](validation/affine-polygon-tests-red/stack-test.log) |
+| Affine reduction and equalities | 2c57ade | 108 / 127 | [log](validation/affine-support/stack-test.log) |
+| Coordinate-preserving coplanar hulls | 9db7689 | 120 / 127 | [log](validation/coplanar-coordinates/stack-test.log) |
+| Extended boundary regressions | 1317c3b | 122 / 133 | [failures](validation/polygon-extended-red/stack-test.log) |
+| Polygonal subdivisions and exact normals | See PR head | 133 / 133 | [log](validation/polygon-support/stack-test.log) |
 
 ## Coverage and historical disabled cases
 
@@ -69,12 +84,12 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
 | Simplex products, translated/sheared shapes | Active; independent Cartesian/permutation fixtures |
 | Cone rays | Active; nonzero directions, feasibility, row order/scaling invariance |
 | Newton f1/f2/f3/f6/f7/f8 | Original tests retained and passing |
-| Newton f4/f9-style lifted supports | Active rejection tests through both facet APIs; affine reduction is not implemented |
-| Historical Laurent f5 | Its valid subdivision and tropical rays are active; old duplicate Newton-port notes remain historical |
+| Newton f4/f9-style lifted supports | Active successful enumeration through both facet APIs |
+| Historical Laurent f5 | Newton enumeration, subdivision and tropical rays active |
 | Three disabled 2D hull assertions | Restored as separate active cases |
 | Valid 3D tetrahedron/cube assertions | Restored; additional five-point hull regression |
 | Old list1 projected expectation | Replaced by an independently verified 11-vertex full-hull test; old example retained as a comment |
-| Four projected-coordinate 3D expectations | Historical examples only: they change z coordinates and are not full-hull specifications |
+| Four projected-coordinate 3D expectations | Restored with original coordinates; vertical/tilted and degenerate hulls also active |
 | Cube adjacent facets | Active unordered facet-membership test |
 | f4/f5 subdivisions and hypersurfaces | Active; ray directions tested independently of display segment length |
 | Malformed/infeasible/interior starts | Active explicit rejection tests |
@@ -97,20 +112,19 @@ the independent polytope fixtures complement, rather than replace, those tests.
 
 ## Boundaries and follow-up work
 
-- The checked `lrs` API supports bounded full-dimensional polytopes and pointed
-  cones represented with every RHS bound equal to zero. Other unbounded inputs
-  fail explicitly. A future API should return vertices and rays separately.
-  Even a redundant nonzero bound on an otherwise equivalent cone falls outside
-  the current cone representation contract.
-- Lower-dimensional facet enumeration requires affine reduction/equalities.
-  It is explicitly rejected rather than represented by incorrect offset planes.
-- The legacy subdivision path still assumes triangular cells:
-  `projectionToR2` filters nontriangular faces and hypersurface helpers destructure
-  triples. The restored triangle cases pass; general polygonal subdivisions are
-  separate work. Do not interpret the passing suite as support for them.
-- Invalid projected 3D expectations were not blindly activated. The legacy
-  coplanar fallback is specialized for the polynomial projection path, not a
-  general affine-hull implementation.
+- The checked `lrs` API supports bounded polytopes, including lower-dimensional
+  hulls represented with paired equalities, and pointed cones with every RHS
+  bound zero. Other unbounded inputs fail explicitly; a future API should return
+  vertices and rays separately.
+- Affine rank and reconstruction use Rational arithmetic, but intrinsic
+  extreme-point filtering retains the existing GLPK/Double backend. Large-input
+  numerical robustness of that backend is not established by these tests.
+- Hypersurface plotting still uses Int coordinates and fixed-length ray segments.
+  Nonintegral fan vertices are rejected; a rational plotting API is future work.
+  Two-dimensional polygon cells are supported; lower-dimensional Newton supports
+  do not yet provide a general tropical hypersurface representation.
+- Singleton/segment 3D hulls use the existing degenerate edge representation;
+  they do not claim to have geometric two-dimensional facets.
 - A clean-environment build, external polymake end-to-end checks and wider
   performance validation remain future work.
 

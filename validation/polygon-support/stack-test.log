@@ -1,0 +1,3124 @@
+tropical-geometry-0.0.0.1: unregistering (local file changes: library/Geometry/LRS.hs
+library/Geometry/Polytope.hs library/Polynomial/Hypersurface.hs)
+tropical-geometry> build (lib + exe + test) with ghc-9.8.4
+Preprocessing library for tropical-geometry-0.0.0.1..
+Building library for tropical-geometry-0.0.0.1..
+[ 9 of 16] Compiling Geometry.Polytope [Source file changed]
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/Polytope.hs:11:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘Debug.Trace’ is redundant
+      except perhaps to import instances from ‘Debug.Trace’
+    To import instances alone, use: import Debug.Trace()
+   |
+11 | import Debug.Trace
+   | ^^^^^^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/Polytope.hs:46:9: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘terms’ shadows the existing binding
+      imported from ‘Polynomial.Prelude’ at library/Geometry/Polytope.hs:13:1-25
+   |
+46 |         terms = MS.toList $ getTerms poly
+   |         ^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/Polytope.hs:48:36: warning: [GHC-62161] [-Wincomplete-uni-patterns]
+    Pattern match(es) are non-exhaustive
+    In a pattern binding:
+        Patterns of type ‘[Int]’ not matched:
+            []
+            [_]
+            (_:_:_:_)
+   |
+48 |         toPoints (mon, coef) = let [a,b] = monExps mon in (a, b, fromIntegral coef)
+   |                                    ^^^^^^^^^^^^^^^^^^^
+[12 of 16] Compiling Polynomial.Hypersurface [Source file changed]
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:13:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘Debug.Trace’ is redundant
+      except perhaps to import instances from ‘Debug.Trace’
+    To import instances alone, use: import Debug.Trace()
+   |
+13 | import Debug.Trace
+   | ^^^^^^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:15:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘Geometry.ConvexHull3’ is redundant
+      except perhaps to import instances from ‘Geometry.ConvexHull3’
+    To import instances alone, use: import Geometry.ConvexHull3()
+   |
+15 | import Geometry.ConvexHull3 (Point3D)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:31:9: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘terms’ shadows the existing binding
+      imported from ‘Polynomial.Prelude’ at library/Polynomial/Hypersurface.hs:7:1-25
+   |
+31 |         terms = MS.toList $ getTerms poly
+   |         ^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:33:23: warning: [GHC-40910] [-Wunused-matches]
+    Defined but not used: ‘coef’
+   |
+33 |         toPoints (mon,coef) = let [a,b] = monExps mon in (a, b)
+   |                       ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:33:35: warning: [GHC-62161] [-Wincomplete-uni-patterns]
+    Pattern match(es) are non-exhaustive
+    In a pattern binding:
+        Patterns of type ‘[Int]’ not matched:
+            []
+            [_]
+            (_:_:_:_)
+   |
+33 |         toPoints (mon,coef) = let [a,b] = monExps mon in (a, b)
+   |                                   ^^^^^^^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:45:9: warning: [GHC-62161] [-Wincomplete-uni-patterns]
+    Pattern match(es) are non-exhaustive
+    In a pattern binding:
+        Patterns of type ‘[Integer]’ not matched:
+            []
+            [_]
+            (_:_:_:_)
+   |
+45 |         [a,b] = map toInteger $ DS.toList $ getMonomial mon1
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:46:9: warning: [GHC-62161] [-Wincomplete-uni-patterns]
+    Pattern match(es) are non-exhaustive
+    In a pattern binding:
+        Patterns of type ‘[Integer]’ not matched:
+            []
+            [_]
+            (_:_:_:_)
+   |
+46 |         [d,e] = map toInteger $ DS.toList $ getMonomial mon2
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:47:9: warning: [GHC-62161] [-Wincomplete-uni-patterns]
+    Pattern match(es) are non-exhaustive
+    In a pattern binding:
+        Patterns of type ‘[Integer]’ not matched:
+            []
+            [_]
+            (_:_:_:_)
+   |
+47 |         [g,h] = map toInteger $ DS.toList $ getMonomial mon3
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:50:9: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘determinant’ shadows the existing binding
+      imported from ‘Geometry.ConvexHull2’ at library/Polynomial/Hypersurface.hs:9:1-27
+   |
+50 |         determinant = (a-d)*(b-h) - (b-e)*(a-g)
+   |         ^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:77:37: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘tail’
+    (imported from Data.List, but defined in GHC.List):
+    "This is a partial function, it throws an error on empty lists. Replace it with drop 1, or use pattern matching or Data.List.uncons instead. Consider refactoring to use Data.List.NonEmpty."
+   |
+77 | polygonEdges points = zip boundary (tail boundary ++ take 1 boundary)
+   |                                     ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:85:16: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Data.List, but defined in GHC.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching or Data.List.uncons instead. Consider refactoring to use Data.List.NonEmpty."
+   |
+85 |     | all ((== head values) . snd) termValues = vertex
+   |                ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:89:9: warning: [GHC-62161] [-Wincomplete-uni-patterns]
+    Pattern match(es) are non-exhaustive
+    In a pattern binding:
+        Patterns of type ‘Polygon’ not matched:
+            []
+            [_]
+            [_, _]
+   |
+89 |         (p:q:r:_) = boundary
+   |         ^^^^^^^^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:90:14: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘p’ shadows the existing binding
+      bound at library/Polynomial/Hypersurface.hs:89:10
+   |
+90 |         term p = fromMaybe (error "cellVertex: missing polynomial term") $ MS.lookup p pointTerms
+   |              ^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:92:15: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘p’ shadows the existing binding
+      bound at library/Polynomial/Hypersurface.hs:89:10
+   |
+92 |         value p@(a,b) = toInteger a*toInteger x + toInteger b*toInteger y + toInteger (snd $ term p)
+   |               ^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:93:37: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘p’ shadows the existing binding
+      bound at library/Polynomial/Hypersurface.hs:89:10
+   |
+93 |         termValues = [(p,value p) | p <- points]
+   |                                     ^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:101:14: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘tail’
+    (imported from Data.List, but defined in GHC.List):
+    "This is a partial function, it throws an error on empty lists. Replace it with drop 1, or use pattern matching or Data.List.uncons instead. Consider refactoring to use Data.List.NonEmpty."
+    |
+101 |             (tail boundary ++ take 1 boundary) (drop 2 boundary ++ take 2 boundary)]
+    |              ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:168:9: warning: [GHC-40910] [-Wunused-local-binds]
+    Defined but not used: ‘listMap2’
+    |
+168 |         listMap2 = MS.toList map2
+    |         ^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:193:21: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘p1’ shadows the existing binding
+      bound at library/Polynomial/Hypersurface.hs:191:17
+    |
+193 |         isThereTwin p1 normal p2 normals = any (isInverse p1 normal p2) normals
+    |                     ^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:193:31: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘p2’ shadows the existing binding
+      bound at library/Polynomial/Hypersurface.hs:191:26
+    |
+193 |         isThereTwin p1 normal p2 normals = any (isInverse p1 normal p2) normals
+    |                               ^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:208:25: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Data.List, but defined in GHC.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching or Data.List.uncons instead. Consider refactoring to use Data.List.NonEmpty."
+    |
+208 |                 third = head [c | c <- polygonBoundary cell, c /= a, c /= b]
+    |                         ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Polynomial/Hypersurface.hs:220:9: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘terms’ shadows the existing binding
+      imported from ‘Polynomial.Prelude’ at library/Polynomial/Hypersurface.hs:7:1-25
+    |
+220 |         terms = (MS.toList . getTerms) poly
+    |         ^^^^^
+[13 of 16] Compiling Graphics.Drawings [Polynomial.Hypersurface changed]
+[14 of 16] Compiling Core [Graphics.Drawings changed]
+[15 of 16] Compiling Geometry.LRS [Source file changed]
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/LRS.hs:95:10: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘elem’ shadows the existing binding
+      imported from ‘Data.List’ at library/Geometry/LRS.hs:10:1-16
+      (and originally defined in ‘Data.Foldable’)
+   |
+95 | setElem' elem (row, col) mat
+   |          ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/LRS.hs:204:31: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Data.List, but defined in GHC.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching or Data.List.uncons instead. Consider refactoring to use Data.List.NonEmpty."
+    |
+204 |     | otherwise = Just $ (fst.head.sort) negs
+    |                               ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/LRS.hs:223:22: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Data.List, but defined in GHC.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching or Data.List.uncons instead. Consider refactoring to use Data.List.NonEmpty."
+    |
+223 |         sub_D = map (head . toLists . (\i -> _D ^. rowAt i) . fst) indexed_s
+    |                      ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/LRS.hs:294:48: warning: [GHC-40910] [-Wunused-matches]
+    Defined but not used: ‘dictMatrix’
+    |
+294 | revSearchWith allowRays dictionary@(Dict _B _N dictMatrix)
+    |                                                ^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/LRS.hs:300:9: warning: [GHC-40910] [-Wunused-local-binds]
+    Defined but not used: ‘rows’
+    |
+300 |         rows = numRows dictionary
+    |         ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/LRS.hs:301:9: warning: [GHC-40910] [-Wunused-local-binds]
+    Defined but not used: ‘cols’
+    |
+301 |         cols = numCols dictionary
+    |         ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/library/Geometry/LRS.hs:343:5: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘matrix’ shadows the existing binding
+      imported from ‘Data.Matrix’ at library/Geometry/LRS.hs:7:1-18
+    |
+343 | lrs matrix b vertex = (sort.nub) $ revSearchWith (all (== 0) (concat $ toLists b)) lexOptimum
+    |     ^^^^^^
+Preprocessing test suite 'tropical-geometry-test-suite' for tropical-geometry-0.0.0.1..
+Building test suite 'tropical-geometry-test-suite' for tropical-geometry-0.0.0.1..
+[10 of 17] Compiling TGeometry.TLRSPol2 [Core changed]
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:218:50: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Prelude, but defined in GHC.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching or Data.List.uncons instead. Consider refactoring to use Data.List.NonEmpty."
+    |
+218 | lrsPoly poly = lrs matsHyp bHyp (map toRational (head points))
+    |                                                  ^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:215:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:215:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:215:24
+    • In the second argument of ‘(+)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 2 * y ^ 2 + y ^ 2 + x ^ 2’
+      In the expression: x ^ 2 * y ^ 2 + y ^ 2 + x ^ 2 + 0
+    |
+215 | f9 = x^2*y^2 + y^2 + x^2 + 0
+    |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:215:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:215:17
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:215:18
+    • In the second argument of ‘(+)’, namely ‘y ^ 2’
+      In the first argument of ‘(+)’, namely ‘x ^ 2 * y ^ 2 + y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 2 * y ^ 2 + y ^ 2 + x ^ 2’
+    |
+215 | f9 = x^2*y^2 + y^2 + x^2 + 0
+    |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:215:11: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:215:11
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:215:12
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the first argument of ‘(+)’, namely ‘x ^ 2 * y ^ 2’
+      In the first argument of ‘(+)’, namely ‘x ^ 2 * y ^ 2 + y ^ 2’
+    |
+215 | f9 = x^2*y^2 + y^2 + x^2 + 0
+    |           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:215:7: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:215:7
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:215:8
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘x ^ 2 * y ^ 2’
+      In the first argument of ‘(+)’, namely ‘x ^ 2 * y ^ 2 + y ^ 2’
+    |
+215 | f9 = x^2*y^2 + y^2 + x^2 + 0
+    |       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:214:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:214:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:214:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2
+           + 4 * y ^ 3
+           + 2 * x ^ 2
+           + x * y
+           + 3 * y ^ 2’
+    |
+214 |    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 10
+    |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:214:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:214:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:214:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘2 * x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2
+           + 4 * y ^ 3
+           + 2 * x ^ 2’
+    |
+214 |    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 10
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:213:35: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:213:35
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:213:36
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2
+           + 4 * y ^ 3’
+    |
+213 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |                                   ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:213:27: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:213:27
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:213:28
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2’
+    |
+213 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:213:15: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:213:15
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:213:16
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y’
+    |
+213 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:213:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:213:9
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:213:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the second argument of ‘(+)’, namely ‘2 * x ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3’
+    |
+213 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:212:49: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:212:49
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:212:50
+    • In the second argument of ‘(*)’, namely ‘y ^ 4’
+      In the second argument of ‘(+)’, namely ‘5 * y ^ 4’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4’
+    |
+212 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                                                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:212:41: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:212:41
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:212:42
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * x * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3’
+    |
+212 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                                         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:212:31: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:212:31
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:212:32
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x ^ 2 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2’
+    |
+212 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:212:27: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:212:27
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:212:28
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(*)’, namely ‘3 * x ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x ^ 2 * y ^ 2’
+    |
+212 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:212:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:212:17
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:212:18
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(*)’, namely ‘4 * x ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * x ^ 3 * y’
+    |
+212 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:212:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:212:9
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:212:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 4’
+      In the second argument of ‘(+)’, namely ‘6 * x ^ 4’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4’
+    |
+212 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:211:59: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:211:59
+        (Num b0)
+          arising from the literal ‘5’
+          at test-suite/TGeometry/TLRSPol2.hs:211:60
+    • In the second argument of ‘(*)’, namely ‘y ^ 5’
+      In the second argument of ‘(+)’, namely ‘8 * y ^ 5’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5’
+    |
+211 |    + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                                                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:211:51: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:211:51
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:211:52
+    • In the second argument of ‘(*)’, namely ‘y ^ 4’
+      In the second argument of ‘(+)’, namely ‘3 * x * y ^ 4’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4’
+    |
+211 |    + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                                                   ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:211:41: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:211:41
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:211:42
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3’
+    |
+211 |    + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                                         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:211:37: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:211:37
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:211:38
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2
+           + x ^ 2 * y ^ 3’
+    |
+211 |    + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                                     ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:211:31: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:211:31
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:211:32
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘4 * x ^ 3 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5
+           + 2 * x ^ 4 * y
+           + 4 * x ^ 3 * y ^ 2’
+    |
+211 |    + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:211:27: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:211:27
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:211:28
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(*)’, namely ‘4 * x ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * x ^ 3 * y ^ 2’
+    |
+211 |    + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:211:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:211:17
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:211:18
+    • In the second argument of ‘(*)’, namely ‘x ^ 4’
+      In the first argument of ‘(*)’, namely ‘2 * x ^ 4’
+      In the second argument of ‘(+)’, namely ‘2 * x ^ 4 * y’
+    |
+211 |    + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:211:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:211:9
+        (Num b0)
+          arising from the literal ‘5’
+          at test-suite/TGeometry/TLRSPol2.hs:211:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 5’
+      In the second argument of ‘(+)’, namely ‘6 * x ^ 5’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6
+           + 6 * x ^ 5’
+    |
+211 |    + 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:74: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:74
+        (Num b0)
+          arising from the literal ‘6’
+          at test-suite/TGeometry/TLRSPol2.hs:210:75
+    • In the second argument of ‘(*)’, namely ‘y ^ 6’
+      In the second argument of ‘(+)’, namely ‘9 * y ^ 6’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5
+           + 9 * y ^ 6’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |                                                                          ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:66: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:66
+        (Num b0)
+          arising from the literal ‘5’
+          at test-suite/TGeometry/TLRSPol2.hs:210:67
+    • In the second argument of ‘(*)’, namely ‘y ^ 5’
+      In the second argument of ‘(+)’, namely ‘6 * x * y ^ 5’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4
+           + 6 * x * y ^ 5’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |                                                                  ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:56: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:56
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:210:57
+    • In the second argument of ‘(*)’, namely ‘y ^ 4’
+      In the second argument of ‘(+)’, namely ‘4 * x ^ 2 * y ^ 4’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2 + 6 * x ^ 3 * y ^ 3
+           + 4 * x ^ 2 * y ^ 4’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |                                                        ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:52: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:52
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:210:53
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(*)’, namely ‘4 * x ^ 2’
+      In the second argument of ‘(+)’, namely ‘4 * x ^ 2 * y ^ 4’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |                                                    ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:44: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:44
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:210:45
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘6 * x ^ 3 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2
+           + 6 * x ^ 3 * y ^ 3’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |                                            ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:40: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:40
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:210:41
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(*)’, namely ‘6 * x ^ 3’
+      In the second argument of ‘(+)’, namely ‘6 * x ^ 3 * y ^ 3’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |                                        ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:32: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:32
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:210:33
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘6 * x ^ 4 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘10 * x ^ 6 + 8 * x ^ 5 * y + 6 * x ^ 4 * y ^ 2’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |                                ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:28: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:28
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:210:29
+    • In the second argument of ‘(*)’, namely ‘x ^ 4’
+      In the first argument of ‘(*)’, namely ‘6 * x ^ 4’
+      In the second argument of ‘(+)’, namely ‘6 * x ^ 4 * y ^ 2’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |                            ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:18: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:18
+        (Num b0)
+          arising from the literal ‘5’
+          at test-suite/TGeometry/TLRSPol2.hs:210:19
+    • In the second argument of ‘(*)’, namely ‘x ^ 5’
+      In the first argument of ‘(*)’, namely ‘8 * x ^ 5’
+      In the second argument of ‘(+)’, namely ‘8 * x ^ 5 * y’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |                  ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:210:10: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:210:10
+        (Num b0)
+          arising from the literal ‘6’
+          at test-suite/TGeometry/TLRSPol2.hs:210:11
+    • In the second argument of ‘(*)’, namely ‘x ^ 6’
+      In the first argument of ‘(+)’, namely ‘10 * x ^ 6’
+      In the first argument of ‘(+)’, namely ‘10 * x ^ 6 + 8 * x ^ 5 * y’
+    |
+210 | f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
+    |          ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:209:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:209:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:209:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2
+           + 4 * y ^ 3
+           + 2 * x ^ 2
+           + x * y
+           + 3 * y ^ 2’
+    |
+209 |    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
+    |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:209:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:209:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:209:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘2 * x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2
+           + 4 * y ^ 3
+           + 2 * x ^ 2’
+    |
+209 |    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:208:35: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:208:35
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:208:36
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2
+           + 4 * y ^ 3’
+    |
+208 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |                                   ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:208:27: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:208:27
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:208:28
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2’
+    |
+208 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:208:15: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:208:15
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:208:16
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y’
+    |
+208 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:208:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:208:9
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:208:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the second argument of ‘(+)’, namely ‘2 * x ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3’
+    |
+208 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:207:49: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:207:49
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:207:50
+    • In the second argument of ‘(*)’, namely ‘y ^ 4’
+      In the second argument of ‘(+)’, namely ‘5 * y ^ 4’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3
+           + 5 * y ^ 4’
+    |
+207 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                                                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:207:41: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:207:41
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:207:42
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * x * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2
+           + 4 * x * y ^ 3’
+    |
+207 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                                         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:207:31: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:207:31
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:207:32
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x ^ 2 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4
+           + 4 * x ^ 3 * y
+           + 3 * x ^ 2 * y ^ 2’
+    |
+207 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:207:27: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:207:27
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:207:28
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(*)’, namely ‘3 * x ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x ^ 2 * y ^ 2’
+    |
+207 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:207:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:207:17
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:207:18
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(*)’, namely ‘4 * x ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * x ^ 3 * y’
+    |
+207 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:207:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:207:9
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:207:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 4’
+      In the second argument of ‘(+)’, namely ‘6 * x ^ 4’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5
+           + 6 * x ^ 4’
+    |
+207 |    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:206:59: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:206:59
+        (Num b0)
+          arising from the literal ‘5’
+          at test-suite/TGeometry/TLRSPol2.hs:206:60
+    • In the second argument of ‘(*)’, namely ‘y ^ 5’
+      In the second argument of ‘(+)’, namely ‘8 * y ^ 5’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4
+           + 8 * y ^ 5’
+    |
+206 | f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                                                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:206:51: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:206:51
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:206:52
+    • In the second argument of ‘(*)’, namely ‘y ^ 4’
+      In the second argument of ‘(+)’, namely ‘3 * x * y ^ 4’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3
+           + 3 * x * y ^ 4’
+    |
+206 | f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                                                   ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:206:41: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:206:41
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:206:42
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3’
+    |
+206 | f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                                         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:206:37: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:206:37
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:206:38
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2 + x ^ 2 * y ^ 3’
+    |
+206 | f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                                     ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:206:31: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:206:31
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:206:32
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘4 * x ^ 3 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 5 + 2 * x ^ 4 * y + 4 * x ^ 3 * y ^ 2’
+    |
+206 | f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:206:27: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:206:27
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:206:28
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(*)’, namely ‘4 * x ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * x ^ 3 * y ^ 2’
+    |
+206 | f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:206:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:206:17
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:206:18
+    • In the second argument of ‘(*)’, namely ‘x ^ 4’
+      In the first argument of ‘(*)’, namely ‘2 * x ^ 4’
+      In the second argument of ‘(+)’, namely ‘2 * x ^ 4 * y’
+    |
+206 | f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:206:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:206:9
+        (Num b0)
+          arising from the literal ‘5’
+          at test-suite/TGeometry/TLRSPol2.hs:206:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 5’
+      In the first argument of ‘(+)’, namely ‘6 * x ^ 5’
+      In the first argument of ‘(+)’, namely ‘6 * x ^ 5 + 2 * x ^ 4 * y’
+    |
+206 | f7 = 6*x^5 + 2*x^4*y + 4*x^3*y^2 + x^2*y^3 + 3*x*y^4 + 8*y^5
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:205:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:205:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:205:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 4 + 4 * x ^ 3 * y + 3 * x ^ 2 * y ^ 2 + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2
+           + 4 * y ^ 3
+           + 2 * x ^ 2
+           + x * y
+           + 3 * y ^ 2’
+    |
+205 |    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
+    |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:205:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:205:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:205:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘2 * x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 4 + 4 * x ^ 3 * y + 3 * x ^ 2 * y ^ 2 + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2
+           + 4 * y ^ 3
+           + 2 * x ^ 2’
+    |
+205 |    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:204:35: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:204:35
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:204:36
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 4 + 4 * x ^ 3 * y + 3 * x ^ 2 * y ^ 2 + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2
+           + 4 * y ^ 3’
+    |
+204 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |                                   ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:204:27: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:204:27
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:204:28
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 4 + 4 * x ^ 3 * y + 3 * x ^ 2 * y ^ 2 + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y
+           + 1 * x * y ^ 2’
+    |
+204 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:204:15: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:204:15
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:204:16
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 4 + 4 * x ^ 3 * y + 3 * x ^ 2 * y ^ 2 + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3
+           + x ^ 2 * y’
+    |
+204 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:204:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:204:9
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:204:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the second argument of ‘(+)’, namely ‘2 * x ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 4 + 4 * x ^ 3 * y + 3 * x ^ 2 * y ^ 2 + 4 * x * y ^ 3
+           + 5 * y ^ 4
+           + 2 * x ^ 3’
+    |
+204 |    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:203:49: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:203:49
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:203:50
+    • In the second argument of ‘(*)’, namely ‘y ^ 4’
+      In the second argument of ‘(+)’, namely ‘5 * y ^ 4’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 4 + 4 * x ^ 3 * y + 3 * x ^ 2 * y ^ 2 + 4 * x * y ^ 3
+           + 5 * y ^ 4’
+    |
+203 | f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                                                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:203:41: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:203:41
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:203:42
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * x * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 4 + 4 * x ^ 3 * y + 3 * x ^ 2 * y ^ 2 + 4 * x * y ^ 3’
+    |
+203 | f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                                         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:203:31: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:203:31
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:203:32
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x ^ 2 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * x ^ 4 + 4 * x ^ 3 * y + 3 * x ^ 2 * y ^ 2’
+    |
+203 | f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:203:27: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:203:27
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:203:28
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(*)’, namely ‘3 * x ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x ^ 2 * y ^ 2’
+    |
+203 | f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:203:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:203:17
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:203:18
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(*)’, namely ‘4 * x ^ 3’
+      In the second argument of ‘(+)’, namely ‘4 * x ^ 3 * y’
+    |
+203 | f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:203:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:203:9
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TGeometry/TLRSPol2.hs:203:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 4’
+      In the first argument of ‘(+)’, namely ‘6 * x ^ 4’
+      In the first argument of ‘(+)’, namely ‘6 * x ^ 4 + 4 * x ^ 3 * y’
+    |
+203 | f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:202:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^^’
+          at test-suite/TGeometry/TLRSPol2.hs:202:23-24
+        (Num b0)
+          arising from a use of syntactic negation
+          at test-suite/TGeometry/TLRSPol2.hs:202:26-27
+    • In the second argument of ‘(*)’, namely ‘y ^^ (- 1)’
+      In the second argument of ‘(+)’, namely ‘2 * y ^^ (- 1)’
+      In the first argument of ‘(+)’, namely
+        ‘2 * x * y ^^ (- 1) + 2 * y ^^ (- 1)’
+    |
+202 | f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
+    |                       ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:202:11: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^^’
+          at test-suite/TGeometry/TLRSPol2.hs:202:11-12
+        (Num b0)
+          arising from a use of syntactic negation
+          at test-suite/TGeometry/TLRSPol2.hs:202:14-15
+    • In the second argument of ‘(*)’, namely ‘y ^^ (- 1)’
+      In the first argument of ‘(+)’, namely ‘2 * x * y ^^ (- 1)’
+      In the first argument of ‘(+)’, namely
+        ‘2 * x * y ^^ (- 1) + 2 * y ^^ (- 1)’
+    |
+202 | f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
+    |           ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:201:47: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:201:47
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:201:48
+    • In the second argument of ‘(+)’, namely ‘y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2 + x * y + y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2 + x * y + y ^ 2 + x’
+    |
+201 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+    |                                               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:201:35: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:201:35
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:201:36
+    • In the second argument of ‘(+)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2 + x * y’
+    |
+201 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+    |                                   ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:201:29: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:201:29
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:201:30
+    • In the second argument of ‘(+)’, namely ‘y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2’
+    |
+201 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+    |                             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:201:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:201:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:201:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2’
+    |
+201 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+    |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:201:13: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:201:13
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:201:14
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y’
+      In the first argument of ‘(+)’, namely ‘x ^ 3 + x ^ 2 * y’
+    |
+201 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+    |             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:201:7: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:201:7
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:201:8
+    • In the first argument of ‘(+)’, namely ‘x ^ 3’
+      In the first argument of ‘(+)’, namely ‘x ^ 3 + x ^ 2 * y’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2’
+    |
+201 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+    |       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:199:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:199:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:199:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2 + 3 * y ^ 3 + 1 * x ^ 2
+           + x * y
+           + 1 * y ^ 2’
+    |
+199 |    + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+    |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:199:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:199:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:199:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2 + 3 * y ^ 3 + 1 * x ^ 2’
+    |
+199 |    + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:198:37: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:198:37
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:198:38
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘3 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2 + 3 * y ^ 3’
+    |
+198 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3
+    |                                     ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:198:29: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:198:29
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:198:30
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2’
+    |
+198 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3
+    |                             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:198:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:198:17
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:198:18
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(*)’, namely ‘1 * x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2 * y’
+    |
+198 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3
+    |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:198:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:198:9
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TGeometry/TLRSPol2.hs:198:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 3’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 3 + 1 * x ^ 2 * y’
+    |
+198 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:197:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:197:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:197:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 2 + x * y + 3 * y ^ 2’
+    |
+197 | f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
+    |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:197:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:197:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:197:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 2 + x * y’
+    |
+197 | f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
+    |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:196:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TGeometry/TLRSPol2.hs:196:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:196:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘1 * x ^ 2 + x * y + 1 * y ^ 2’
+    |
+196 | f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+    |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TLRSPol2.hs:196:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’ at test-suite/TGeometry/TLRSPol2.hs:196:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TGeometry/TLRSPol2.hs:196:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the first argument of ‘(+)’, namely ‘1 * x ^ 2 + x * y’
+    |
+196 | f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+    |         ^
+[13 of 17] Compiling TGeometry.TPolytope [Geometry.Polytope changed]
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:22:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      subdivisionF5 :: [[(Int, Int)]]
+   |
+22 | subdivisionF5 = [[(1,-1), (0,-1), (0,0)]]
+   | ^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:21:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      subdivisionF4 :: [[(Int, Int)]]
+   |
+21 | subdivisionF4 = [[(3,0), (0,0), (0,3)]]
+   | ^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:20:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      subdivisionF2 :: [[(Int, Int)]]
+   |
+20 | subdivisionF2 = [[(3,0),(2,0),(2,1)],[(2,1),(2,0),(1,1)],[(1,2),(2,1),(1,1)],[(0,3),(1,2),(0,2)],[(1,2),(1,1),(0,2)],[(1,1),(2,0),(1,0)],[(0,2),(1,1),(0,1)],[(1,1),(1,0),(0,1)],[(0,1),(1,0),(0,0)]]
+   | ^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:19:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      subdivisionF1 :: [[(Int, Int)]]
+   |
+19 | subdivisionF1 = [[(0,0),(1,1),(1,0)],[(0,2),(1,1),(0,1)],[(1,1),(0,0),(0,1)],[(1,1),(2,0),(1,0)]]
+   | ^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:17:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      newF5 :: [(Int, Int, Int)]
+   |
+17 | newF5 = [(1,-1,2), (0,-1,2), (0,0,-2)]
+   | ^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:16:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      newF4 :: [(Int, Int, Int)]
+   |
+16 | newF4 = [(3,0,0), (2,1,0), (1,2,0), (0,3,0), (2,0,0), (1,1,0), (0,2,0), (1,0,0), (0,1,0), (0,0,0)]
+   | ^^^^^
+[14 of 17] Compiling TPolynomial.THypersurface [Core changed]
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:135:24: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:135:24
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:135:25
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the first argument of ‘(+)’, namely ‘0 + 1 * x ^ 2’
+    |
+135 |         let p = 0 + 1*x^2 + y
+    |                        ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:128:38: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:128:38
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:128:39
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the expression: 0 + x + y + x * y + 1 * x ^ 2
+    |
+128 |         let p = 0 + x + y + x*y + 1*x^2
+    |                                      ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:52: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:52
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:110:53
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘x * y ^ 2’
+      In the expression:
+        y + x + x ^ 2 + x ^ 3 * y + x ^ 2 * y ^ 2 + x * y ^ 2
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                                                    ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:44: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:44
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:110:45
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘y + x + x ^ 2 + x ^ 3 * y + x ^ 2 * y ^ 2’
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                                            ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:40: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:40
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:110:41
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘y + x + x ^ 2 + x ^ 3 * y + x ^ 2 * y ^ 2’
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                                        ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:32: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:32
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:110:33
+    • In the first argument of ‘(*)’, namely ‘x ^ 3’
+      In the second argument of ‘(+)’, namely ‘x ^ 3 * y’
+      In the first argument of ‘(+)’, namely ‘y + x + x ^ 2 + x ^ 3 * y’
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                                ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:26: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:26
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:110:27
+    • In the second argument of ‘(+)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘y + x + x ^ 2’
+      In the first argument of ‘(+)’, namely ‘y + x + x ^ 2 + x ^ 3 * y’
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                          ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:79:20: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘y’ shadows the existing binding
+      defined at test-suite/TPolynomial/THypersurface.hs:20:1
+   |
+79 | primitiveRay (p@(x,y), (u,v)) =
+   |                    ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:79:18: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘x’ shadows the existing binding
+      defined at test-suite/TPolynomial/THypersurface.hs:19:1
+   |
+79 | primitiveRay (p@(x,y), (u,v)) =
+   |                  ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:39:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature: sw :: [(Int, Int)]
+   |
+39 | sw = sort [(-1,-1), (1, 0), (0, 1)]
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:38:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature: se :: [(Int, Int)]
+   |
+38 | se = sort [(1,-1), (-1, 0), (0, 1)]
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:37:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature: nw :: [(Int, Int)]
+   |
+37 | nw = sort [(-1,1), (1, 0), (0, -1)]
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:36:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature: ne :: [(Int, Int)]
+   |
+36 | ne = sort [(1,1), (-1, 0), (0, -1)]
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:26:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^^’
+          at test-suite/TPolynomial/THypersurface.hs:26:23-24
+        (Num b0)
+          arising from a use of syntactic negation
+          at test-suite/TPolynomial/THypersurface.hs:26:26-27
+    • In the second argument of ‘(*)’, namely ‘y ^^ (- 1)’
+      In the second argument of ‘(+)’, namely ‘2 * y ^^ (- 1)’
+      In the first argument of ‘(+)’, namely
+        ‘2 * x * y ^^ (- 1) + 2 * y ^^ (- 1)’
+   |
+26 | f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
+   |                       ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:26:11: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^^’
+          at test-suite/TPolynomial/THypersurface.hs:26:11-12
+        (Num b0)
+          arising from a use of syntactic negation
+          at test-suite/TPolynomial/THypersurface.hs:26:14-15
+    • In the second argument of ‘(*)’, namely ‘y ^^ (- 1)’
+      In the first argument of ‘(+)’, namely ‘2 * x * y ^^ (- 1)’
+      In the first argument of ‘(+)’, namely
+        ‘2 * x * y ^^ (- 1) + 2 * y ^^ (- 1)’
+   |
+26 | f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
+   |           ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:26:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f5 :: Polynomial (Tropical Integer) Lex 2
+   |
+26 | f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:47: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:47
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:25:48
+    • In the second argument of ‘(+)’, namely ‘y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2 + x * y + y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2 + x * y + y ^ 2 + x’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |                                               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:35: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:35
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:25:36
+    • In the second argument of ‘(+)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2 + x * y’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |                                   ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:29: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:29
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:25:30
+    • In the second argument of ‘(+)’, namely ‘y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |                             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:25:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:13: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:13
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:25:14
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y’
+      In the first argument of ‘(+)’, namely ‘x ^ 3 + x ^ 2 * y’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:7: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:7
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:25:8
+    • In the first argument of ‘(+)’, namely ‘x ^ 3’
+      In the first argument of ‘(+)’, namely ‘x ^ 3 + x ^ 2 * y’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f4 :: Polynomial (Tropical Integer) Lex 2
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:59: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:59
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:24:60
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2 + 3 * y ^ 3 + 1 * x ^ 2
+           + x * y
+           + 1 * y ^ 2’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                                                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:45: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:45
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:24:46
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2 + 3 * y ^ 3 + 1 * x ^ 2’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                                             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:37: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:37
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:24:38
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘3 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2 + 3 * y ^ 3’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                                     ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:29: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:29
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:24:30
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:17
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:24:18
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(*)’, namely ‘1 * x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2 * y’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:9
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:24:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 3’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 3 + 1 * x ^ 2 * y’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f3 :: Polynomial (Tropical Integer) Lex 2
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:23:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:23:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:23:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 2 + x * y + 3 * y ^ 2’
+   |
+23 | f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
+   |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:23:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:23:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:23:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 2 + x * y’
+   |
+23 | f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
+   |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:23:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f2 :: Polynomial (Tropical Integer) Lex 2
+   |
+23 | f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:22:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:22:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:22:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘1 * x ^ 2 + x * y + 1 * y ^ 2’
+   |
+22 | f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+   |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:22:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:22:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:22:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the first argument of ‘(+)’, namely ‘1 * x ^ 2 + x * y’
+   |
+22 | f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+   |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:22:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f1 :: Polynomial (Tropical Integer) Lex 2
+   |
+22 | f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+   | ^^
+[16 of 17] Compiling TPolynomial.TPrelude [Core changed]
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:63:73: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:63:73
+        (Num b0)
+          arising from the literal ‘5’
+          at test-suite/TPolynomial/TPrelude.hs:63:74
+    • In the second argument of ‘(*)’, namely ‘y2 ^ 5’
+      In the second argument of ‘(+)’, namely ‘3 * x2 ^ 7 * y2 ^ 5’
+      In the expression:
+        3 * x2 ^ 2 * y2 + 2 * x2 + 3 * y2 + 5 + 6 * x2 ^ 3 * y2 ^ 2
+          + 8 * x2 ^ 3 * y2 ^ 6
+          + 3 * x2 ^ 7 * y2 ^ 5
+   |
+63 | p1 = 3*x2^2*y2 + 2*x2 + 3*y2 + 5 + 6*x2^3*y2^2 + 8*x2^3*y2^6 + 3*x2^7*y2^5
+   |                                                                         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:63:68: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:63:68
+        (Num b0)
+          arising from the literal ‘7’
+          at test-suite/TPolynomial/TPrelude.hs:63:69
+    • In the second argument of ‘(*)’, namely ‘x2 ^ 7’
+      In the first argument of ‘(*)’, namely ‘3 * x2 ^ 7’
+      In the second argument of ‘(+)’, namely ‘3 * x2 ^ 7 * y2 ^ 5’
+   |
+63 | p1 = 3*x2^2*y2 + 2*x2 + 3*y2 + 5 + 6*x2^3*y2^2 + 8*x2^3*y2^6 + 3*x2^7*y2^5
+   |                                                                    ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:63:59: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:63:59
+        (Num b0)
+          arising from the literal ‘6’
+          at test-suite/TPolynomial/TPrelude.hs:63:60
+    • In the second argument of ‘(*)’, namely ‘y2 ^ 6’
+      In the second argument of ‘(+)’, namely ‘8 * x2 ^ 3 * y2 ^ 6’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x2 ^ 2 * y2 + 2 * x2 + 3 * y2 + 5 + 6 * x2 ^ 3 * y2 ^ 2
+           + 8 * x2 ^ 3 * y2 ^ 6’
+   |
+63 | p1 = 3*x2^2*y2 + 2*x2 + 3*y2 + 5 + 6*x2^3*y2^2 + 8*x2^3*y2^6 + 3*x2^7*y2^5
+   |                                                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:63:54: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:63:54
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/TPrelude.hs:63:55
+    • In the second argument of ‘(*)’, namely ‘x2 ^ 3’
+      In the first argument of ‘(*)’, namely ‘8 * x2 ^ 3’
+      In the second argument of ‘(+)’, namely ‘8 * x2 ^ 3 * y2 ^ 6’
+   |
+63 | p1 = 3*x2^2*y2 + 2*x2 + 3*y2 + 5 + 6*x2^3*y2^2 + 8*x2^3*y2^6 + 3*x2^7*y2^5
+   |                                                      ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:63:45: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:63:45
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:63:46
+    • In the second argument of ‘(*)’, namely ‘y2 ^ 2’
+      In the second argument of ‘(+)’, namely ‘6 * x2 ^ 3 * y2 ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x2 ^ 2 * y2 + 2 * x2 + 3 * y2 + 5 + 6 * x2 ^ 3 * y2 ^ 2’
+   |
+63 | p1 = 3*x2^2*y2 + 2*x2 + 3*y2 + 5 + 6*x2^3*y2^2 + 8*x2^3*y2^6 + 3*x2^7*y2^5
+   |                                             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:63:40: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:63:40
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/TPrelude.hs:63:41
+    • In the second argument of ‘(*)’, namely ‘x2 ^ 3’
+      In the first argument of ‘(*)’, namely ‘6 * x2 ^ 3’
+      In the second argument of ‘(+)’, namely ‘6 * x2 ^ 3 * y2 ^ 2’
+   |
+63 | p1 = 3*x2^2*y2 + 2*x2 + 3*y2 + 5 + 6*x2^3*y2^2 + 8*x2^3*y2^6 + 3*x2^7*y2^5
+   |                                        ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:63:10: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:63:10
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:63:11
+    • In the second argument of ‘(*)’, namely ‘x2 ^ 2’
+      In the first argument of ‘(*)’, namely ‘3 * x2 ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * x2 ^ 2 * y2’
+   |
+63 | p1 = 3*x2^2*y2 + 2*x2 + 3*y2 + 5 + 6*x2^3*y2^2 + 8*x2^3*y2^6 + 3*x2^7*y2^5
+   |          ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:63:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      p1 :: Polynomial (Tropical Integer) Lex 2
+   |
+63 | p1 = 3*x2^2*y2 + 2*x2 + 3*y2 + 5 + 6*x2^3*y2^2 + 8*x2^3*y2^6 + 3*x2^7*y2^5
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:57:80: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:57:80
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:57:81
+    • In the second argument of ‘(*)’, namely ‘z ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x * z ^ 2’
+      In the second argument of ‘(@?=)’, namely
+        ‘3 * x ^ 3 + 3 * x ^ 2 * z + 3 * x ^ 2 * y + 3 * x * y ^ 2
+           + 3 * x * y * z
+           + 3 * x * z ^ 2’
+   |
+57 |         3*x*(x+y+z)^2 @?= 3*x^3 + 3*x^2*z + 3*x^2*y + 3*x*y^2 + 3*x*y*z + 3*x*z^2
+   |                                                                                ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:57:60: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:57:60
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:57:61
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 3 * x ^ 2 * z + 3 * x ^ 2 * y + 3 * x * y ^ 2’
+   |
+57 |         3*x*(x+y+z)^2 @?= 3*x^3 + 3*x^2*z + 3*x^2*y + 3*x*y^2 + 3*x*y*z + 3*x*z^2
+   |                                                            ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:57:48: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:57:48
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:57:49
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(*)’, namely ‘3 * x ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x ^ 2 * y’
+   |
+57 |         3*x*(x+y+z)^2 @?= 3*x^3 + 3*x^2*z + 3*x^2*y + 3*x*y^2 + 3*x*y*z + 3*x*z^2
+   |                                                ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:57:38: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:57:38
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:57:39
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(*)’, namely ‘3 * x ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x ^ 2 * z’
+   |
+57 |         3*x*(x+y+z)^2 @?= 3*x^3 + 3*x^2*z + 3*x^2*y + 3*x*y^2 + 3*x*y*z + 3*x*z^2
+   |                                      ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:57:30: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:57:30
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/TPrelude.hs:57:31
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 3’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 3 + 3 * x ^ 2 * z’
+   |
+57 |         3*x*(x+y+z)^2 @?= 3*x^3 + 3*x^2*z + 3*x^2*y + 3*x*y^2 + 3*x*y*z + 3*x*z^2
+   |                              ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:57:20: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:57:20
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:57:21
+    • In the second argument of ‘(*)’, namely ‘(x + y + z) ^ 2’
+      In the first argument of ‘(@?=)’, namely ‘3 * x * (x + y + z) ^ 2’
+      In a stmt of a 'do' block:
+        3 * x * (x + y + z) ^ 2
+          @?=
+            3 * x ^ 3 + 3 * x ^ 2 * z + 3 * x ^ 2 * y + 3 * x * y ^ 2
+              + 3 * x * y * z
+              + 3 * x * z ^ 2
+   |
+57 |         3*x*(x+y+z)^2 @?= 3*x^3 + 3*x^2*z + 3*x^2*y + 3*x*y^2 + 3*x*y*z + 3*x*z^2
+   |                    ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:56:50: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:56:50
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:56:51
+    • In the second argument of ‘(+)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘6 * y ^ 4 + 3 * x * y ^ 2 + x ^ 2’
+      In the second argument of ‘(@?=)’, namely
+        ‘6 * y ^ 4 + 3 * x * y ^ 2 + x ^ 2 + 2’
+   |
+56 |         (3*y^2 + x)^2 + 2 @?= 6*y^4 + 3*x*y^2 + x^2 + 2
+   |                                                  ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:56:44: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:56:44
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:56:45
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * x * y ^ 2’
+      In the first argument of ‘(+)’, namely ‘6 * y ^ 4 + 3 * x * y ^ 2’
+   |
+56 |         (3*y^2 + x)^2 + 2 @?= 6*y^4 + 3*x*y^2 + x^2 + 2
+   |                                            ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:56:34: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:56:34
+        (Num b0)
+          arising from the literal ‘4’
+          at test-suite/TPolynomial/TPrelude.hs:56:35
+    • In the second argument of ‘(*)’, namely ‘y ^ 4’
+      In the first argument of ‘(+)’, namely ‘6 * y ^ 4’
+      In the first argument of ‘(+)’, namely ‘6 * y ^ 4 + 3 * x * y ^ 2’
+   |
+56 |         (3*y^2 + x)^2 + 2 @?= 6*y^4 + 3*x*y^2 + x^2 + 2
+   |                                  ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:56:20: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:56:20
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:56:21
+    • In the first argument of ‘(+)’, namely ‘(3 * y ^ 2 + x) ^ 2’
+      In the first argument of ‘(@?=)’, namely ‘(3 * y ^ 2 + x) ^ 2 + 2’
+      In a stmt of a 'do' block:
+        (3 * y ^ 2 + x) ^ 2 + 2 @?= 6 * y ^ 4 + 3 * x * y ^ 2 + x ^ 2 + 2
+   |
+56 |         (3*y^2 + x)^2 + 2 @?= 6*y^4 + 3*x*y^2 + x^2 + 2
+   |                    ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:56:13: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:56:13
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:56:14
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * y ^ 2’
+      In the first argument of ‘(^)’, namely ‘(3 * y ^ 2 + x)’
+   |
+56 |         (3*y^2 + x)^2 + 2 @?= 6*y^4 + 3*x*y^2 + x^2 + 2
+   |             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:55:34: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:55:34
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:55:35
+    • In the second argument of ‘(+)’, namely ‘y ^ 2’
+      In the second argument of ‘(@?=)’, namely ‘x + y ^ 2’
+      In a stmt of a 'do' block: 3 * y ^ 2 + x + y ^ 2 @?= x + y ^ 2
+   |
+55 |         3*y^2 + x + y^2 @?= x + y^2        
+   |                                  ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:55:22: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:55:22
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:55:23
+    • In the second argument of ‘(+)’, namely ‘y ^ 2’
+      In the first argument of ‘(@?=)’, namely ‘3 * y ^ 2 + x + y ^ 2’
+      In a stmt of a 'do' block: 3 * y ^ 2 + x + y ^ 2 @?= x + y ^ 2
+   |
+55 |         3*y^2 + x + y^2 @?= x + y^2        
+   |                      ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:55:12: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:55:12
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:55:13
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * y ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * y ^ 2 + x’
+   |
+55 |         3*y^2 + x + y^2 @?= x + y^2        
+   |            ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:54:26: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:54:26
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:54:27
+    • In the second argument of ‘(@?=)’, namely ‘y ^ 2’
+      In a stmt of a 'do' block: 3 * y ^ 2 + y ^ 2 @?= y ^ 2
+      In the second argument of ‘($)’, namely
+        ‘do x + y * z + (- 1) * x
+              @?=
+                (Polynomial
+                   $ fromList [(toMonomial [...], - 1), (toMonomial [...], 0)])
+            x ^ 2 + 2 * y * z + (- 1) * y + (- 1) * y * z
+              @?=
+                (Polynomial
+                   $ fromList [(toMonomial [...], 0), (toMonomial [...], - 1), ....])
+            3 * x + x @?= x
+            3 * y ^ 2 + y ^ 2 @?= y ^ 2
+            ....’
+   |
+54 |         3*y^2 + y^2 @?= y^2
+   |                          ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:54:18: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:54:18
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:54:19
+    • In the second argument of ‘(+)’, namely ‘y ^ 2’
+      In the first argument of ‘(@?=)’, namely ‘3 * y ^ 2 + y ^ 2’
+      In a stmt of a 'do' block: 3 * y ^ 2 + y ^ 2 @?= y ^ 2
+   |
+54 |         3*y^2 + y^2 @?= y^2
+   |                  ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:54:12: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:54:12
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:54:13
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * y ^ 2’
+      In the first argument of ‘(@?=)’, namely ‘3 * y ^ 2 + y ^ 2’
+   |
+54 |         3*y^2 + y^2 @?= y^2
+   |            ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:52:10: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:52:10
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:52:11
+    • In the first argument of ‘(+)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘x ^ 2 + 2 * y * z’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 2 + 2 * y * z + (- 1) * y’
+   |
+52 |         x^2 + 2*y*z + (-1)*y + (-1)*y*z @?= (Polynomial $ fromList [(toMonomial [2,0,0], 0), (toMonomial [0,1,0], -1), (toMonomial [0,1,1], -1)])  
+   |          ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:47:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:47:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:47:24
+    • In the second argument of ‘(+)’, namely ‘y1 ^ 2’
+      In the first argument of ‘(+)’, namely ‘- 3 * x1 + y1 ^ 2’
+      In the first argument of ‘show’, namely
+        ‘(- 3 * x1 + y1 ^ 2 + (- 1) * x1 * z1)’
+   |
+47 |         show (-3*x1+y1^2+ (-1)*x1*z1) @?= "-1X_0X_2 + X_1^2 + -3X_2"
+   |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:46:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:46:17
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:46:18
+    • In the first argument of ‘(+)’, namely ‘x1 ^ 2’
+      In the first argument of ‘(+)’, namely ‘x1 ^ 2 + x1 * y1’
+      In the first argument of ‘show’, namely ‘(x1 ^ 2 + x1 * y1 + z1)’
+   |
+46 |         show (x1^2+x1*y1+z1) @?= "X_0 + X_1X_2 + X_2^2"
+   |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:45:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:45:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:45:24
+    • In the second argument of ‘(*)’, namely ‘z1 ^ 2’
+      In the first argument of ‘show’, namely ‘(x1 * y1 * z1 ^ 2)’
+      In the first argument of ‘(@?=)’, namely ‘show (x1 * y1 * z1 ^ 2)’
+   |
+45 |         show (x1*y1*z1^2) @?= "X_0^2X_1X_2"
+   |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:35:27: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:35:27
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:35:28
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘0 * y ^ 2’
+      In the first argument of ‘(+)’, namely ‘(- 3) * x + 0 * y ^ 2’
+   |
+35 |         show ((-3)*x + 0*y^2 + (-1)*x*z) @?= "-1X_0X_2 + -3X_0 + X_1^2"
+   |                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:34:16: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:34:16
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:34:17
+    • In the first argument of ‘(+)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘x ^ 2 + x * y’
+      In the first argument of ‘show’, namely ‘(x ^ 2 + x * y + z)’
+   |
+34 |         show (x^2+x*y+z) @?= "X_0^2 + X_0X_1 + X_2"
+   |                ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:33:20: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/TPrelude.hs:33:20
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/TPrelude.hs:33:21
+    • In the second argument of ‘(*)’, namely ‘z ^ 2’
+      In the first argument of ‘show’, namely ‘(x * y * z ^ 2)’
+      In the first argument of ‘(@?=)’, namely ‘show (x * y * z ^ 2)’
+   |
+33 |         show (x*y*z^2) @?= "X_0X_1X_2^2"
+   |                    ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:22:13: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘x’ shadows the existing binding
+      bound at test-suite/TPolynomial/TPrelude.hs:20:13
+   |
+22 |         let x = variable 2 :: Polynomial (Tropical Integer) Lex 3
+   |             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:20:13: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘x’ shadows the existing binding
+      bound at test-suite/TPolynomial/TPrelude.hs:18:13
+   |
+20 |         let x = variable 1 :: Polynomial (Tropical Integer) Lex 3
+   |             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/TPrelude.hs:18:13: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘x’ shadows the existing binding
+      defined at test-suite/TPolynomial/TPrelude.hs:27:1
+   |
+18 |         let x = variable 0 :: Polynomial (Tropical Integer) Lex 3
+   |             ^
+[17 of 17] Compiling Main [TGeometry.TPolytope changed]
+[18 of 18] Linking .stack-work/dist/x86_64-linux-tinfo6/ghc-9.8.4/build/tropical-geometry-test-suite/tropical-geometry-test-suite [Objects changed]
+Preprocessing executable 'tropical-geometry' for tropical-geometry-0.0.0.1..
+Building executable 'tropical-geometry' for tropical-geometry-0.0.0.1..
+[1 of 2] Compiling Main [Core changed]
+
+/home/zhapacfp/Git/tropical-geometry/executable/Main.hs:9:1: warning: [GHC-66111] [-Wunused-imports]
+    The import of ‘Core’ is redundant
+      except perhaps to import instances from ‘Core’
+    To import instances alone, use: import Core()
+  |
+9 | import Core
+  | ^^^^^^^^^^^
+[3 of 3] Linking .stack-work/dist/x86_64-linux-tinfo6/ghc-9.8.4/build/tropical-geometry/tropical-geometry [Objects changed]
+tropical-geometry> copy/register
+Installing library in /home/zhapacfp/Git/tropical-geometry/.stack-work/install/x86_64-linux-tinfo6/998e92bb043cb18817586af1f50211480a905e66576a3669952c01eb15d81a5d/9.8.4/lib/x86_64-linux-ghc-9.8.4/tropical-geometry-0.0.0.1-FznDw9RXmLu3SUEeAPTKTu
+Installing executable tropical-geometry in /home/zhapacfp/Git/tropical-geometry/.stack-work/install/x86_64-linux-tinfo6/998e92bb043cb18817586af1f50211480a905e66576a3669952c01eb15d81a5d/9.8.4/bin
+Registering library for tropical-geometry-0.0.0.1..
+tropical-geometry> test (suite: tropical-geometry-test-suite, args: --timeout=30s -j2 +RTS -N2 -RTS)
+
+Tasty tests
+  List of tests:
+    Test for tropical numbers
+      Sum tropical numbers:                                                      OK
+      Multiply tropical numbers:                                                 OK
+    Test for tropical matrices
+      Sum of matrices:                                                           OK
+      Product of matrices:                                                       OK
+    Test for monomials
+      ShowingMonomials:                                                          OK
+      Compare Lex and Revlex Monomials :                                         OK
+    Test for Prelude of Polynomials
+      Creation of variables:                                                     OK
+      Show polynomial with Lex order:                                            OK
+      Show polynomial with Revlex order:                                         OK
+      Sum and product of polynomials:                                            OK
+      Tests for polytopes of polynomials:                                        OK
+    Test for convex hull in 2D
+      Compute convex hull 2D:                                                    OK
+      2D hull excludes collinear boundary points:                                OK
+      2D hull excludes interior and boundary points:                             OK
+      2D hull of irregular point set:                                            OK
+    Test for convex hull in 3D
+      Compute segments:                                                          OK
+      Compute triangles:                                                         OK
+      Compute tetrahedrons:                                                      OK
+      IsBetween3D:                                                               OK
+      Merging points:                                                            OK
+      Compute convex hull 3D:                                                    OK (0.01s)
+      3D hull of tetrahedron:                                                    OK
+      3D cube hull excludes interior point:                                      OK
+      3D hull of list1 preserves full extreme set:                               OK (0.02s)
+      3D tetrahedron hull excludes fifth interior point:                         OK
+      Coplanar hull preserves coordinates
+        historical z=0 lattice:                                                  OK
+        historical tilted triangle:                                              OK
+        historical three-point plane:                                            OK
+        historical triangle with edge midpoint:                                  OK
+        vertical x-constant square:                                              OK
+        vertical y-constant square:                                              OK
+        tilted square with interior and edge points:                             OK
+        vertical collinear endpoints:                                            OK
+        tilted collinear endpoints:                                              OK
+        single point:                                                            OK
+        repeated single point:                                                   OK
+        empty input has no hull:                                                 OK
+    Test for computing polyhedral algorithms
+      Tests for normal vector:                                                   OK
+      Tests for normal cone:                                                     OK
+      Cube vertex belongs to exactly three facets:                               OK
+    Test for polytopes
+      Project 2D ConvexHull to produce 2D subdivision:                           OK
+      Subdivision of coplanar lifted triangle:                                   OK
+      Subdivision of three lifted points:                                        OK
+      Square lower facet is preserved as one polygon:                            OK
+      Prism projection excludes upper and vertical faces:                        OK
+    Tests for LRS vertex enumeration
+      lrs on R^3 cone enumerates extreme rays:                                   OK
+      lrs on R^2 unit square enumerates 4 vertices:                              OK
+      lrs on R^3 unit cube enumerates 8 vertices:                                OK
+      lrs on R^4 unit tesseract enumerates 16 vertices:                          OK
+      lrs on R^3 standard simplex enumerates 4 vertices:                         OK
+      lrs on R^2 permutohedron P_3 enumerates 6 vertices:                        OK
+      lrs on R^3 permutohedron P_4 enumerates 24 vertices:                       OK
+      lrs on Newton polytope of f1:                                              OK
+      lrs on Newton polytope of f2:                                              OK
+      lrs on Newton polytope of f3:                                              OK (0.02s)
+      lrs on Newton polytope of f4:                                              OK
+      lrs on Newton polytope of f5:                                              OK
+      lrs on Newton polytope of f9:                                              OK
+      lrs on Newton polytope of f6:                                              OK (0.03s)
+      lrs on Newton polytope of f7:                                              OK (0.05s)
+      lrs on Newton polytope of f8:                                              OK (0.09s)
+    LRS exact bounded-polytope regressions
+      P3
+        all starting vertices:                                                   OK
+        reversed rows:                                                           OK
+        rotated rows:                                                            OK
+        odd rows before even rows:                                               OK
+        positive rational row rescaling:                                         OK
+      P4
+        all starting vertices:                                                   OK (0.22s)
+        reversed rows:                                                           OK (0.03s)
+        rotated rows:                                                            OK (0.03s)
+        odd rows before even rows:                                               OK (0.03s)
+        positive rational row rescaling:                                         OK (0.03s)
+      translated sheared square
+        all starting corners:                                                    OK
+        reversed and rescaled rows:                                              OK
+      translated sheared cube
+        all starting corners:                                                    OK
+        reversed and rescaled rows:                                              OK
+      translated simplex in dimension 2:                                         OK
+      translated simplex in dimension 3:                                         OK
+      translated simplex in dimension 5:                                         OK
+      simplex product Delta2 x Delta2
+        all starting vertices:                                                   OK
+        reversed and rescaled rows:                                              OK
+      simplex product Delta2 x Delta3
+        all starting vertices:                                                   OK (0.02s)
+        reversed and rescaled rows:                                              OK (0.02s)
+    LRS cyclic polytopes
+      cyclic C(6,3)
+        all starting vertices:                                                   OK (0.01s)
+        reversed rows from first, middle and last vertices:                      OK
+      cyclic C(8,4)
+        all starting vertices:                                                   OK (0.68s)
+        reversed rows from first, middle and last vertices:                      OK (0.26s)
+    LRS cone direction invariance
+      Original cone:                                                             OK
+      Reversed constraint order:                                                 OK
+      Positive rational row scaling:                                             OK
+    LRS degenerate bounded-polytope regressions
+      cross-polytope dimension 4
+        all starting vertices:                                                   OK (0.24s)
+        reversed rows at representative starts:                                  OK (0.09s)
+      cross-polytope dimension 5
+        all starting vertices:                                                   OK (8.79s)
+        reversed rows at representative starts:                                  OK (2.74s)
+      hypersimplex Delta(2,4)
+        all starting vertices:                                                   OK
+        reversed rows at representative starts:                                  OK
+      Birkhoff B3
+        all starting vertices:                                                   OK (0.02s)
+        reversed rows at representative starts:                                  OK (0.01s)
+    LRS input validation
+      RHS row count must match the constraint matrix:                            OK
+      RHS must contain exactly one column:                                       OK
+      Starting vertex must have the ambient dimension:                           OK
+      A square written with the opposite inequality convention is rejected:      OK
+      A feasible interior point is not a starting vertex:                        OK
+      An unbounded strip needs separate vertex and ray output:                   OK
+      A shifted quadrant needs separate vertex and ray output:                   OK
+      facetEnumeration enumerates the planar support of f4:                      OK
+      facetEnumeration enumerates the planar support of f9:                      OK
+      facetEnumeration' preserves ambient facet vertices for f4:                 OK
+      facetEnumeration' preserves ambient facet vertices for f9:                 OK
+      Historical f5 lifted triangle with negative coordinates:                   OK
+      Tilted translated plane with rational affine coefficients and edge points: OK
+      Plane whose first coordinate is constant:                                  OK
+      Translated segment discards interior and duplicate points:                 OK
+      Planar reordered support with duplicate corners and interior point first:  OK
+      Ambient one-dimensional segment:                                           OK
+      Origin singleton has no nonzero ray directions:                            OK
+      Full-dimensional translated tetrahedron preserves facet incidence:         OK
+      Flat square enumerates from every corner with reversed constraints:        OK
+      Singleton is represented by affine equalities:                             OK
+    Test for Computing Hypersurfaces
+      Get the key-value pair with the terms and its corresponding points:        OK
+      Computing fan vertices:                                                    OK
+      Compute inner normals of triangles:                                        OK
+      Test for vertices and their normals:                                       OK
+      Zero-coefficient cubic has three tropical rays:                            OK
+      Laurent triangle has three translated tropical rays:                       OK
+      Polygonal subdivisions
+        Coplanar square gives four rays and no diagonal:                         OK
+        Hexagonal cell has six rays and no diagonal:                             OK
+        Inner normals do not overflow their orientation product:                 OK
+        Collinear normals fail with an explicit diagnostic:                      OK
+        Affine square heights translate its fan:                                 OK
+        Adjacent square and triangle have one actual bounded edge:               OK
+        Nonintegral fan vertex is rejected instead of truncated:                 OK
+        Normal matching uses exact direction and orientation:                    OK
+        Shared diagonal vertices do not imply cell adjacency:                    OK
+
+All 133 tests passed (9.73s)
+
+
+
+tropical-geometry> Test suite tropical-geometry-test-suite passed
+Completed 2 action(s).

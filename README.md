@@ -20,7 +20,7 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
   --jobs 2 --test-arguments='--timeout=30s -j2 +RTS -N2 -RTS'
 ```
 
-The verified suite has **97 enabled, passing cases**, including independent
+The verified suite has **133 enabled, passing cases**, including independent
 polytope fixtures, restored geometry cases and explicit invalid-input tests.
 See [PROGRESS.md](PROGRESS.md) for validation logs, coverage, known limits and
 checkpoint/rollback instructions. This verification used an existing environment,
@@ -46,8 +46,12 @@ Use `fromLists` from `Data.Matrix` and `lrs`/`colFromList` from
 Supported outputs are bounded-polytope vertices or homogeneous pointed-cone ray
 directions. For cones, every bound in b must be zero; ray lengths may vary by
 positive scale. General unbounded inputs need a separate vertex/ray result type
-and are rejected. The facet enumeration APIs reject lower-dimensional input
-pending affine reduction.
+and are rejected. Lower-dimensional facet enumeration uses intrinsic coordinates
+and adds paired inequalities for affine-hull equalities. These equality pairs
+contain all input vertex IDs, rather than identifying intrinsic facets.
 
-The older subdivision/hypersurface path currently assumes triangular cells;
-general polygonal subdivisions are not covered by this contract.
+Subdivision and hypersurface construction preserve convex polygonal cells,
+including squares and hexagons. The plotting API still stores `Int` coordinates:
+nonintegral fan vertices are explicitly rejected instead of rounded. Affine
+reconstruction and LRS use rational arithmetic; intrinsic extreme-point filtering
+still uses the existing GLPK backend.

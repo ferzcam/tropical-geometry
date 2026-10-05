@@ -332,7 +332,7 @@ hasRay dictionary = rays
 
 
 
--- | Enumerate vertices of a bounded full-dimensional polytope, or ray
+-- | Enumerate vertices of a bounded polytope, or ray
 -- directions of a full-dimensional pointed cone represented by A*x <= 0.
 -- Input uses A*x <= b and a feasible starting vertex. Decision variables
 -- are unrestricted; the start must have d independent tight constraints.
@@ -368,4 +368,3 @@ lrs matrix b vertex = (sort.nub) $ revSearchWith (all (== 0) (concat $ toLists b
 --                                     Nothing -> auxMatrix
 --         sortedDict = (sortRows (sortCols dictMatrix 0 aux) 0 aux )
 --         matN = submatrix' (0, (nrows dictMatrix)-1) (nrows dictMatrix, (ncols dictMatrix)-1) $ sortedDict
-
