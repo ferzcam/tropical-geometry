@@ -88,4 +88,4 @@ for n, d in [(6, 3), (8, 4)]:
 print('''testsLRSCyclic :: TestTree
 testsLRSCyclic = localOption (mkTimeout 30000000) $
     testGroup "LRS cyclic polytopes" [cyclic6D3, cyclic8D4]
-''')
+''', end='')

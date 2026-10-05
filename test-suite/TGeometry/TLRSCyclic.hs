@@ -71,4 +71,3 @@ cyclic8D4 = checkFixture "cyclic C(8,4)" rows points
 testsLRSCyclic :: TestTree
 testsLRSCyclic = localOption (mkTimeout 30000000) $
     testGroup "LRS cyclic polytopes" [cyclic6D3, cyclic8D4]
-
