@@ -2,6 +2,13 @@
 
 ## Current status
 
+Coplanar facet merging: **all 88 enabled tests pass**. Entire same-plane facet
+groups are merged into a correctly oriented planar convex boundary, eliminating
+overlapping polygons and interior points. The independent list1 oracle and
+all restored subdivision/hypersurface cases now pass.
+Evidence: [coplanar-hull log](validation/coplanar-hulls/stack-test.log).
+
+
 Small-hull initialization: **87 pass, 1 fail out of 88**. Four- and
 five-point hulls now bypass an optional six-point ordering heuristic, removing
 the empty-list crashes. The remaining failure retains facet-interior points

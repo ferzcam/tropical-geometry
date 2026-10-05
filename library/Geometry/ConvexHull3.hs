@@ -221,16 +221,34 @@ addPoints convexHull (p:ps) conflictGraph
             
 
 checkCoplanarity :: [Facet] -> [Facet] -> [Facet]
-checkCoplanarity facets1 facets2 = foldr (\(merged,fs) acc -> (acc \\ fs)++merged) (facets1++facets2) coplanarFaces
+checkCoplanarity facets1 facets2 = mergeCoplanar (facets1 ++ facets2)
+    where
+        -- Merge whole coplanar groups, including new faces with one another.
+        -- Pairwise merges of the original lists leave overlapping faces and
+        -- retain vertices that have become interior to a supporting plane.
+        mergeCoplanar [] = []
+        mergeCoplanar (f:fs) = merged : mergeCoplanar remaining
             where
-                mergeCoplanar f1 f2
-                    | length ((pointsFromGinF `on` fromFacet) f1 f2) < 2 = ([],[])
-                    | areCoplanarFacets f1 f2 = ([fromVertices $ (mergePoints `on` fromFacet) f1 f2],[f1,f2])
-                    | otherwise = ([],[])
+                original = fromFacet f
+                (coplanar, remaining) = partition
+                    (all (isCoplanar original) . fromFacet) fs
+                merged
+                    | null coplanar = f
+                    | otherwise = fromVertices $ planarBoundary original $
+                        nub $ concatMap fromFacet (f:coplanar)
 
-                coplanarFaces = map (uncurry mergeCoplanar) [(f1,f2) | f1 <- facets1, f2 <- facets2] 
-                pointsFromGinF f= filter (`elem` f)
-                
+        -- A nondegenerate coordinate projection is one-to-one on this plane.
+        -- Recover the original 3D points exactly and preserve facet orientation.
+        planarBoundary original points = map liftPoint orientedHull
+            where
+                projections = [\(x,y,_) -> (x,y), \(x,_,z) -> (x,z), \(_,y,z) -> (y,z)]
+                project = head [p | p <- projections, orientation (map p original) /= 0]
+                projectedHull = convexHull2 (map project points)
+                orientedHull
+                    | orientation projectedHull * orientation (map project original) > 0 = projectedHull
+                    | otherwise = reverse projectedHull
+                liftPoint p = fromJust $ lookup p [(project point, point) | point <- points]
+                orientation (a:b:c:_) = determinant (lift2To3 a) (lift2To3 b) (lift2To3 c)
 
 
 areCoplanarFacets :: Facet -> Facet -> Bool
