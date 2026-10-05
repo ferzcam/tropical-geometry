@@ -1,0 +1,8 @@
+{
+  "recorded_utc": "2026-10-05T19:09:08.279140+00:00",
+  "stack_version": "3.1.1",
+  "ghc_path": "/home/zhapacfp/.stack/programs/x86_64-linux/ghc-tinfo6-9.8.4/bin/ghc-9.8.4",
+  "ghc_version": "9.8.4",
+  "kernel": "Linux-6.17.0-40-generic-x86_64-with-glibc2.39",
+  "resolver": "lts-23.19"
+}
