@@ -121,21 +121,60 @@ mapRow' f row m
 
 sortSystem :: Matrix Rational -> Col -> Vertex -> (Matrix Rational, Col)
 
-sortSystem mat col vertex = if length meetEq < ncols mat then error "Not enough inequalities" else (,) newMat newCol
+-- Avis 1999, Section 3: the final d constraints must be independent
+-- tight rows. At a degenerate vertex there can be more than d tight rows;
+-- moving all of them to the end can leave a singular initial basis.
+sortSystem mat col vertex
+    | length basisIndices < dimension =
+        error "sortSystem: starting vertex has fewer than d independent tight constraints"
+    | otherwise = (newMat, newCol)
     where
-        matLists = toLists mat
-        bList = concat $ toLists col
-        meetEq = [i | i <- [0..((pred.nrows) mat)], (dot (matLists!!i) vertex) == (col^. elemAt (i,0))]
-        pairs = safeZipWith (,) matLists bList
-        toBeLast = map (pairs !!) meetEq
-        ordered = (pairs \\ toBeLast) ++ (toBeLast)
+        dimension = ncols mat
+        pairs = safeZipWith (,) (toLists mat) (concat $ toLists col)
+        indexedPairs = zip [0..] pairs
+        tightRows = [(i, row) | (i, (row, bound)) <- indexedPairs,
+                               dot row vertex == bound]
+        basisIndices = reverse $ chooseBasis [] (reverse tightRows)
+        -- Identify rows by position, not value: redundant and duplicate
+        -- constraints must retain their multiplicity and relative order.
+        ordered = [pair | (i, pair) <- indexedPairs, i `notElem` basisIndices]
+               ++ [pairs !! i | i <- basisIndices]
         newMat = fromLists $ map fst ordered
         newCol = colFromList $ map snd ordered
+
+        -- Exact Gaussian elimination, preferring the last independent tight
+        -- rows to preserve an already valid final-d-row basis. Restore their
+        -- input order before appending them. Each normalized row is zero at every earlier
+        -- pivot, so eliminating later pivots cannot reintroduce earlier ones.
+        chooseBasis :: [(Int, [Rational])] -> [(Int, [Rational])] -> [Int]
+        chooseBasis basis _ | length basis == dimension = []
+        chooseBasis _ [] = []
+        chooseBasis basis ((i, row):rest) =
+            case findIndex (/= 0) reduced of
+                Nothing -> chooseBasis basis rest
+                Just p -> i : chooseBasis (basis ++ [(p, normalized p)]) rest
+            where
+                reduced = foldl' eliminate row basis
+                eliminate values (p, pivotRow) =
+                    zipWith (\x y -> x - (values !! p) * y) values pivotRow
+                normalized p = map (/ (reduced !! p)) reduced
 
 
 
 getDictionary :: Matrix Rational -> Col -> Vertex -> Dictionary
-getDictionary _A b vertex = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+1)) <|> (p21 <-> p22) <|> (p31 <-> p32))
+-- | Build a dictionary for A*x <= b at a supplied feasible vertex.
+-- Slack variables satisfy A*x + slack = b and must remain nonnegative.
+-- The first d basic rows are unrestricted decision variables; only the
+-- remaining basic slack rows constrain the ratio test.
+getDictionary _A b vertex
+    | nrows b /= nrows _A || ncols b /= 1 =
+        error "getDictionary: right-hand side must be an m-by-1 column matching the constraint rows"
+    | length vertex /= ncols _A =
+        error "getDictionary: starting vertex dimension does not match the constraint matrix"
+    | any (\(row, bound) -> dot row vertex > bound)
+          (zip (toLists _A) (concat $ toLists b)) =
+        error "getDictionary: starting vertex is infeasible for A*x <= b"
+    | otherwise = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+1)) <|> (p21 <-> p22) <|> (p31 <-> p32))
     where
         (newA, newb) = sortSystem _A b vertex
         rows = nrows newA
@@ -143,7 +182,7 @@ getDictionary _A b vertex = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+
         slack = identity rows
         dictionary = newA <|> slack
         -- LRS objective (Avis 1999, eq 3.6): coefficient 1 on each cobasic
-        -- (decision) variable, 0 on basics (slacks). Layout is
+        -- slack variable, 0 on the initial basics. Layout is
         --   [obj | basic_cols (rows of them) | cobasic_cols (cols of them)].
         topRow = rowFromList $ 1 : replicate rows 0 ++ replicate cols 1
         c_B = submatrix' (0,0) (1,rows) topRow
@@ -246,16 +285,24 @@ getVertex dictionary = concat $ toLists $ submatrix' (1,dim) (cols-1, cols-1) (d
         cols = numCols dictionary
         dim = cols-rows-1
 
+-- | Low-level traversal retaining the legacy mixed output convention.
+-- Use lrs for checked bounded-polytope or homogeneous-cone enumeration.
 revSearch :: Dictionary -> [Vertex]
-revSearch dictionary@(Dict _B _N dictMatrix) -- = getVertex dictionary : concatMap revSearch pivoted
-    | (not.null) possibleRay = possibleRay ++ (concatMap revSearch pivoted)
-    | otherwise = getVertex dictionary : concatMap revSearch pivoted
+revSearch = revSearchWith True
+
+revSearchWith :: Bool -> Dictionary -> [Vertex]
+revSearchWith allowRays dictionary@(Dict _B _N dictMatrix)
+    | not (null possibleRay) && not allowRays =
+        error "lrs: unbounded non-homogeneous input requires separate vertex and ray output"
+    | not (null possibleRay) = possibleRay ++ descendants
+    | otherwise = getVertex dictionary : descendants
     where
         rows = numRows dictionary
         cols = numCols dictionary
         valid_N = [i | i <- _N, (reverseRS dictionary i) /= Nothing]
         valid_B = map (lexMinRatio dictionary) valid_N
         pivoted = map (\(r, s) ->  pivot r s dictionary) $ zip valid_B valid_N
+        descendants = concatMap (revSearchWith allowRays) pivoted
         possibleRay = hasRay dictionary
 
 
@@ -274,15 +321,26 @@ hasRay dictionary = rays
         dim = cols - rows -1
         cols = numCols dictionary
         nonPositive column = all (<=0) ((concat.toLists) column)
+        -- Columns retain variable IDs after pivots, so inspect the current
+        -- cobasis rather than the original contiguous cobasic columns.
         colsWithRays = if dim+1 == rows then
-                            [dictMatrix^.colAt j | j <- [rows..cols-2]]
-                        else [dictMatrix^.colAt j | j <- [rows..cols-2], nonPositive (submatrix' (dim+1,rows-1) (j,j) dictMatrix )]
-        rays =  map (concat . toLists . (submatrix' (1,dim) (0,0))) colsWithRays
+                            [dictMatrix^.colAt j | j <- dictionary^._N]
+                        else [dictMatrix^.colAt j | j <- dictionary^._N, nonPositive (submatrix' (dim+1,rows-1) (j,j) dictMatrix )]
+        -- x_B = rhs - D_N*x_N: increasing a cobasic slack follows the
+        -- negative decision entries (Avis 1999, Proposition 3.2).
+        rays = map (map negate . concat . toLists . (submatrix' (1,dim) (0,0))) colsWithRays
 
 
 
+-- | Enumerate vertices of a bounded polytope, or ray
+-- directions of a full-dimensional pointed cone represented by A*x <= 0.
+-- Input uses A*x <= b and a feasible starting vertex. Decision variables
+-- are unrestricted; the start must have d independent tight constraints.
+-- Unbounded inputs with nonzero b are rejected because this result type
+-- cannot distinguish vertices from rays. The cone exception requires every
+-- bound to be zero, including any redundant constraints.
 lrs :: Matrix Rational -> Col -> Vertex-> [Vertex]
-lrs matrix b vertex = (sort.nub) $ revSearch lexOptimum
+lrs matrix b vertex = (sort.nub) $ revSearchWith (all (== 0) (concat $ toLists b)) lexOptimum
     where
         -- Avis 1999: reverse search must start at the unique lex-optimum
         -- dictionary B*. `getDictionary` builds the dictionary at the
@@ -310,4 +368,3 @@ lrs matrix b vertex = (sort.nub) $ revSearch lexOptimum
 --                                     Nothing -> auxMatrix
 --         sortedDict = (sortRows (sortCols dictMatrix 0 aux) 0 aux )
 --         matN = submatrix' (0, (nrows dictMatrix)-1) (nrows dictMatrix, (ncols dictMatrix)-1) $ sortedDict
-

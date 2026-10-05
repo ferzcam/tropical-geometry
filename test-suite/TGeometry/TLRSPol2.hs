@@ -16,14 +16,12 @@ import Geometry.Vertex (extremalVertices, Vertex)
 -- =============================================================================
 -- Active test: cone in R^3
 -- =============================================================================
--- mat1 * x >= 0 defines a cone with apex at the origin. The four expected
--- outputs are its extreme rays. All four inequalities are tight at [0,0,0],
--- so the dictionary built by getDictionary already sits at a (degenerate)
--- lex-optimum and revSearch enumerates the rays directly. This is the only
--- case the current LRS implementation handles correctly.
+-- mat1 * x <= 0 defines a cone with apex at the origin. The four
+-- expected outputs are its extreme rays. All four inequalities are tight
+-- at [0,0,0], and the initial dictionary has a degenerate basic slack.
 
 mat1 :: Matrix Rational
-mat1 = fromLists [[1,0,-2],[1,-1,0],[0,-1,0],[-1,0,-1]]
+mat1 = fromLists [[-1,0,2],[-1,1,0],[0,1,0],[1,0,1]]
 
 testVertexEnum :: TestTree
 testVertexEnum = HU.testCase "lrs on R^3 cone enumerates extreme rays" $ do
@@ -31,81 +29,68 @@ testVertexEnum = HU.testCase "lrs on R^3 cone enumerates extreme rays" $ do
         @?= [[(-2)/3,(-2)/3,(-1)/3],[0,(-1),0],[0,0,(-1)],[1,0,(-1)]]
 
 -- Bounded 2D polytope: the unit square in R^2.
--- Constraints (Ax >= b convention used by lrs):
---   [ 1, 0] x >=  0   (x >= 0)
---   [ 0, 1] x >=  0   (y >= 0)
---   [-1, 0] x >= -1   (x <= 1)
---   [ 0,-1] x >= -1   (y <= 1)
+-- Constraints use LRS's A*x <= b convention:
+--   [-1, 0] x <= 0   (x >= 0)
+--   [ 0,-1] x <= 0   (y >= 0)
+--   [ 1, 0] x <= 1   (x <= 1)
+--   [ 0, 1] x <= 1   (y <= 1)
 -- Vertices: (0,0), (1,0), (1,1), (0,1).
 squareMat :: Matrix Rational
-squareMat = fromLists [[1,0],[0,1],[-1,0],[0,-1]]
+squareMat = fromLists [[-1,0],[0,-1],[1,0],[0,1]]
 
 testSquare :: TestTree
 testSquare = HU.testCase "lrs on R^2 unit square enumerates 4 vertices" $ do
-    lrs squareMat (colFromList [0,0,-1,-1]) [0,0]
+    lrs squareMat (colFromList [0,0,1,1]) [0,0]
         @?= [[0,0],[0,1],[1,0],[1,1]]
 
 -- Bounded 3D polytope: the unit cube in R^3.
 -- 6 facets, 8 vertices.
 cubeMat :: Matrix Rational
-cubeMat = fromLists [[1,0,0],[0,1,0],[0,0,1],[-1,0,0],[0,-1,0],[0,0,-1]]
+cubeMat = fromLists [[-1,0,0],[0,-1,0],[0,0,-1],[1,0,0],[0,1,0],[0,0,1]]
 
 testCube :: TestTree
 testCube = HU.testCase "lrs on R^3 unit cube enumerates 8 vertices" $ do
-    lrs cubeMat (colFromList [0,0,0,-1,-1,-1]) [0,0,0]
+    lrs cubeMat (colFromList [0,0,0,1,1,1]) [0,0,0]
         @?= [[0,0,0],[0,0,1],[0,1,0],[0,1,1],[1,0,0],[1,0,1],[1,1,0],[1,1,1]]
 
 -- Bounded 4D polytope: the unit hypercube in R^4.
 -- 8 facets, 16 vertices. This is the real R^n contract.
 tesseractMat :: Matrix Rational
 tesseractMat = fromLists
-    [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]
-    ,[-1,0,0,0],[0,-1,0,0],[0,0,-1,0],[0,0,0,-1]]
+    [[-1,0,0,0],[0,-1,0,0],[0,0,-1,0],[0,0,0,-1]
+    ,[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]
 
 testTesseract :: TestTree
 testTesseract = HU.testCase "lrs on R^4 unit tesseract enumerates 16 vertices" $ do
-    lrs tesseractMat (colFromList [0,0,0,0,-1,-1,-1,-1]) [0,0,0,0]
+    lrs tesseractMat (colFromList [0,0,0,0,1,1,1,1]) [0,0,0,0]
         @?= [[a,b,c,d] | a <- [0,1], b <- [0,1], c <- [0,1], d <- [0,1]]
 
 -- Bounded 3D polytope: the standard simplex in R^3.
 -- {x_1, x_2, x_3 >= 0; x_1 + x_2 + x_3 <= 1}
 -- Vertices: origin and three unit basis vectors. 4 facets, non-cubic.
 simplexMat :: Matrix Rational
-simplexMat = fromLists [[1,0,0],[0,1,0],[0,0,1],[-1,-1,-1]]
+simplexMat = fromLists [[-1,0,0],[0,-1,0],[0,0,-1],[1,1,1]]
 
 testSimplex3 :: TestTree
 testSimplex3 = HU.testCase "lrs on R^3 standard simplex enumerates 4 vertices" $ do
-    lrs simplexMat (colFromList [0,0,0,-1]) [0,0,0]
+    lrs simplexMat (colFromList [0,0,0,1]) [0,0,0]
         @?= [[0,0,0],[0,0,1],[0,1,0],[1,0,0]]
 
 -- =============================================================================
--- Polytope-family tests (disabled: non-axis-aligned tight constraints)
+-- Polytope-family tests (active regression cases)
 -- =============================================================================
 -- Permutohedron P_n is simple (each vertex meets exactly n-1 facets) and
 -- full-dim inside Σx_i = n(n+1)/2. Parametrize via (x_1, …, x_{n-1}) with
 -- x_n = n(n+1)/2 - Σ_{i<n} x_i. H-rep: for each non-empty proper subset
 -- S ⊂ {1,…,n}, Σ_{i ∈ S} x_i ≥ |S|(|S|+1)/2 (2^n - 2 facets).
 --
--- Running these through the current LRS reveals a separate limitation from
--- cross-polytope degeneracy: lexMinRatio's filter+min combination picks the
--- wrong leaving variable when stored basic-slack values are < 0 (which is
--- this code's sign convention, since dictionary = newA <|> identity solves
--- newA · x + s = newb with stored s = -(actual)). Cube/simplex/tesseract
--- escape this because their start vertex has A_tight = identity, yielding
--- one ratio candidate per pivot. Permutohedron P_n has A_tight
--- lower-triangular, exposing the bug.
---
--- Verified: P_3 at (1,2) returns only [(1,2)]; manual trace shows lexMinRatio
--- picks var 6 (leaving) when var 3 should leave to reach neighbor (2,1).
--- Naive fix (slack = -identity) breaks 7 Newton polytope tests, so the bug
--- needs a coordinated audit of sortSystem + getDictionary + lexMinRatio +
--- pivot against Avis 1999, not a one-line sign flip.
---
--- Defs kept in-file (commented) so they're ready to enable once #27 lands.
-{-
+-- The original tests supplied >= inequalities to a dictionary using <=,
+-- which made basic slacks negative and selected infeasible neighbors.
+-- Negate both normals and bounds to preserve the intended geometry.
+-- These non-axis-aligned cases exercise multiple candidates in the ratio test.
 
 permutohedronP4Mat :: Matrix Rational
-permutohedronP4Mat = fromLists
+permutohedronP4Mat = fmap negate $ fromLists
     [ [ 1, 0, 0]   -- x_1 ≥ 1
     , [ 0, 1, 0]   -- x_2 ≥ 1
     , [ 0, 0, 1]   -- x_3 ≥ 1
@@ -123,7 +108,7 @@ permutohedronP4Mat = fromLists
     ]
 
 permutohedronP4B :: Matrix Rational
-permutohedronP4B = colFromList [1,1,1,-9, 3,3,-7,3,-7,-7, 6,-4,-4,-4]
+permutohedronP4B = colFromList [-1,-1,-1,9, -3,-3,7,-3,7,7, -6,4,4,4]
 
 permutohedronP4Vertices :: [Vertex]
 permutohedronP4Vertices = sort
@@ -140,7 +125,7 @@ testPermutohedronP4 = HU.testCase "lrs on R^3 permutohedron P_4 enumerates 24 ve
 -- Smaller P_3 (2-dim, 6 vertices) helps localize bugs.
 -- Coords (x_1, x_2) with x_3 = 6 - x_1 - x_2.
 permutohedronP3Mat :: Matrix Rational
-permutohedronP3Mat = fromLists
+permutohedronP3Mat = fmap negate $ fromLists
     [ [ 1, 0]   -- x_1 ≥ 1
     , [ 0, 1]   -- x_2 ≥ 1
     , [-1,-1]   -- x_3 ≥ 1
@@ -150,7 +135,7 @@ permutohedronP3Mat = fromLists
     ]
 
 permutohedronP3B :: Matrix Rational
-permutohedronP3B = colFromList [1,1,-5, 3,-3,-3]
+permutohedronP3B = colFromList [-1,-1,5, -3,3,3]
 
 permutohedronP3Vertices :: [Vertex]
 permutohedronP3Vertices = sort
@@ -164,26 +149,11 @@ testPermutohedronP3 = HU.testCase "lrs on R^2 permutohedron P_3 enumerates 6 ver
     lrs permutohedronP3Mat permutohedronP3B [1,2]
         @?= permutohedronP3Vertices
 
--}
-
 -- =============================================================================
--- Polytope-family tests (disabled: degenerate vertices)
+-- Historical cross-polytope fixtures
 -- =============================================================================
--- Cross polytope X_n = { x in R^n : sum |x_i| <= 1 } would be the natural
--- next test family, but every cross-polytope vertex has 2^(n-1) facets
--- meeting (8 in R^4, 16 in R^5), which our LRS doesn't handle correctly.
--- Two issues compound:
---   1. getDictionary's initial basis A_B is singular when more than `dim`
---      tight constraints exist at the start vertex (smart basis selection
---      can fix this).
---   2. Simplex and reverseRS need lex-positive bases (symbolic perturbation
---      of b by ε powers, stored as an extra A_B^{-1} block in the
---      dictionary, with vector-valued lex-min ratio comparisons) to
---      navigate degenerate optima correctly. Without this, half the
---      vertices are missed.
--- Implementing (2) is real LRS surgery (~150-200 LOC across getDictionary,
--- pivot, lexMinRatio, getVertex, hasRay). Cross-polytope-style polytopes
--- with degenerate vertices are deliberately out of scope until that lands.
+-- Corrected inequalities and all-start regressions are active in TLRSDegenerate.
+-- These original declarations are retained for provenance only.
 
 -- crossPolytopeMat :: Int -> Matrix Rational
 -- crossPolytopeMat n = fromLists $ map (map negate) signVectors
@@ -216,23 +186,20 @@ testPermutohedronP3 = HU.testCase "lrs on R^2 permutohedron P_3 enumerates 6 ver
 -- run extremalVertices -> facetEnumeration to get an H-representation, then
 -- lrs to enumerate the vertices.
 --
--- Per-polynomial contract: every expVec is itself a vertex of the polytope,
--- so (sort . map toRational . expVecs) f_i should equal lrs's output.
+-- The expected result is the extremal subset of the lifted support.
 
 x, y :: Polynomial (Tropical Integer) Lex 2
 x = variable 0
 y = variable 1
 
-f1, f2, f3, f4, f6, f7, f8, f9 :: Polynomial (Tropical Integer) Lex 2
+f1, f2, f3, f4, f5, f6, f7, f8, f9 :: Polynomial (Tropical Integer) Lex 2
 f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
 f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
 f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3
    + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
--- f4 has all implicit coefficients (= Tropical 0); like f9, every lifted
--- point sits at z=0, so the Newton polytope is coplanar in R^3 and LRS's
--- sortSystem precondition (≥ dim tight constraints at the start vertex)
--- can't be met. Excluded from the active test group.
+-- Flat lifted supports exercise affine-hull equalities.
 f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
 f6 = 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 5
@@ -245,10 +212,6 @@ f8 = 10*x^6 + 8*x^5*y + 6*x^4*y^2 + 6*x^3*y^3 + 4*x^2*y^4 + 6*x*y^5 + 9*y^6
    + 6*x^4 + 4*x^3*y + 3*x^2*y^2 + 4*x*y^3 + 5*y^4
    + 2*x^3 + x^2*y + 1*x*y^2 + 4*y^3
    + 2*x^2 + x*y + 3*y^2 + x + 2*y + 10
--- f9 has all coefs == 0; lifted points are coplanar → 2D Newton polytope in
--- R^3. LRS as implemented requires a full-dimensional polytope (sortSystem
--- demands at least `dim` tight constraints at the starting vertex), so f9 is
--- expected to fail until LRS handles lower-dimensional polytopes explicitly.
 f9 = x^2*y^2 + y^2 + x^2 + 0
 
 lrsPoly :: Polynomial (Tropical Integer) Lex 2 -> [Vertex]
@@ -270,21 +233,21 @@ testsVertexEnumPol2 :: TestTree
 testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
     [ testVertexEnum
     , testSquare, testCube, testTesseract, testSimplex3
-    -- permutohedron P_3, P_4 disabled: A_tight ≠ identity at start vertex,
-    -- exposing a sign-convention bug in lexMinRatio that doesn't appear on
-    -- cube/simplex/tesseract (A_tight = identity at origin). See section above.
-    -- cross polytope tests disabled — degenerate vertices, see above
+    , testPermutohedronP3, testPermutohedronP4
+    -- Cross-polytope coverage is in TLRSDegenerate.
     , polyTest "f1" f1
     , polyTest "f2" f2
     , polyTest "f3" f3
-    -- f4 and f9 are degenerate (coplanar lifted points); see definitions above
+    , polyTest "f4" f4
+    , polyTest "f5" f5
+    , polyTest "f9" f9
     , polyTest "f6" f6
     , polyTest "f7" f7
     , polyTest "f8" f8
     ]
 
 -- =============================================================================
--- Pending tests: full polytope path (lrsPoly)
+-- Historical port notes: full polytope path (now active above)
 -- =============================================================================
 -- These exercise the bounded-polytope branch of LRS via Newton polytopes of
 -- 2-variable tropical polynomials f1..f9. They were written on generalTropHyp
@@ -292,11 +255,10 @@ testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
 --   - Polynomial.Hypersurface.expVecs
 --   - Geometry.Facet.facetEnumeration
 --   - Geometry.Vertex.extremalVertices
--- expVecs is not yet ported to upgrade_lts, so the block stays commented out
--- until LRS itself works on bounded polytopes (bugs 1-6 in the review).
+-- Historical port notes retained below; these dependencies and the
+-- polynomial cases above, including flat supports, are now active.
 --
--- Re-enable once `simplex` is wired into `lrs` and the lex-pivot rule is
--- correct; expect at least f1, f4, f9 to pass first.
+-- The following is preserved historical source, not pending test coverage.
 --
 --   import Polynomial.Hypersurface (expVecs)
 --   import Geometry.Facet (facetEnumeration)

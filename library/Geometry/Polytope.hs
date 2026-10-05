@@ -24,13 +24,12 @@ import Data.Maybe
 projectionToR2 :: ConvexHull -> [[Point2D]]
 projectionToR2 convexHull = let lengthConvexHull = length $ facets convexHull in
                             if lengthConvexHull == 1 then 
-                                projected.triangles.facetsInPoints $ facets convexHull
+                                projected.facetsInPoints $ facets convexHull
                             else 
-                                projected.triangles.facetsInPoints $ lowerFaces
+                                projected.facetsInPoints $ lowerFaces
     where
         lowerFaces = filter isLowerFace $ facets convexHull
         facetsInPoints = map fromFacet
-        triangles = filter (\points -> length points == 3)
         projected = map (map project3To2) 
 
 
@@ -48,5 +47,3 @@ subdivision poly = (projectionToR2.fromJust.convexHull3) points
         monExps = DS.toList . getMonomial
         toPoints (mon, coef) = let [a,b] = monExps mon in (a, b, fromIntegral coef)
         points = map toPoints terms
-
-

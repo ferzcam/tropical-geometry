@@ -15,6 +15,11 @@ import TGeometry.TConvexHull3
 import TGeometry.TPolyhedral
 import TGeometry.TPolytope
 import TGeometry.TLRSPol2
+import TGeometry.TLRSRegression
+import TGeometry.TLRSCyclic
+import TGeometry.TLRSCone
+import TGeometry.TLRSDegenerate
+import TGeometry.TLRSInputValidation
 import TPolynomial.THypersurface
 
 main :: IO ()
@@ -34,5 +39,10 @@ allTests = testGroup "Tasty tests" [
             testsPolyhedral,
             testsPolytope,
             testsVertexEnumPol2,
+            testsLRSRegression,
+            testsLRSCyclic,
+            testsLRSCone,
+            testsLRSDegenerate,
+            testsLRSInputValidation,
             testsHypersurface]
     ]
