@@ -106,6 +106,20 @@ testsPolygonal = testGroup "Polygonal subdivisions"
         sort (map sort (subdivision p)) @?= [[(0,0),(0,1),(1,0),(1,1)]]
         sort (map primitiveRay (hypersurface p)) @?=
             sort [((0,0),(1,0)),((0,0),(-1,0)),((0,0),(0,1)),((0,0),(0,-1))]
+    , HU.testCase "Hexagonal cell has six rays and no diagonal" $ do
+        let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+        sort (map sort (subdivision p)) @?= [[(0,1),(1,0),(1,2),(2,0),(2,2),(3,1)]]
+        sort (map primitiveRay (hypersurface p)) @?=
+            sort [((0,0),(1,1)),((0,0),(0,1)),((0,0),(-1,1)),
+                  ((0,0),(-1,-1)),((0,0),(0,-1)),((0,0),(1,-1))]
+    , HU.testCase "Inner normals do not overflow their orientation product" $ do
+        let m = maxBound `div` 2 :: Int
+        innerNormal (0,0) (m,0) (0,m) @?= (0,1)
+    , HU.testCase "Collinear normals fail with an explicit diagnostic" $ do
+        result <- try (evaluate (innerNormal (0,0) (1,1) (2,2))) :: IO (Either ErrorCall (Int,Int))
+        case result of
+            Left err -> assertBool "diagnostic explains collinearity" ("collinear" `isInfixOf` show err)
+            Right _ -> assertFailure "Expected collinear points to be rejected"
     , HU.testCase "Affine square heights translate its fan" $ do
         let p = 0 + 2*x + 3*y + 5*x*y
         sort (map primitiveRay (hypersurface p)) @?=

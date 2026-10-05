@@ -88,12 +88,22 @@ testsLRSInputValidation = testGroup "LRS input validation"
         enumerate [[2],[5],[-1],[2]] @?= [[-1],[5]]
     , testCase "Origin singleton has no nonzero ray directions" $
         enumerate [[0,0,0]] @?= [[0,0,0]]
+    , testCase "Full-dimensional translated tetrahedron preserves facet incidence" $
+        checkFacets [[2,3,4],[3,3,4],[2,4,4],[2,3,5]]
+    , testCase "Flat square enumerates from every corner with reversed constraints" $ do
+        let points = [[2,3,5],[4,3,6],[4,7,10],[2,7,9]]
+            hs = reverse (facetEnumeration points)
+            matrix = fromLists [h | (_,h,_) <- hs]
+            rhs = colFromList [b | (_,_,b) <- hs]
+            expected = sort (map (map toRational) points)
+        mapM_ (\p -> lrs matrix rhs (map toRational p) @?= expected) points
     , testCase "Singleton is represented by affine equalities" $
         enumerate [[2,-3,5],[2,-3,5]] @?= [[2,-3,5]]
 
     ]
 
--- Exact lifted supports, bypassing extremalVertices and its GLPK backend.
+-- Explicit lifted supports and independent expected vertices. Intrinsic facet
+-- construction still uses the existing extremalVertices/GLPK backend.
 -- f4 is the degree-three triangle's lattice points; f9 is a square.
 -- Both have affine dimension two although their ambient dimension is three.
 f4Support, f9Support :: [[Integer]]

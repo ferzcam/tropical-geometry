@@ -1,0 +1,756 @@
+tropical-geometry-0.0.0.1: unregistering (local file changes:
+test-suite/TGeometry/TLRSInputValidation.hs test-suite/TGeometry/TPolytope.hs
+test-suite/TPolynom...)
+tropical-geometry> build (lib + exe + test) with ghc-9.8.4
+Preprocessing library for tropical-geometry-0.0.0.1..
+Building library for tropical-geometry-0.0.0.1..
+Preprocessing test suite 'tropical-geometry-test-suite' for tropical-geometry-0.0.0.1..
+Building test suite 'tropical-geometry-test-suite' for tropical-geometry-0.0.0.1..
+[ 9 of 17] Compiling TGeometry.TLRSInputValidation [Source file changed]
+[13 of 17] Compiling TGeometry.TPolytope [Source file changed]
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:22:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      subdivisionF5 :: [[(Int, Int)]]
+   |
+22 | subdivisionF5 = [[(1,-1), (0,-1), (0,0)]]
+   | ^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:21:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      subdivisionF4 :: [[(Int, Int)]]
+   |
+21 | subdivisionF4 = [[(3,0), (0,0), (0,3)]]
+   | ^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:20:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      subdivisionF2 :: [[(Int, Int)]]
+   |
+20 | subdivisionF2 = [[(3,0),(2,0),(2,1)],[(2,1),(2,0),(1,1)],[(1,2),(2,1),(1,1)],[(0,3),(1,2),(0,2)],[(1,2),(1,1),(0,2)],[(1,1),(2,0),(1,0)],[(0,2),(1,1),(0,1)],[(1,1),(1,0),(0,1)],[(0,1),(1,0),(0,0)]]
+   | ^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:19:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      subdivisionF1 :: [[(Int, Int)]]
+   |
+19 | subdivisionF1 = [[(0,0),(1,1),(1,0)],[(0,2),(1,1),(0,1)],[(1,1),(0,0),(0,1)],[(1,1),(2,0),(1,0)]]
+   | ^^^^^^^^^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:17:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      newF5 :: [(Int, Int, Int)]
+   |
+17 | newF5 = [(1,-1,2), (0,-1,2), (0,0,-2)]
+   | ^^^^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TGeometry/TPolytope.hs:16:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      newF4 :: [(Int, Int, Int)]
+   |
+16 | newF4 = [(3,0,0), (2,1,0), (1,2,0), (0,3,0), (2,0,0), (1,1,0), (0,2,0), (1,0,0), (0,1,0), (0,0,0)]
+   | ^^^^^
+[14 of 17] Compiling TPolynomial.THypersurface [Source file changed]
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:135:24: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:135:24
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:135:25
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the first argument of ‘(+)’, namely ‘0 + 1 * x ^ 2’
+    |
+135 |         let p = 0 + 1*x^2 + y
+    |                        ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:128:38: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:128:38
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:128:39
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the expression: 0 + x + y + x * y + 1 * x ^ 2
+    |
+128 |         let p = 0 + x + y + x*y + 1*x^2
+    |                                      ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:52: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:52
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:110:53
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘x * y ^ 2’
+      In the expression:
+        y + x + x ^ 2 + x ^ 3 * y + x ^ 2 * y ^ 2 + x * y ^ 2
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                                                    ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:44: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:44
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:110:45
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘y + x + x ^ 2 + x ^ 3 * y + x ^ 2 * y ^ 2’
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                                            ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:40: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:40
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:110:41
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘y + x + x ^ 2 + x ^ 3 * y + x ^ 2 * y ^ 2’
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                                        ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:32: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:32
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:110:33
+    • In the first argument of ‘(*)’, namely ‘x ^ 3’
+      In the second argument of ‘(+)’, namely ‘x ^ 3 * y’
+      In the first argument of ‘(+)’, namely ‘y + x + x ^ 2 + x ^ 3 * y’
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                                ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:110:26: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:110:26
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:110:27
+    • In the second argument of ‘(+)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘y + x + x ^ 2’
+      In the first argument of ‘(+)’, namely ‘y + x + x ^ 2 + x ^ 3 * y’
+    |
+110 |         let p = y + x + x^2 + x^3*y + x^2*y^2 + x*y^2
+    |                          ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:79:20: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘y’ shadows the existing binding
+      defined at test-suite/TPolynomial/THypersurface.hs:20:1
+   |
+79 | primitiveRay (p@(x,y), (u,v)) =
+   |                    ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:79:18: warning: [GHC-63397] [-Wname-shadowing]
+    This binding for ‘x’ shadows the existing binding
+      defined at test-suite/TPolynomial/THypersurface.hs:19:1
+   |
+79 | primitiveRay (p@(x,y), (u,v)) =
+   |                  ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:39:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature: sw :: [(Int, Int)]
+   |
+39 | sw = sort [(-1,-1), (1, 0), (0, 1)]
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:38:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature: se :: [(Int, Int)]
+   |
+38 | se = sort [(1,-1), (-1, 0), (0, 1)]
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:37:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature: nw :: [(Int, Int)]
+   |
+37 | nw = sort [(-1,1), (1, 0), (0, -1)]
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:36:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature: ne :: [(Int, Int)]
+   |
+36 | ne = sort [(1,1), (-1, 0), (0, -1)]
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:26:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^^’
+          at test-suite/TPolynomial/THypersurface.hs:26:23-24
+        (Num b0)
+          arising from a use of syntactic negation
+          at test-suite/TPolynomial/THypersurface.hs:26:26-27
+    • In the second argument of ‘(*)’, namely ‘y ^^ (- 1)’
+      In the second argument of ‘(+)’, namely ‘2 * y ^^ (- 1)’
+      In the first argument of ‘(+)’, namely
+        ‘2 * x * y ^^ (- 1) + 2 * y ^^ (- 1)’
+   |
+26 | f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
+   |                       ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:26:11: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^^’
+          at test-suite/TPolynomial/THypersurface.hs:26:11-12
+        (Num b0)
+          arising from a use of syntactic negation
+          at test-suite/TPolynomial/THypersurface.hs:26:14-15
+    • In the second argument of ‘(*)’, namely ‘y ^^ (- 1)’
+      In the first argument of ‘(+)’, namely ‘2 * x * y ^^ (- 1)’
+      In the first argument of ‘(+)’, namely
+        ‘2 * x * y ^^ (- 1) + 2 * y ^^ (- 1)’
+   |
+26 | f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
+   |           ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:26:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f5 :: Polynomial (Tropical Integer) Lex 2
+   |
+26 | f5 = 2*x*y^^(-1) + 2*y^^(-1) + (-2)
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:47: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:47
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:25:48
+    • In the second argument of ‘(+)’, namely ‘y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2 + x * y + y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2 + x * y + y ^ 2 + x’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |                                               ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:35: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:35
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:25:36
+    • In the second argument of ‘(+)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2 + x * y’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |                                   ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:29: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:29
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:25:30
+    • In the second argument of ‘(+)’, namely ‘y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2 + y ^ 3 + x ^ 2’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |                             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:25:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:13: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:13
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:25:14
+    • In the first argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘x ^ 2 * y’
+      In the first argument of ‘(+)’, namely ‘x ^ 3 + x ^ 2 * y’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:7: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:25:7
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:25:8
+    • In the first argument of ‘(+)’, namely ‘x ^ 3’
+      In the first argument of ‘(+)’, namely ‘x ^ 3 + x ^ 2 * y’
+      In the first argument of ‘(+)’, namely
+        ‘x ^ 3 + x ^ 2 * y + x * y ^ 2’
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   |       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:25:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f4 :: Polynomial (Tropical Integer) Lex 2
+   |
+25 | f4 = x^3 + x^2*y + x*y^2 + y^3 + x^2 + x*y + y^2 + x + y + 0
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:59: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:59
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:24:60
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2 + 3 * y ^ 3 + 1 * x ^ 2
+           + x * y
+           + 1 * y ^ 2’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                                                           ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:45: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:45
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:24:46
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2 + 3 * y ^ 3 + 1 * x ^ 2’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                                             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:37: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:37
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:24:38
+    • In the second argument of ‘(*)’, namely ‘y ^ 3’
+      In the second argument of ‘(+)’, namely ‘3 * y ^ 3’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2 + 3 * y ^ 3’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                                     ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:29: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:29
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:24:30
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 3 + 1 * x ^ 2 * y + 1 * x * y ^ 2’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                             ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:17: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:17
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:24:18
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(*)’, namely ‘1 * x ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * x ^ 2 * y’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |                 ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:24:9
+        (Num b0)
+          arising from the literal ‘3’
+          at test-suite/TPolynomial/THypersurface.hs:24:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 3’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 3’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 3 + 1 * x ^ 2 * y’
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:24:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f3 :: Polynomial (Tropical Integer) Lex 2
+   |
+24 | f3 = 3*x^3 + 1*x^2*y + 1*x*y^2 + 3*y^3 + 1*x^2 + x*y + 1*y^2 + 1*x + 1*y + 3
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:23:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:23:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:23:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘3 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘3 * x ^ 2 + x * y + 3 * y ^ 2’
+   |
+23 | f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
+   |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:23:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:23:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:23:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 2’
+      In the first argument of ‘(+)’, namely ‘3 * x ^ 2 + x * y’
+   |
+23 | f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
+   |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:23:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f2 :: Polynomial (Tropical Integer) Lex 2
+   |
+23 | f2 = 3*x^2 + x*y + 3*y^2 + 1*x + 1*y + 0
+   | ^^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:22:23: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:22:23
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:22:24
+    • In the second argument of ‘(*)’, namely ‘y ^ 2’
+      In the second argument of ‘(+)’, namely ‘1 * y ^ 2’
+      In the first argument of ‘(+)’, namely
+        ‘1 * x ^ 2 + x * y + 1 * y ^ 2’
+   |
+22 | f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+   |                       ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:22:9: warning: [GHC-18042] [-Wtype-defaults]
+    • Defaulting the type variable ‘b0’ to type ‘Integer’ in the following constraints
+        (Integral b0)
+          arising from a use of ‘^’
+          at test-suite/TPolynomial/THypersurface.hs:22:9
+        (Num b0)
+          arising from the literal ‘2’
+          at test-suite/TPolynomial/THypersurface.hs:22:10
+    • In the second argument of ‘(*)’, namely ‘x ^ 2’
+      In the first argument of ‘(+)’, namely ‘1 * x ^ 2’
+      In the first argument of ‘(+)’, namely ‘1 * x ^ 2 + x * y’
+   |
+22 | f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+   |         ^
+
+/home/zhapacfp/Git/tropical-geometry/test-suite/TPolynomial/THypersurface.hs:22:1: warning: [GHC-38417] [-Wmissing-signatures]
+    Top-level binding with no type signature:
+      f1 :: Polynomial (Tropical Integer) Lex 2
+   |
+22 | f1 = 1*x^2 + x*y + 1*y^2 + x + y + 2
+   | ^^
+[17 of 17] Compiling Main [TGeometry.TLRSInputValidation changed]
+[18 of 18] Linking .stack-work/dist/x86_64-linux-tinfo6/ghc-9.8.4/build/tropical-geometry-test-suite/tropical-geometry-test-suite [Objects changed]
+Preprocessing executable 'tropical-geometry' for tropical-geometry-0.0.0.1..
+Building executable 'tropical-geometry' for tropical-geometry-0.0.0.1..
+tropical-geometry> copy/register
+Installing library in /home/zhapacfp/Git/tropical-geometry/.stack-work/install/x86_64-linux-tinfo6/998e92bb043cb18817586af1f50211480a905e66576a3669952c01eb15d81a5d/9.8.4/lib/x86_64-linux-ghc-9.8.4/tropical-geometry-0.0.0.1-FznDw9RXmLu3SUEeAPTKTu
+Installing executable tropical-geometry in /home/zhapacfp/Git/tropical-geometry/.stack-work/install/x86_64-linux-tinfo6/998e92bb043cb18817586af1f50211480a905e66576a3669952c01eb15d81a5d/9.8.4/bin
+Registering library for tropical-geometry-0.0.0.1..
+tropical-geometry> test (suite: tropical-geometry-test-suite, args: --timeout=30s -j2 +RTS -N2 -RTS)
+
+Tasty tests
+  List of tests:
+    Test for tropical numbers
+      Sum tropical numbers:                                                      OK
+      Multiply tropical numbers:                                                 OK
+    Test for tropical matrices
+      Sum of matrices:                                                           OK
+      Product of matrices:                                                       OK
+    Test for monomials
+      ShowingMonomials:                                                          OK
+      Compare Lex and Revlex Monomials :                                         OK
+    Test for Prelude of Polynomials
+      Creation of variables:                                                     OK
+      Show polynomial with Lex order:                                            OK
+      Show polynomial with Revlex order:                                         OK
+      Sum and product of polynomials:                                            OK
+      Tests for polytopes of polynomials:                                        OK
+    Test for convex hull in 2D
+      Compute convex hull 2D:                                                    OK
+      2D hull excludes collinear boundary points:                                OK
+      2D hull excludes interior and boundary points:                             OK
+      2D hull of irregular point set:                                            OK
+    Test for convex hull in 3D
+      Compute segments:                                                          OK
+      Compute triangles:                                                         OK
+      Compute tetrahedrons:                                                      OK
+      IsBetween3D:                                                               OK
+      Merging points:                                                            OK
+      Compute convex hull 3D:                                                    OK (0.01s)
+      3D hull of tetrahedron:                                                    OK
+      3D cube hull excludes interior point:                                      OK
+      3D hull of list1 preserves full extreme set:                               OK (0.02s)
+      3D tetrahedron hull excludes fifth interior point:                         OK
+      Coplanar hull preserves coordinates
+        historical z=0 lattice:                                                  OK
+        historical tilted triangle:                                              OK
+        historical three-point plane:                                            OK
+        historical triangle with edge midpoint:                                  OK
+        vertical x-constant square:                                              OK
+        vertical y-constant square:                                              OK
+        tilted square with interior and edge points:                             OK
+        vertical collinear endpoints:                                            OK
+        tilted collinear endpoints:                                              OK
+        single point:                                                            OK
+        repeated single point:                                                   OK
+        empty input has no hull:                                                 OK
+    Test for computing polyhedral algorithms
+      Tests for normal vector:                                                   OK
+      Tests for normal cone:                                                     OK
+      Cube vertex belongs to exactly three facets:                               OK
+    Test for polytopes
+      Project 2D ConvexHull to produce 2D subdivision:                           OK
+      Subdivision of coplanar lifted triangle:                                   OK
+      Subdivision of three lifted points:                                        OK
+      Square lower facet is preserved as one polygon:                            FAIL
+        test-suite/TGeometry/TPolytope.hs:59:
+        expected: [[(0,0),(0,2),(2,0),(2,2)]]
+         but got: []
+        Use -p '/Square lower facet is preserved as one polygon/' to rerun this test only.
+      Prism projection excludes upper and vertical faces:                        FAIL
+        test-suite/TGeometry/TPolytope.hs:67:
+        expected: [[(0,0),(0,2),(2,0),(2,2)]]
+         but got: []
+        Use -p '/Prism projection excludes upper and vertical faces/' to rerun this test only.
+    Tests for LRS vertex enumeration
+      lrs on R^3 cone enumerates extreme rays:                                   OK
+      lrs on R^2 unit square enumerates 4 vertices:                              OK
+      lrs on R^3 unit cube enumerates 8 vertices:                                OK
+      lrs on R^4 unit tesseract enumerates 16 vertices:                          OK
+      lrs on R^3 standard simplex enumerates 4 vertices:                         OK
+      lrs on R^2 permutohedron P_3 enumerates 6 vertices:                        OK
+      lrs on R^3 permutohedron P_4 enumerates 24 vertices:                       OK (0.01s)
+      lrs on Newton polytope of f1:                                              OK
+      lrs on Newton polytope of f2:                                              OK
+      lrs on Newton polytope of f3:                                              OK (0.02s)
+      lrs on Newton polytope of f4:                                              OK
+      lrs on Newton polytope of f5:                                              OK
+      lrs on Newton polytope of f9:                                              OK
+      lrs on Newton polytope of f6:                                              OK (0.03s)
+      lrs on Newton polytope of f7:                                              OK (0.04s)
+      lrs on Newton polytope of f8:                                              OK (0.08s)
+    LRS exact bounded-polytope regressions
+      P3
+        all starting vertices:                                                   OK
+        reversed rows:                                                           OK
+        rotated rows:                                                            OK
+        odd rows before even rows:                                               OK
+        positive rational row rescaling:                                         OK
+      P4
+        all starting vertices:                                                   OK (0.21s)
+        reversed rows:                                                           OK (0.03s)
+        rotated rows:                                                            OK (0.03s)
+        odd rows before even rows:                                               OK (0.03s)
+        positive rational row rescaling:                                         OK (0.03s)
+      translated sheared square
+        all starting corners:                                                    OK
+        reversed and rescaled rows:                                              OK
+      translated sheared cube
+        all starting corners:                                                    OK
+        reversed and rescaled rows:                                              OK
+      translated simplex in dimension 2:                                         OK
+      translated simplex in dimension 3:                                         OK
+      translated simplex in dimension 5:                                         OK
+      simplex product Delta2 x Delta2
+        all starting vertices:                                                   OK
+        reversed and rescaled rows:                                              OK
+      simplex product Delta2 x Delta3
+        all starting vertices:                                                   OK (0.02s)
+        reversed and rescaled rows:                                              OK (0.02s)
+    LRS cyclic polytopes
+      cyclic C(6,3)
+        all starting vertices:                                                   OK (0.01s)
+        reversed rows from first, middle and last vertices:                      OK
+      cyclic C(8,4)
+        all starting vertices:                                                   OK (0.67s)
+        reversed rows from first, middle and last vertices:                      OK (0.24s)
+    LRS cone direction invariance
+      Original cone:                                                             OK
+      Reversed constraint order:                                                 OK
+      Positive rational row scaling:                                             OK
+    LRS degenerate bounded-polytope regressions
+      cross-polytope dimension 4
+        all starting vertices:                                                   OK (0.24s)
+        reversed rows at representative starts:                                  OK (0.09s)
+      cross-polytope dimension 5
+        all starting vertices:                                                   OK (8.44s)
+        reversed rows at representative starts:                                  OK (2.58s)
+      hypersimplex Delta(2,4)
+        all starting vertices:                                                   OK
+        reversed rows at representative starts:                                  OK
+      Birkhoff B3
+        all starting vertices:                                                   OK (0.02s)
+        reversed rows at representative starts:                                  OK (0.01s)
+    LRS input validation
+      RHS row count must match the constraint matrix:                            OK
+      RHS must contain exactly one column:                                       OK
+      Starting vertex must have the ambient dimension:                           OK
+      A square written with the opposite inequality convention is rejected:      OK
+      A feasible interior point is not a starting vertex:                        OK
+      An unbounded strip needs separate vertex and ray output:                   OK
+      A shifted quadrant needs separate vertex and ray output:                   OK
+      facetEnumeration enumerates the planar support of f4:                      OK
+      facetEnumeration enumerates the planar support of f9:                      OK
+      facetEnumeration' preserves ambient facet vertices for f4:                 OK
+      facetEnumeration' preserves ambient facet vertices for f9:                 OK
+      Historical f5 lifted triangle with negative coordinates:                   OK
+      Tilted translated plane with rational affine coefficients and edge points: OK
+      Plane whose first coordinate is constant:                                  OK
+      Translated segment discards interior and duplicate points:                 OK
+      Planar reordered support with duplicate corners and interior point first:  OK
+      Ambient one-dimensional segment:                                           OK
+      Origin singleton has no nonzero ray directions:                            OK
+      Full-dimensional translated tetrahedron preserves facet incidence:         OK
+      Flat square enumerates from every corner with reversed constraints:        OK
+      Singleton is represented by affine equalities:                             OK
+    Test for Computing Hypersurfaces
+      Get the key-value pair with the terms and its corresponding points:        OK
+      Computing fan vertices:                                                    OK
+      Compute inner normals of triangles:                                        OK
+      Test for vertices and their normals:                                       OK
+      Zero-coefficient cubic has three tropical rays:                            OK
+      Laurent triangle has three translated tropical rays:                       OK
+      Polygonal subdivisions
+        Coplanar square gives four rays and no diagonal:                         FAIL
+          test-suite/TPolynomial/THypersurface.hs:106:
+          expected: [[(0,0),(0,1),(1,0),(1,1)]]
+           but got: []
+          Use -p '/Coplanar square gives four rays and no diagonal/' to rerun this test only.
+        Hexagonal cell has six rays and no diagonal:                             FAIL
+          test-suite/TPolynomial/THypersurface.hs:111:
+          expected: [[(0,1),(1,0),(1,2),(2,0),(2,2),(3,1)]]
+           but got: []
+          Use -p '/Hexagonal cell has six rays and no diagonal/' to rerun this test only.
+        Inner normals do not overflow their orientation product:                 FAIL
+          test-suite/TPolynomial/THypersurface.hs:117:
+          expected: (0,1)
+           but got: (0,-1)
+          Use -p '/Inner normals do not overflow their orientation product/' to rerun this test only.
+        Collinear normals fail with an explicit diagnostic:                      FAIL
+          Exception: library/Polynomial/Hypersurface.hs:(71,1)-(81,63): Non-exhaustive patterns in function innerNormal
+          
+          Use -p '/Collinear normals fail with an explicit diagnostic/' to rerun this test only.
+        Affine square heights translate its fan:                                 FAIL
+          test-suite/TPolynomial/THypersurface.hs:125:
+          expected: [((-2,-3),(-1,0)),((-2,-3),(0,-1)),((-2,-3),(0,1)),((-2,-3),(1,0))]
+           but got: []
+          Use -p '/Affine square heights translate its fan/' to rerun this test only.
+        Adjacent square and triangle have one actual bounded edge:               FAIL
+          test-suite/TPolynomial/THypersurface.hs:129:
+          expected: [[(0,0),(0,1),(1,0),(1,1)],[(1,0),(1,1),(2,0)]]
+           but got: [[(1,0),(1,1),(2,0)]]
+          Use -p '/Adjacent square and triangle have one actual bounded edge/' to rerun this test only.
+        Nonintegral fan vertex is rejected instead of truncated:                 FAIL
+          test-suite/TPolynomial/THypersurface.hs:139:
+          Expected explicit rejection of vertex (-1/2,0)
+          Use -p '/Nonintegral fan vertex is rejected instead of truncated/' to rerun this test only.
+        Normal matching uses exact direction and orientation:                    FAIL
+          test-suite/TPolynomial/THypersurface.hs:141:
+          expected: False
+           but got: True
+          Use -p '/Normal matching uses exact direction and orientation/' to rerun this test only.
+        Shared diagonal vertices do not imply cell adjacency:                    FAIL
+          test-suite/TPolynomial/THypersurface.hs:148:
+          expected: fromList [([(0,0),(0,2),(2,0),(2,2)],[]),([(0,0),(1,3),(2,2)],[])]
+           but got: fromList [([(0,0),(0,2),(2,0),(2,2)],[[(0,0),(1,3),(2,2)]]),([(0,0),(1,3),(2,2)],[[(0,0),(0,2),(2,0),(2,2)]])]
+          Use -p '/Shared diagonal vertices do not imply cell adjacency/' to rerun this test only.
+
+11 out of 133 tests failed (9.35s)
+
+
+
+tropical-geometry> Test suite tropical-geometry-test-suite failed
+Completed 2 action(s).
+
+Error: [S-7282]
+       Stack failed to execute the build plan.
+       
+       While executing the build plan, Stack encountered the error:
+       
+       Error: [S-1995]
+       Test suite failure for package tropical-geometry-0.0.0.1
+           tropical-geometry-test-suite:  exited with: ExitFailure 1
+       Logs printed to console
+       

@@ -22,7 +22,7 @@ subdivisionF4 = [[(3,0), (0,0), (0,3)]]
 subdivisionF5 = [[(1,-1), (0,-1), (0,0)]]
 
 -- A subdivision is a set of polygon cells, each cell a set of
--- vertices: vertex order within a triangle and triangle order in the list
+-- vertices: vertex order within a cell and cell order in the list
 -- are not semantically meaningful. Normalize both before comparing.
 normalizeSubdivision :: Ord a => [[a]] -> [[a]]
 normalizeSubdivision = sort . map sort
@@ -47,7 +47,7 @@ testThreePointSubdivision = HU.testCase "Subdivision of three lifted points" $
 
 
 testsPolytope :: TestTree
-testsPolytope = testGroup "Test for polytopes" [testProjectionToR2, testCoplanarSubdivision, testThreePointSubdivision, testSquareLowerFace]
+testsPolytope = testGroup "Test for polytopes" [testProjectionToR2, testCoplanarSubdivision, testThreePointSubdivision, testSquareLowerFace, testPrismLowerFace]
 
 
 -- A square lower face of a genuinely three-dimensional lifted hull must
@@ -56,4 +56,12 @@ testSquareLowerFace :: TestTree
 testSquareLowerFace = HU.testCase "Square lower facet is preserved as one polygon" $
     normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3
         [(0,0,0),(2,0,0),(2,2,0),(0,2,0),(1,1,2)])
+        @?= [[(0,0),(0,2),(2,0),(2,2)]]
+
+-- Vertical side facets project to segments and the upper square is not a
+-- lower face. Exactly the bottom square should survive projection.
+testPrismLowerFace :: TestTree
+testPrismLowerFace = HU.testCase "Prism projection excludes upper and vertical faces" $
+    normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3
+        [(x,y,z) | x <- [0,2], y <- [0,2], z <- [0,3]])
         @?= [[(0,0),(0,2),(2,0),(2,2)]]
