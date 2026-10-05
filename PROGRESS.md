@@ -2,6 +2,12 @@
 
 ## Current status
 
+Cyclic-polytope and ray-invariance coverage: **all 95 enabled tests pass**.
+C(6,3) and C(8,4) use independently generated exact facet fixtures, while
+cone checks compare oriented directions under row reversal and scaling.
+Evidence: [95-case log](validation/final-coverage/stack-test.log).
+
+
 Coplanar facet merging: **all 88 enabled tests pass**. Entire same-plane facet
 groups are merged into a correctly oriented planar convex boundary, eliminating
 overlapping polygons and interior points. The independent list1 oracle and
