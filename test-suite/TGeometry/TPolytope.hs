@@ -21,17 +21,47 @@ subdivisionF2 = [[(3,0),(2,0),(2,1)],[(2,1),(2,0),(1,1)],[(1,2),(2,1),(1,1)],[(0
 subdivisionF4 = [[(3,0), (0,0), (0,3)]]
 subdivisionF5 = [[(1,-1), (0,-1), (0,0)]]
 
+-- A subdivision is a set of polygon cells, each cell a set of
+-- vertices: vertex order within a cell and cell order in the list
+-- are not semantically meaningful. Normalize both before comparing.
+normalizeSubdivision :: Ord a => [[a]] -> [[a]]
+normalizeSubdivision = sort . map sort
+
 testProjectionToR2 :: TestTree
 testProjectionToR2 =   HU.testCase "Project 2D ConvexHull to produce 2D subdivision" $ do
-        sort (projectionToR2 $ fromJust $ convexHull3 newF1) @?= sort subdivisionF1
-        sort (projectionToR2 $ fromJust $ convexHull3 newF2) @?= sort subdivisionF2
-        --sort (projectionToR2 $ fromJust $ convexHull3 newF4) @?= sort subdivisionF4
-        --sort (projectionToR2 $ fromJust $ convexHull3 newF5) @?= sort subdivisionF5
+        normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF1) @?= normalizeSubdivision subdivisionF1
+        normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF2) @?= normalizeSubdivision subdivisionF2
+
+-- All lifted f4 points are coplanar; their projected extreme triangle is
+-- (0,0),(3,0),(0,3). f5 consists of exactly three noncollinear lifted points.
+testCoplanarSubdivision :: TestTree
+testCoplanarSubdivision = HU.testCase "Subdivision of coplanar lifted triangle" $
+    normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF4)
+        @?= normalizeSubdivision subdivisionF4
+
+testThreePointSubdivision :: TestTree
+testThreePointSubdivision = HU.testCase "Subdivision of three lifted points" $
+    normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF5)
+        @?= normalizeSubdivision subdivisionF5
 
 
 
 testsPolytope :: TestTree
-testsPolytope = testGroup "Test for polytopes" [testProjectionToR2]
+testsPolytope = testGroup "Test for polytopes" [testProjectionToR2, testCoplanarSubdivision, testThreePointSubdivision, testSquareLowerFace, testPrismLowerFace]
 
 
+-- A square lower face of a genuinely three-dimensional lifted hull must
+-- remain one cell, with no artificial diagonal.
+testSquareLowerFace :: TestTree
+testSquareLowerFace = HU.testCase "Square lower facet is preserved as one polygon" $
+    normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3
+        [(0,0,0),(2,0,0),(2,2,0),(0,2,0),(1,1,2)])
+        @?= [[(0,0),(0,2),(2,0),(2,2)]]
 
+-- Vertical side facets project to segments and the upper square is not a
+-- lower face. Exactly the bottom square should survive projection.
+testPrismLowerFace :: TestTree
+testPrismLowerFace = HU.testCase "Prism projection excludes upper and vertical faces" $
+    normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3
+        [(x,y,z) | x <- [0,2], y <- [0,2], z <- [0,3]])
+        @?= [[(0,0),(0,2),(2,0),(2,2)]]

@@ -1,34 +1,27 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 53dd4a7acd8ade173a39eac25004715c97d5308eda32dd85c431115e6b383c27
 
 name:           tropical-geometry
 version:        0.0.0.1
-synopsis:	      A Tropical Geometry package for Haskell
-homepage:       https://github.com/ferynando7/tropical-geometry#readme
-bug-reports:    https://github.com/ferynando7/tropical-geometry/issues
-category:     	Algebra, Geometry, Tropical Geometry 
+homepage:       https://github.com/ferzcam/tropical-geometry#readme
+bug-reports:    https://github.com/ferzcam/tropical-geometry/issues
 author:         Fernando Zhapa
 maintainer:     Fernando Zhapa
 license:        GPL-3
-license-file:	  LICENSE
-description:    This package includes Tropical algebra and geometry stuff such as tropical numbers, tropical matrices, and tropical polynomials. Also you can find here an algorithm to compute tropical hypersurfaces for polynomials in two variables.
+license-file:   LICENSE
 build-type:     Simple
-cabal-version:  >= 1.10
 extra-source-files:
     CHANGELOG.md
---    LICENSE.md
     package.yaml
     README.md
     stack.yaml
 
 source-repository head
   type: git
-  location: https://github.com/ferynando7/tropical-geometry
-
-
+  location: https://github.com/ferzcam/tropical-geometry
 
 library
   exposed-modules:
@@ -41,72 +34,77 @@ library
       Geometry.ConvexHull3
       Geometry.Polytope
       Geometry.Polyhedral
+      Geometry.Vertex
+      Geometry.Facet
+      Geometry.LRS
       Graphics.Drawings
+      Util
       Core
   other-modules:
       Paths_tropical_geometry
   hs-source-dirs:
       library
-  ghc-options:  -Wall
-                -freverse-errors
-                -ferror-spans
+  ghc-options: -Wall
   build-depends:
-    algebra >=4.3.1 && <4.4,
-    base >=4.11.1.0 && <4.12,
-    criterion,
-    containers >=0.5.11.0 && <0.6,
-    gloss >=1.12.0.0 && <1.13,
-    lens >=4.16.1 && <4.17,
-    matrix >=0.3.6.1 && <0.4,
-    numeric-prelude >=0.4.3.1 && <0.5,
-    semiring-simple >=1.0.0.1 && <1.1,
-    singletons >=2.4.1 && <2.5,
-    sized >=0.3.0.0 && <0.4,
-    type-natural >=0.8.2.0 && <0.9
+      algebra
+    , base
+    , containers
+    , gloss
+    , hmatrix-glpk
+    , lens
+    , linear
+    , matrix
+    , numeric-prelude
+    , semiring-simple
+    , singletons-base
+    , sized
+    , type-natural
+    , vector
   default-language: Haskell2010
 
-
-
--- -threaded -with-rtsopts=-N
 executable tropical-geometry
   main-is: Main.hs
   other-modules:
       Paths_tropical_geometry
   hs-source-dirs:
       executable
-  ghc-options: -Wall -rtsopts  -freverse-errors
+  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
   build-depends:
-    tropical-geometry,
-    base,
-    criterion
+      base
+    , tropical-geometry
   default-language: Haskell2010
 
 test-suite tropical-geometry-test-suite
   type: exitcode-stdio-1.0
   main-is: Main.hs
   other-modules:
-      Paths_tropical_geometry
-      TPolynomial.TMonomial
-      TPolynomial.TPrelude
       TArithmetic.TMatrix
       TArithmetic.TNumbers
       TGeometry.TConvexHull2
       TGeometry.TConvexHull3
-      TGeometry.TPolytope
+      TGeometry.TLRSCone
+      TGeometry.TLRSCyclic
+      TGeometry.TLRSDegenerate
+      TGeometry.TLRSInputValidation
+      TGeometry.TLRSPol2
+      TGeometry.TLRSRegression
       TGeometry.TPolyhedral
+      TGeometry.TPolytope
       TPolynomial.THypersurface
-
+      TPolynomial.TMonomial
+      TPolynomial.TPrelude
+      Paths_tropical_geometry
   hs-source-dirs:
       test-suite
   ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
   build-depends:
-      tropical-geometry
-    , base
+      base
+    , containers
+    , matrix
     , tasty
     , tasty-hspec
     , tasty-hunit
-    , containers
-    , hlint-test
+    , tropical-geometry
   default-language: Haskell2010
 
 benchmark tropical-geometry-benchmarks
@@ -118,7 +116,7 @@ benchmark tropical-geometry-benchmarks
       benchmark
   ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
   build-depends:
-      tropical-geometry
-    , base
-    , criterion -any
+      base
+    , criterion
+    , tropical-geometry
   default-language: Haskell2010

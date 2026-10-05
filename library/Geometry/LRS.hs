@@ -1,0 +1,370 @@
+{-# LANGUAGE TemplateHaskell, RankNTypes #-}
+
+module Geometry.LRS where
+
+import Geometry.Vertex
+
+import Data.Matrix
+import qualified Data.Vector as V
+import Data.Maybe
+import Data.List
+import Util
+import Control.Lens
+
+type Row = Matrix Rational
+type Col = Matrix Rational
+
+data Dictionary = Dict {
+                            __B :: [Int], 
+                            __N :: [Int], 
+                            _dict :: Matrix Rational
+                        } 
+    deriving (Show, Eq)
+
+
+makeLenses ''Dictionary
+
+numRows :: Dictionary -> Int
+numRows dictionary = nrows $ dictionary^.dict
+
+numCols :: Dictionary -> Int
+numCols dictionary = ncols $ dictionary^.dict
+
+(|*|) :: Num a => Matrix a -> Matrix a -> Matrix a
+(|*|) = multStd
+
+
+colFromList :: [a] -> Matrix a
+colFromList = colVector . V.fromList
+
+rowFromList :: [a] -> Matrix a
+rowFromList = rowVector . V.fromList
+
+-- | Wrapper of submatrix function. This function works for indices starting from 0 rather than 1 in the submatrix function
+submatrix' :: 
+    (Int, Int) ->   -- ^ Rows indices
+    (Int, Int) ->   -- ^ Cols indices
+    Matrix a ->
+    Matrix a
+submatrix' (ro,rk) (co,ck) m = submatrix (ro+1) (rk+1) (co+1) (ck+1) m
+
+
+
+-- | Lens for columns
+colAt :: Int -> Lens' (Matrix Rational) Col
+colAt j = lens (getCol' j) (\m c -> setCol' j c m)
+
+getCol' :: Int -> Matrix a -> Matrix a
+getCol' idx = colVector . (getCol (idx+1))
+
+setCol' :: Int -> Col -> Matrix Rational -> Matrix Rational
+setCol' idx col mat 
+    | idx == 0 = col <|> right
+    | idx == (ncols mat) - 1 = left <|> col
+    | otherwise = left <|> col <|> right
+    where
+        left = submatrix' (0,(nrows mat)-1) (0,idx-1) mat
+        right = submatrix' (0,(nrows mat)-1) (idx+1, (ncols mat)-1) mat
+
+-- | Lens for rows
+rowAt :: Int -> Lens' (Matrix Rational) Row
+rowAt i = lens (getRow' i) (\m r -> setRow' i r m)
+
+getRow' :: Int -> Matrix a -> Matrix a
+getRow' idx = rowVector . (getRow (idx+1))
+
+setRow' :: Int -> Col -> Matrix Rational -> Matrix Rational
+setRow' idx row mat
+    | idx == 0 = row <-> down
+    | idx == (nrows mat) - 1 = up <-> row
+    | otherwise = up <-> row <-> down
+   
+    where
+        up = submatrix' (0,idx-1) (0,(ncols mat)-1)  mat
+        down = submatrix' (idx+1, (nrows mat)-1) (0,(ncols mat)-1) mat
+
+-- | Lens for accessing elements
+
+elemAt :: (Int, Int) -> Lens' (Matrix a) a
+elemAt (i, j) = lens (getElem' (i,j)) (\m x -> setElem' x (i,j) m) 
+
+getElem' :: (Int, Int) -> Matrix a -> a
+getElem' (row, col) = getElem (row+1) (col+1)
+
+setElem' :: a -> (Int, Int) -> Matrix a -> Matrix a
+setElem' elem (row, col) mat
+    | row < 0 || col < 0 || row >= nrows mat || col >= ncols mat = error ("setElem': Trying to set at (" ++ show row ++ "," ++ show col ++ ") in a " ++ show (nrows mat) ++ "x" ++ show (ncols mat) ++ " matrix.")
+    | otherwise = setElem elem (row+1, col+1) mat
+
+mapCol' :: (Int -> a -> a) -> Int -> Matrix a -> Matrix a
+mapCol' f col m
+    | col < 0 || col > (ncols m)-1 = error "mapCol': index out of bounds" 
+    | otherwise = mapCol f (col+1) m
+
+mapRow' :: (Int -> a -> a) -> Int -> Matrix a -> Matrix a
+mapRow' f row m
+    | row < 0 || row > (nrows m)-1 = error "mapCol': index out of bounds" 
+    | otherwise = mapRow f (row+1) m
+
+
+
+
+{-
+    Dictionary form
+
+                p21     p31
+    invA_b
+                p22     p32
+
+ -}
+
+
+sortSystem :: Matrix Rational -> Col -> Vertex -> (Matrix Rational, Col)
+
+-- Avis 1999, Section 3: the final d constraints must be independent
+-- tight rows. At a degenerate vertex there can be more than d tight rows;
+-- moving all of them to the end can leave a singular initial basis.
+sortSystem mat col vertex
+    | length basisIndices < dimension =
+        error "sortSystem: starting vertex has fewer than d independent tight constraints"
+    | otherwise = (newMat, newCol)
+    where
+        dimension = ncols mat
+        pairs = safeZipWith (,) (toLists mat) (concat $ toLists col)
+        indexedPairs = zip [0..] pairs
+        tightRows = [(i, row) | (i, (row, bound)) <- indexedPairs,
+                               dot row vertex == bound]
+        basisIndices = reverse $ chooseBasis [] (reverse tightRows)
+        -- Identify rows by position, not value: redundant and duplicate
+        -- constraints must retain their multiplicity and relative order.
+        ordered = [pair | (i, pair) <- indexedPairs, i `notElem` basisIndices]
+               ++ [pairs !! i | i <- basisIndices]
+        newMat = fromLists $ map fst ordered
+        newCol = colFromList $ map snd ordered
+
+        -- Exact Gaussian elimination, preferring the last independent tight
+        -- rows to preserve an already valid final-d-row basis. Restore their
+        -- input order before appending them. Each normalized row is zero at every earlier
+        -- pivot, so eliminating later pivots cannot reintroduce earlier ones.
+        chooseBasis :: [(Int, [Rational])] -> [(Int, [Rational])] -> [Int]
+        chooseBasis basis _ | length basis == dimension = []
+        chooseBasis _ [] = []
+        chooseBasis basis ((i, row):rest) =
+            case findIndex (/= 0) reduced of
+                Nothing -> chooseBasis basis rest
+                Just p -> i : chooseBasis (basis ++ [(p, normalized p)]) rest
+            where
+                reduced = foldl' eliminate row basis
+                eliminate values (p, pivotRow) =
+                    zipWith (\x y -> x - (values !! p) * y) values pivotRow
+                normalized p = map (/ (reduced !! p)) reduced
+
+
+
+getDictionary :: Matrix Rational -> Col -> Vertex -> Dictionary
+-- | Build a dictionary for A*x <= b at a supplied feasible vertex.
+-- Slack variables satisfy A*x + slack = b and must remain nonnegative.
+-- The first d basic rows are unrestricted decision variables; only the
+-- remaining basic slack rows constrain the ratio test.
+getDictionary _A b vertex
+    | nrows b /= nrows _A || ncols b /= 1 =
+        error "getDictionary: right-hand side must be an m-by-1 column matching the constraint rows"
+    | length vertex /= ncols _A =
+        error "getDictionary: starting vertex dimension does not match the constraint matrix"
+    | any (\(row, bound) -> dot row vertex > bound)
+          (zip (toLists _A) (concat $ toLists b)) =
+        error "getDictionary: starting vertex is infeasible for A*x <= b"
+    | otherwise = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+1)) <|> (p21 <-> p22) <|> (p31 <-> p32))
+    where
+        (newA, newb) = sortSystem _A b vertex
+        rows = nrows newA
+        cols = ncols newA
+        slack = identity rows
+        dictionary = newA <|> slack
+        -- LRS objective (Avis 1999, eq 3.6): coefficient 1 on each cobasic
+        -- slack variable, 0 on the initial basics. Layout is
+        --   [obj | basic_cols (rows of them) | cobasic_cols (cols of them)].
+        topRow = rowFromList $ 1 : replicate rows 0 ++ replicate cols 1
+        c_B = submatrix' (0,0) (1,rows) topRow
+        c_N = submatrix' (0,0) (rows+1, rows+cols) topRow
+        _A_B = submatrix' (0,rows-1) (0,rows-1) dictionary
+        _A_N = submatrix' (0,rows-1) (rows, rows+cols-1) dictionary
+        invA_B = either (\e -> error ("getDictionary: A_B is not invertible: " ++ e)) id (inverse _A_B)
+        p21 = (c_N - c_B |*| invA_B |*| _A_N)
+        p22 = invA_B |*| _A_N
+        p31 = -c_B |*| invA_B |*| newb
+        p32 = invA_B |*| newb
+
+
+
+
+enteringVariable :: Dictionary -> Maybe Int
+enteringVariable dictionary
+    | null negs = Nothing
+    | otherwise = Just $ (fst.head.sort) negs
+    where
+        cobasic_0 = zip (dictionary^._N) (map (\j -> dictionary^.dict.elemAt (0,j)) (dictionary^._N))
+        negs = filter (\(_,value) -> value < 0) cobasic_0
+
+lexMinRatio :: Dictionary -> Int -> Int
+lexMinRatio dictionary s
+    | dim+1 == rows = 0
+    | null indexed_s = 0
+    | otherwise = (dictionary ^. _B) !! (fst $ indexed_s !! (fromJust $ elemIndex (minimum ratios) ratios))
+    where
+        rows = numRows dictionary
+        cols = numCols dictionary
+        dim = cols - rows - 1
+        dictMatrix = dictionary^.dict
+        col_s = dictMatrix ^. colAt s
+        _D = (dictMatrix ^. colAt (cols-1)) <|> submatrix' (0,rows-1) (0, rows-1) dictMatrix
+        slice_s = (concat.toLists) $ submatrix' (dim+1, rows-1) (0,0) col_s
+        indexed_s = filter (snd.(fmap (>0))) $ safeZipWith (,) [dim+1..rows-1] slice_s 
+        sub_D = map (head . toLists . (\i -> _D ^. rowAt i) . fst) indexed_s
+        ratios = safeZipWith (map $) (map ((flip (/)) . snd) indexed_s) sub_D
+
+
+
+selectPivot :: Dictionary -> Maybe (Int, Int)
+selectPivot dictionary
+    | s == Nothing = Nothing
+    | otherwise = Just (r, fromJust s)
+    where 
+        s = enteringVariable dictionary
+        r = lexMinRatio dictionary (fromJust s)
+
+pivot :: Int ->Int -> Dictionary -> Dictionary
+pivot r s dictionary = Dict new_B new_N (_E |*| dictMatrix)
+    where
+        dictMatrix = dictionary ^. dict
+        col_s = dictMatrix ^. colAt (s)
+        t = fromJust $ elemIndex r (dictionary ^. _B) -- idxR
+        idxS = fromJust $ elemIndex s (dictionary ^. _N)
+        a_t = col_s ^. elemAt (t,0)
+        eta = (mapCol' (\_ x -> -x/a_t) 0 col_s) & elemAt (t,0) .~ (1/a_t)
+        _E = (identity (nrows dictMatrix)) & colAt t .~ eta
+        new_B = dictionary^._B & element t .~ s
+        new_N = dictionary^._N & element idxS .~ r
+
+
+simplex :: Dictionary -> Dictionary
+simplex dictionary
+    | idxsToPivot == Nothing = dictionary
+    | otherwise = simplex $ uncurry pivot (fromJust idxsToPivot) dictionary
+    where
+        idxsToPivot = selectPivot dictionary
+
+
+
+-- | Is the LRS pivot (u = lexMinRatio v, v) at `dictionary` a tree edge
+-- to a child in the reverse-search tree? Per Avis 1999 (Prop 5.6): take
+-- the pivot, then verify the LRS rule applied to the child selects
+-- exactly the reverse pivot — leaving = v, entering = u. If so, return
+-- Just u (the leaving variable that defines the edge).
+reverseRS ::
+    Dictionary ->
+    Int ->          -- element in N
+    Maybe Int
+reverseRS dictionary v
+    | u == 0 = Nothing
+    | otherwise = case selectPivot child of
+        Nothing -> Nothing
+        Just (leaving, entering)
+            | leaving == v && entering == u -> Just u
+            | otherwise -> Nothing
+    where
+        u = lexMinRatio dictionary v
+        child = pivot u v dictionary
+
+
+
+getVertex :: Dictionary -> Vertex
+getVertex dictionary = concat $ toLists $ submatrix' (1,dim) (cols-1, cols-1) (dictionary^.dict)
+    where
+        rows = numRows dictionary
+        cols = numCols dictionary
+        dim = cols-rows-1
+
+-- | Low-level traversal retaining the legacy mixed output convention.
+-- Use lrs for checked bounded-polytope or homogeneous-cone enumeration.
+revSearch :: Dictionary -> [Vertex]
+revSearch = revSearchWith True
+
+revSearchWith :: Bool -> Dictionary -> [Vertex]
+revSearchWith allowRays dictionary@(Dict _B _N dictMatrix)
+    | not (null possibleRay) && not allowRays =
+        error "lrs: unbounded non-homogeneous input requires separate vertex and ray output"
+    | not (null possibleRay) = possibleRay ++ descendants
+    | otherwise = getVertex dictionary : descendants
+    where
+        rows = numRows dictionary
+        cols = numCols dictionary
+        valid_N = [i | i <- _N, (reverseRS dictionary i) /= Nothing]
+        valid_B = map (lexMinRatio dictionary) valid_N
+        pivoted = map (\(r, s) ->  pivot r s dictionary) $ zip valid_B valid_N
+        descendants = concatMap (revSearchWith allowRays) pivoted
+        possibleRay = hasRay dictionary
+
+
+-- lexMin :: Dictionary -> Maybe Extremal
+-- lexMin dictionary
+
+
+hasRay :: Dictionary -> [Vertex]
+hasRay dictionary = rays
+    -- | idxsPivot == Nothing = Nothing
+    -- | r == 0 = Just ray
+    -- | otherwise = Nothing
+    where
+        dictMatrix = dictionary ^. dict
+        rows = numRows dictionary
+        dim = cols - rows -1
+        cols = numCols dictionary
+        nonPositive column = all (<=0) ((concat.toLists) column)
+        -- Columns retain variable IDs after pivots, so inspect the current
+        -- cobasis rather than the original contiguous cobasic columns.
+        colsWithRays = if dim+1 == rows then
+                            [dictMatrix^.colAt j | j <- dictionary^._N]
+                        else [dictMatrix^.colAt j | j <- dictionary^._N, nonPositive (submatrix' (dim+1,rows-1) (j,j) dictMatrix )]
+        -- x_B = rhs - D_N*x_N: increasing a cobasic slack follows the
+        -- negative decision entries (Avis 1999, Proposition 3.2).
+        rays = map (map negate . concat . toLists . (submatrix' (1,dim) (0,0))) colsWithRays
+
+
+
+-- | Enumerate vertices of a bounded polytope, or ray
+-- directions of a full-dimensional pointed cone represented by A*x <= 0.
+-- Input uses A*x <= b and a feasible starting vertex. Decision variables
+-- are unrestricted; the start must have d independent tight constraints.
+-- Unbounded inputs with nonzero b are rejected because this result type
+-- cannot distinguish vertices from rays. The cone exception requires every
+-- bound to be zero, including any redundant constraints.
+lrs :: Matrix Rational -> Col -> Vertex-> [Vertex]
+lrs matrix b vertex = (sort.nub) $ revSearchWith (all (== 0) (concat $ toLists b)) lexOptimum
+    where
+        -- Avis 1999: reverse search must start at the unique lex-optimum
+        -- dictionary B*. `getDictionary` builds the dictionary at the
+        -- user-supplied vertex; `simplex` walks it to B* along the
+        -- Bland/lex-min-ratio path.
+        dictionary = getDictionary matrix b vertex
+        lexOptimum = simplex dictionary
+
+
+
+-- sortDictionary :: Dictionary -> Dictionary
+-- sortDictionary (Dict _B _N dictMatrix) = Dict [0..rows-1] [rows..rows+dim-1] ((identity (nrows dictMatrix)) <|> matN )
+    
+--     where
+--         dim = cols - rows - 1
+--         rows = nrows dictMatrix
+--         cols = ncols dictMatrix
+--         aux = dictMatrix
+--         idxs = _B ++ _N
+--         sortCols currMatrix i auxMatrix = case elemIndex i idxs of
+--                                     Just idx -> sortCols currMatrix (i+1) (auxMatrix & colAt i .~ (currMatrix ^. colAt idx))
+--                                     Nothing -> auxMatrix
+--         sortRows currMatrix i auxMatrix = case (if i < nrows currMatrix then elemIndex (_B !! i) (sort _B) else Nothing)  of
+--                                     Just idx -> sortRows currMatrix (i+1) (auxMatrix & rowAt idx .~ (currMatrix ^. rowAt i))
+--                                     Nothing -> auxMatrix
+--         sortedDict = (sortRows (sortCols dictMatrix 0 aux) 0 aux )
+--         matN = submatrix' (0, (nrows dictMatrix)-1) (nrows dictMatrix, (ncols dictMatrix)-1) $ sortedDict

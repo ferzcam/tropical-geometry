@@ -1,0 +1,56 @@
+tropical-geometry> test (suite: tropical-geometry-test-suite, args: +RTS -N2 -RTS)
+
+Tasty tests
+  List of tests:
+    Test for tropical numbers
+      Sum tropical numbers:                                               OK
+      Multiply tropical numbers:                                          OK
+    Test for tropical matrices
+      Sum of matrices:                                                    OK
+      Product of matrices:                                                OK
+    Test for monomials
+      ShowingMonomials:                                                   OK
+      Compare Lex and Revlex Monomials :                                  OK
+    Test for Prelude of Polynomials
+      Creation of variables:                                              OK
+      Show polynomial with Lex order:                                     OK
+      Show polynomial with Revlex order:                                  OK
+      Sum and product of polynomials:                                     OK
+      Tests for polytopes of polynomials:                                 OK
+    Test for convex hull in 2D
+      Compute convex hull 2D:                                             OK
+    Test for convex hull in 3D
+      Compute segments:                                                   OK
+      Compute triangles:                                                  OK
+      Compute tetrahedrons:                                               OK
+      IsBetween3D:                                                        OK
+      Merging points:                                                     OK
+      Compute convex hull 3D:                                             OK (0.01s)
+    Test for computing polyhedral algorithms
+      Tests for normal vector:                                            OK
+      Tests for normal cone:                                              OK
+    Test for polytopes
+      Project 2D ConvexHull to produce 2D subdivision:                    OK
+    Tests for LRS vertex enumeration
+      lrs on R^3 cone enumerates extreme rays:                            OK
+      lrs on R^2 unit square enumerates 4 vertices:                       OK
+      lrs on R^3 unit cube enumerates 8 vertices:                         OK
+      lrs on R^4 unit tesseract enumerates 16 vertices:                   OK
+      lrs on R^3 standard simplex enumerates 4 vertices:                  OK
+      lrs on Newton polytope of f1:                                       OK
+      lrs on Newton polytope of f2:                                       OK
+      lrs on Newton polytope of f3:                                       OK (0.02s)
+      lrs on Newton polytope of f6:                                       OK (0.03s)
+      lrs on Newton polytope of f7:                                       OK (0.04s)
+      lrs on Newton polytope of f8:                                       OK (0.08s)
+    Test for Computing Hypersurfaces
+      Get the key-value pair with the terms and its corresponding points: OK
+      Computing fan vertices:                                             OK
+      Compute inner normals of triangles:                                 OK
+      Test for vertices and their normals:                                OK
+
+All 36 tests passed (0.14s)
+
+
+
+tropical-geometry> Test suite tropical-geometry-test-suite passed

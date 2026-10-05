@@ -3,7 +3,7 @@
 # this file: <https://github.com/sol/hpack>.
 name: tropical-geometry
 version: '0.0.0.1'
-github: "ferynando7/tropical-geometry"
+github: "ferzcam/tropical-geometry"
 license: GPL-3
 author: "Fernando Zhapa"
 maintainer: "Fernando Zhapa"
@@ -21,16 +21,38 @@ extra-source-files:
 ghc-options: -Wall
 
 library:
+  exposed-modules:
+  - Polynomial.Monomial
+  - Polynomial.Prelude
+  - Polynomial.Hypersurface
+  - Arithmetic.Numbers
+  - Arithmetic.Matrix
+  - Geometry.ConvexHull2
+  - Geometry.ConvexHull3
+  - Geometry.Polytope
+  - Geometry.Polyhedral
+  - Geometry.Vertex
+  - Geometry.Facet
+  - Geometry.LRS
+  - Graphics.Drawings
+  - Util
+  - Core
+
   dependencies:
   - base
   - containers
   - numeric-prelude
   - semiring-simple
+  - sized
   - algebra
-  - singletons
+  - singletons-base
+  - type-natural
   - lens
   - matrix
   - gloss
+  - vector
+  - hmatrix-glpk
+  - linear
   source-dirs: library
 
 
@@ -40,36 +62,39 @@ executables:
     main: Main.hs
     dependencies:
     - base
-    - Tropical
+    - tropical-geometry
     ghc-options:
     - -rtsopts
     - -threaded
     - -with-rtsopts=-N
-
+    - -freverse-errors
 benchmarks:
   tropical-geometry-benchmarks:
     source-dirs: benchmark
     main: Main.hs
     dependencies:
     - base
-    - Tropical
+    - tropical-geometry
     - criterion
     ghc-options:
     - -rtsopts
     - -threaded
     - -with-rtsopts=-N
-
+    - -freverse-errors
 tests:
   tropical-geometry-test-suite:
     source-dirs: test-suite
     main: Main.hs
     dependencies:
     - base
-    - Tropical
+    - tropical-geometry
+    - containers
     - tasty
     - tasty-hspec
     - tasty-hunit
+    - matrix
     ghc-options:
     - -rtsopts
     - -threaded
     - -with-rtsopts=-N
+    - -freverse-errors

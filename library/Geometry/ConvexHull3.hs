@@ -126,7 +126,8 @@ maxZ points = let point = foldr1 (\(x,y,z) (ax,ay,az) -> if z > az then (x,y,z) 
 
 considerExtremes :: [Point3D] -> [Point3D]
 considerExtremes points
-    | length points < 4 = points
+    -- The six successive extrema selections each remove one input point.
+    | length points < 6 = points
     | otherwise = let   (xmin, tail1) = minX points
                         (xmax, tail2) = maxX tail1
                         (ymin, tail3) = minY tail2
@@ -136,8 +137,11 @@ considerExtremes points
                         
 
                     in [xmin,xmax,ymin,ymax,zmin,zmax] ++ tail6
--- | Assume every point is different
+-- | Hull in the original 3D coordinates. Empty input has no hull.
+-- Coplanar input has one boundary face; a segment or point is represented
+-- by a degenerate face containing its endpoints or single point.
 convexHull3 :: [Point3D] -> Maybe ConvexHull
+convexHull3 [] = Nothing
 convexHull3 points
     | length points < 4 = Just $ convexHull2In3 points
     | isNothing tetraHedron = Just $ convexHull2In3 points
@@ -153,9 +157,29 @@ convexHull3 points
 
 
 convexHull2In3 :: [Point3D] -> ConvexHull
-convexHull2In3 points3 = ConvexHull [fromVertices $ map lift2To3 $ convexHull2 points2]
+convexHull2In3 points = ConvexHull [fromVertices boundary]
     where
-        points2 = map project3To2 points3
+        boundary = case computeTriangle points of
+            Just triangle -> planarBoundary triangle points
+            -- Lexicographic extrema are the segment endpoints on any line.
+            -- A singleton retains its original coordinates as a degenerate face.
+            Nothing -> nub [minimum points, maximum points]
+
+-- A nondegenerate coordinate projection is one-to-one on this plane.
+-- Recover original 3D points exactly and preserve the given face orientation.
+-- The first three original points must be noncollinear.
+planarBoundary :: [Point3D] -> [Point3D] -> [Point3D]
+planarBoundary original points = map liftPoint orientedHull
+    where
+        projections = [\(x,y,_) -> (x,y), \(x,_,z) -> (x,z), \(_,y,z) -> (y,z)]
+        project = head [p | p <- projections, orientation (map p original) /= 0]
+        projectedHull = convexHull2 (map project points)
+        orientedHull
+            | orientation projectedHull * orientation (map project original) > 0 = projectedHull
+            | otherwise = reverse projectedHull
+        liftPoint p = fromJust $ lookup p [(project point, point) | point <- points]
+        orientation (a:b:c:_) = determinant (lift2To3 a) (lift2To3 b) (lift2To3 c)
+
 -------------------------------------------------
 
 
@@ -220,16 +244,22 @@ addPoints convexHull (p:ps) conflictGraph
             
 
 checkCoplanarity :: [Facet] -> [Facet] -> [Facet]
-checkCoplanarity facets1 facets2 = foldr (\(merged,fs) acc -> (acc \\ fs)++merged) (facets1++facets2) coplanarFaces
+checkCoplanarity facets1 facets2 = mergeCoplanar (facets1 ++ facets2)
+    where
+        -- Merge whole coplanar groups, including new faces with one another.
+        -- Pairwise merges of the original lists leave overlapping faces and
+        -- retain vertices that have become interior to a supporting plane.
+        mergeCoplanar [] = []
+        mergeCoplanar (f:fs) = merged : mergeCoplanar remaining
             where
-                mergeCoplanar f1 f2
-                    | length ((pointsFromGinF `on` fromFacet) f1 f2) < 2 = ([],[])
-                    | areCoplanarFacets f1 f2 = ([fromVertices $ (mergePoints `on` fromFacet) f1 f2],[f1,f2])
-                    | otherwise = ([],[])
+                original = fromFacet f
+                (coplanar, remaining) = partition
+                    (all (isCoplanar original) . fromFacet) fs
+                merged
+                    | null coplanar = f
+                    | otherwise = fromVertices $ planarBoundary original $
+                        nub $ concatMap fromFacet (f:coplanar)
 
-                coplanarFaces = map (uncurry mergeCoplanar) [(f1,f2) | f1 <- facets1, f2 <- facets2] 
-                pointsFromGinF f= filter (`elem` f)
-                
 
 
 areCoplanarFacets :: Facet -> Facet -> Bool
@@ -374,6 +404,7 @@ inside p convexHull = all (not.flip isInFrontOf p) (facets convexHull)
 
 isCoplanarCH :: Point3D -> ConvexHull -> Bool
 isCoplanarCH p convexHull = any (`isCoplanar` p) (map fromFacet $ facets convexHull)
+
 
 
 

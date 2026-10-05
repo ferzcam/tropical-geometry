@@ -14,6 +14,8 @@ import Debug.Trace
 import Data.List
 import Geometry.ConvexHull3 (Point3D)
 import Geometry.Polytope
+import Geometry.Vertex (IVertex)
+import Util (safeZipWith)
 
 -- | The tropical hypersurface of a polynomial f is the n-1 skeleton of the Newton polyotpe of f with a regular subdivision induced by a vector w in R^n. The hypersurface will be stored as a set of points.
 
@@ -32,94 +34,122 @@ mapTermPoint poly = MS.fromList $ zip points terms
         points = map toPoints terms
 
 
--- | Finds the vertex of a tropical line which corresponds to the intersection of the polyhedral fan of a triangle. The output is the result of the systems of equations given by: ax + by +c = 0; dx + ey f = 0; gx + hy + i = 0.
-
+-- | Solve the two independent equality constraints exactly. The historical
+-- plotting API stores Int coordinates, so a rational vertex is rejected rather
+-- than silently rounded into a different tropical curve.
 computeIntersection :: (Integral k) => (Monomial ord n, k) -> (Monomial ord n, k) -> (Monomial ord n, k) -> Point2D
-computeIntersection (mon1, c1) (mon2, c2) (mon3, c3) = (x, y) 
-        where 
-            [a,b] = DS.toList $ getMonomial mon1
-            [d,e] = DS.toList $ getMonomial mon2
-            [g,h] = DS.toList $ getMonomial mon3
-            c = fromIntegral c1
-            f = fromIntegral c2
-            i = fromIntegral c3
-            y = ((f-c)*(d-g) - (i-f)*(a-d)) `div` ((b-e)*(d-g)-(e-h)*(a-d)) 
-            x = ((f-c)-(b-e)*y) `div` (a-d)
-
-findFanNVertex :: (Integral k) => MS.Map Point2D (Monomial ord n, k) -> Polygon -> (Point2D,Normals)
-findFanNVertex mapPointMon points = (computeIntersection mon1 mon2 mon3, sort [inormal1,inormal2,inormal3]) 
+computeIntersection (mon1, c1) (mon2, c2) (mon3, c3)
+    | determinant == 0 = error "computeIntersection: collinear exponents"
+    | otherwise = (coordinate xNumerator, coordinate yNumerator)
     where
-        [pp1,pp2,pp3] = sort points -- This sorting is done to ensure that pp1 has non-zero degree on x.
-        mon1 = fromJust $ MS.lookup pp3 mapPointMon
-        mon2 = fromJust $ MS.lookup pp1 mapPointMon
-        mon3 = fromJust $ MS.lookup pp2 mapPointMon
-        inormal1 = innerNormal pp1 pp2 pp3        
-        inormal2 = innerNormal pp2 pp3 pp1
-        inormal3 = innerNormal pp3 pp1 pp2
+        [a,b] = map toInteger $ DS.toList $ getMonomial mon1
+        [d,e] = map toInteger $ DS.toList $ getMonomial mon2
+        [g,h] = map toInteger $ DS.toList $ getMonomial mon3
+        u = toInteger c2 - toInteger c1
+        v = toInteger c3 - toInteger c1
+        determinant = (a-d)*(b-h) - (b-e)*(a-g)
+        xNumerator = u*(b-h) - (b-e)*v
+        yNumerator = (a-d)*v - u*(a-g)
+        coordinate numerator
+            | remainder /= 0 = error "computeIntersection: nonintegral tropical vertex is not representable by Point2D"
+            | quotient < toInteger (minBound :: Int) || quotient > toInteger (maxBound :: Int) =
+                error "computeIntersection: tropical vertex exceeds Point2D range"
+            | otherwise = fromInteger quotient
+            where (quotient,remainder) = numerator `quotRem` determinant
 
-findPolygonNVertex :: (Integral k) => MS.Map Point2D (Monomial ord n, k) -> Polygon -> (Polygon, Point2D)
-findPolygonNVertex mapPointMon points = ( [pp1,pp2,pp3], computeIntersection mon1 mon2 mon3) 
+-- Strict convex boundary in counterclockwise order. Facets are stored as
+-- unordered vertex sets; their lexicographic order is not a boundary order.
+polygonBoundary :: Polygon -> Polygon
+polygonBoundary points
+    | length boundary < 3 = error "polygonBoundary: a cell must have affine dimension two"
+    | otherwise = boundary
     where
-        [pp1,pp2,pp3] = sort points -- This sorting is done to ensure that pp1 has non-zero degree on x.
-        mon1 = fromJust $ MS.lookup pp3 mapPointMon
-        mon2 = fromJust $ MS.lookup pp1 mapPointMon
-        mon3 = fromJust $ MS.lookup pp2 mapPointMon
+        sorted = sort $ nub points
+        half = reverse . foldl' push []
+        push (b:a:rest) c | cross a b c <= 0 = push (a:rest) c
+        push acc c = c:acc
+        boundary = if length sorted < 3 then sorted else init (half sorted) ++ init (half $ reverse sorted)
+        cross (ax,ay) (bx,by) (cx,cy) =
+            (toInteger bx-toInteger ax)*(toInteger cy-toInteger ay) -
+            (toInteger by-toInteger ay)*(toInteger cx-toInteger ax)
 
+polygonEdges :: Polygon -> [(Point2D,Point2D)]
+polygonEdges points = zip boundary (tail boundary ++ take 1 boundary)
+    where boundary = polygonBoundary points
+
+canonicalEdge :: (Point2D,Point2D) -> (Point2D,Point2D)
+canonicalEdge (a,b) = if a <= b then (a,b) else (b,a)
+
+cellVertex :: Integral k => MS.Map Point2D (Monomial ord n,k) -> Polygon -> Point2D
+cellVertex pointTerms points
+    | all ((== head values) . snd) termValues = vertex
+    | otherwise = error "cellVertex: lifted polygon vertices are not coplanar"
+    where
+        boundary = polygonBoundary points
+        (p:q:r:_) = boundary
+        term p = fromMaybe (error "cellVertex: missing polynomial term") $ MS.lookup p pointTerms
+        vertex@(x,y) = computeIntersection (term p) (term q) (term r)
+        value p@(a,b) = toInteger a*toInteger x + toInteger b*toInteger y + toInteger (snd $ term p)
+        termValues = [(p,value p) | p <- points]
+        values = map snd termValues
+
+findFanNVertex :: Integral k => MS.Map Point2D (Monomial ord n,k) -> Polygon -> (Point2D,Normals)
+findFanNVertex pointTerms points = (cellVertex pointTerms points, sort normals)
+    where
+        boundary = polygonBoundary points
+        normals = [innerNormal a b c | (a,b,c) <- zip3 boundary
+            (tail boundary ++ take 1 boundary) (drop 2 boundary ++ take 2 boundary)]
+
+findPolygonNVertex :: Integral k => MS.Map Point2D (Monomial ord n,k) -> Polygon -> (Polygon,Point2D)
+findPolygonNVertex pointTerms points = (sort points, cellVertex pointTerms points)
+
+-- Use unbounded arithmetic for both orientation and primitive direction:
+-- valid Int input coordinates can have products or differences beyond Int.
 innerNormal :: Point2D -> Point2D -> Point2D -> Point2D
-innerNormal a@(x1,y1) b@(x2,y2) c@(x3,y3)
-    | dot > 0 = simplify nab
-    | dot < 0 = simplify (y1-y2,x2-x1)
+innerNormal (x1,y1) (x2,y2) (x3,y3)
+    | dot == 0 = error "innerNormal: collinear points do not define an inward normal"
+    | otherwise = (coordinate $ nx `div` divisor, coordinate $ ny `div` divisor)
     where
-        ab = (x2-x1,y2-y1)
-        ac = (x3-x1,y3-y1)
-        nab = (y2-y1,x1-x2) -- (y,-x)
-        dot = (y2-y1)*(x3-x1) + (x1-x2)*(y3-y1)
-        simplify (0, q) = (0, div q (abs q))  
-        simplify (q, 0) = (div q (abs q), 0)
-        simplify (p, q) = let g = gcd p q in (div p g, div q g)  
-
-
-
-
+        dx = toInteger x2 - toInteger x1
+        dy = toInteger y2 - toInteger y1
+        dot = dy*(toInteger x3-toInteger x1) - dx*(toInteger y3-toInteger y1)
+        (nx,ny) = if dot > 0 then (dy,-dx) else (-dy,dx)
+        divisor = gcd nx ny
+        coordinate n
+            | n < toInteger (minBound :: Int) || n > toInteger (maxBound :: Int) =
+                error "innerNormal: primitive normal exceeds Point2D range"
+            | otherwise = fromInteger n
 
 innerNormals :: Point2D -> Point2D -> Point2D -> Normals
-innerNormals a@(x1,y1) b@(x2,y2) c@(x3,y3) = map simplify [inner1, inner2, inner3] -- simplify is to normalize the normals
-    where
-        inner1 = innerNormal a b c
-        inner2 = innerNormal b c a
-        inner3 = innerNormal c a b
-        simplify (0, q) = (0, div q (abs q))  
-        simplify (q, 0) = (div q (abs q), 0)
-        simplify (p, q) = let g = gcd p q in (div p g, div q g)  
-
-        
+innerNormals a b c = [innerNormal a b c, innerNormal b c a, innerNormal c a b]
 
 verticesNormals :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> MS.Map Point2D Normals
-verticesNormals poly = MS.fromList $ map (findFanNVertex polyMap) triangles 
+verticesNormals poly = MS.fromList $ map (findFanNVertex polyMap) cells
     where
         polyMap = mapTermPoint poly
-        triangles = subdivision poly
+        cells = subdivision poly
 
 
 ---- For plotting
 
+-- Historical name retained for callers: cells may now be arbitrary polygons.
 neighborTriangles :: [Polygon] -> MS.Map Polygon [Polygon] -> MS.Map Polygon [Polygon]
-neighborTriangles [] mapContainer = mapContainer
-neighborTriangles (p:ps) mapContainer
-    | null ps && MS.null mapContainer = MS.fromList [(p, [])] -- The case that there is only one triangle. This will correspond to a tropical line
-    | otherwise = MS.map (map sort) $ neighborTriangles ps (foldr (lookAndInsert p) mapContainer ps)
-        where
-            lookAndInsert p1 p2 acc =   if length (p1\\p2) == (length p1) - 2 then -- Checks is triangles share two vertices.
-                                            MS.insertWith (++) p2 [p1] $ MS.insertWith (++) p1 [p2] acc
-                                        else acc
+neighborTriangles polygons initial = foldl' addPair withCells pairs
+    where
+        cells = nub $ map sort polygons
+        withCells = foldl' (\m p -> MS.insertWith (++) p [] m) initial cells
+        pairs = [(p,q) | (p:rest) <- tails cells, q <- rest,
+            not $ null $ intersect (edges p) (edges q)]
+        edges = map canonicalEdge . polygonEdges
+        addPair m (p,q) = MS.insertWith union p [q] $ MS.insertWith union q [p] m
 
 
 
 pointsWithTriangles :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> MS.Map Polygon Point2D
-pointsWithTriangles poly = MS.fromList $ map (findPolygonNVertex polyMap) triangles
+pointsWithTriangles poly = MS.fromList $ map (findPolygonNVertex polyMap) cells
     where
         polyMap = mapTermPoint poly -- MS.Map Point2D (Monomial ord n, k)
-        triangles = subdivision poly -- [Polygon]
+        cells = subdivision poly -- [Polygon]
         
 
 polygonCenter :: MS.Map Polygon Point2D -> Polygon -> Point2D
@@ -145,13 +175,16 @@ computeEdges map1 map2 = concatMap getEdges pointsWithNormals
 
         pointsWithNormals = attachNormals listMap1
 
-isInverse :: Point2D -> Point2D -> Point2D -> Point2D ->Bool
-isInverse (x1,y1) (nx1, ny1) (x2,y2) (nx2, ny2)
-    | x1 == x2 = nx1 == 0 && nx2 == 0 && ny1*ny2 < 0 
-    | y1 == y2 = ny1 == 0 && ny2 == 0 && nx1*nx2 < 0
-    | nx1 == 0 = False
-    | div (y2-y1) (x2-x1) == div ny1 nx1 = True
-    | otherwise = False
+isInverse :: Point2D -> Point2D -> Point2D -> Point2D -> Bool
+isInverse (x1,y1) (nx1,ny1) (x2,y2) (nx2,ny2) =
+    dx*ny == dy*nx && nx*my == ny*mx &&
+    dx*nx + dy*ny > 0 && nx*mx + ny*my < 0
+    where
+        dx = toInteger x2 - toInteger x1
+        dy = toInteger y2 - toInteger y1
+        nx = toInteger nx1; ny = toInteger ny1
+        mx = toInteger nx2; my = toInteger ny2
+
     
 
 analizeNormals :: (Point2D, Normals) -> (Point2D, Normals) -> ((Point2D,Normals),(Point2D, Point2D))
@@ -160,9 +193,30 @@ analizeNormals (p1, n1) (p2, n2) = ((p1, newNormals), (p1,p2))
         isThereTwin p1 normal p2 normals = any (isInverse p1 normal p2) normals
         newNormals = foldr (\normal acc -> if isThereTwin p1 normal p2 n2 then acc else normal:acc) [] n1
 
-hypersurface :: (IsMonomialOrder ord, Ord k, Integral k)  => Polynomial k ord n -> [(Point2D, Point2D)]
-hypersurface poly = nub $ computeEdges (convertMap neighbors pointTriangles) pointNormals
-    where 
-        pointNormals = verticesNormals poly
-        neighbors = neighborTriangles (map sort $ subdivision poly) MS.empty
-        pointTriangles = pointsWithTriangles poly
+-- Dualize actual cell boundary edges. Triangulating a polygon would invent
+-- bounded edges, and matching normal slopes alone loses edge provenance.
+hypersurface :: (IsMonomialOrder ord, Ord k, Integral k) => Polynomial k ord n -> [(Point2D,Point2D)]
+hypersurface poly = nub $ concatMap dualEdge $ MS.toList incidence
+    where
+        cells = subdivision poly
+        pointTerms = mapTermPoint poly
+        center = cellVertex pointTerms
+        incidence = MS.fromListWith (++)
+            [(canonicalEdge edge,[cell]) | cell <- cells, edge <- polygonEdges cell]
+        dualEdge ((a,b),[cell]) =
+            let p = center cell
+                third = head [c | c <- polygonBoundary cell, c /= a, c /= b]
+                normal = innerNormal a b third
+            in [(p,p + (10 >*< normal))]
+        dualEdge (_,[first,second]) =
+            let p = center first; q = center second
+            in if p == q then [] else [canonicalEdge (p,q)]
+        dualEdge _ = error "hypersurface: nonmanifold subdivision edge"
+-- | Exponent vectors of a polynomial, each suffixed with the term's
+-- coefficient. Ported from origin/generalTropHyp.
+expVecs :: (IsMonomialOrder ord, Real k, Show k, Integral k) => Polynomial k ord n -> [IVertex]
+expVecs poly = safeZipWith (++) expVec (map return coeffs)
+    where
+        terms = (MS.toList . getTerms) poly
+        expVec = map ((map toInteger) . DS.toList . getMonomial . fst) terms
+        coeffs = map (toInteger . snd) terms
