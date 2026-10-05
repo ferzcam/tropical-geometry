@@ -2,6 +2,12 @@
 
 ## Current status
 
+Small-hull initialization: **87 pass, 1 fail out of 88**. Four- and
+five-point hulls now bypass an optional six-point ordering heuristic, removing
+the empty-list crashes. The remaining failure retains facet-interior points
+in the list1 hull. Evidence: [small-hull log](validation/small-hulls/stack-test.log).
+
+
 Exact affine-rank validation: **85 pass, 3 fail out of 88**. Both facet APIs
 now reject unsupported lower-dimensional f4/f9-style inputs explicitly instead
 of producing ambient inequalities for the wrong set. All original Newton

@@ -126,7 +126,8 @@ maxZ points = let point = foldr1 (\(x,y,z) (ax,ay,az) -> if z > az then (x,y,z) 
 
 considerExtremes :: [Point3D] -> [Point3D]
 considerExtremes points
-    | length points < 4 = points
+    -- The six successive extrema selections each remove one input point.
+    | length points < 6 = points
     | otherwise = let   (xmin, tail1) = minX points
                         (xmax, tail2) = maxX tail1
                         (ymin, tail3) = minY tail2
