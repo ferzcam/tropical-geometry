@@ -285,16 +285,24 @@ getVertex dictionary = concat $ toLists $ submatrix' (1,dim) (cols-1, cols-1) (d
         cols = numCols dictionary
         dim = cols-rows-1
 
+-- | Low-level traversal retaining the legacy mixed output convention.
+-- Use lrs for checked bounded-polytope or homogeneous-cone enumeration.
 revSearch :: Dictionary -> [Vertex]
-revSearch dictionary@(Dict _B _N dictMatrix) -- = getVertex dictionary : concatMap revSearch pivoted
-    | (not.null) possibleRay = possibleRay ++ (concatMap revSearch pivoted)
-    | otherwise = getVertex dictionary : concatMap revSearch pivoted
+revSearch = revSearchWith True
+
+revSearchWith :: Bool -> Dictionary -> [Vertex]
+revSearchWith allowRays dictionary@(Dict _B _N dictMatrix)
+    | not (null possibleRay) && not allowRays =
+        error "lrs: unbounded non-homogeneous input requires separate vertex and ray output"
+    | not (null possibleRay) = possibleRay ++ descendants
+    | otherwise = getVertex dictionary : descendants
     where
         rows = numRows dictionary
         cols = numCols dictionary
         valid_N = [i | i <- _N, (reverseRS dictionary i) /= Nothing]
         valid_B = map (lexMinRatio dictionary) valid_N
         pivoted = map (\(r, s) ->  pivot r s dictionary) $ zip valid_B valid_N
+        descendants = concatMap (revSearchWith allowRays) pivoted
         possibleRay = hasRay dictionary
 
 
@@ -324,12 +332,15 @@ hasRay dictionary = rays
 
 
 
--- | Enumerate vertices/ray directions of a full-dimensional polyhedron
--- given by A*x <= b and a feasible starting vertex. Decision variables are
--- unrestricted. The caller must supply enough independent tight constraints
--- for the initial basis.
+-- | Enumerate vertices of a bounded full-dimensional polytope, or ray
+-- directions of a full-dimensional pointed cone represented by A*x <= 0.
+-- Input uses A*x <= b and a feasible starting vertex. Decision variables
+-- are unrestricted; the start must have d independent tight constraints.
+-- Unbounded inputs with nonzero b are rejected because this result type
+-- cannot distinguish vertices from rays. The cone exception requires every
+-- bound to be zero, including any redundant constraints.
 lrs :: Matrix Rational -> Col -> Vertex-> [Vertex]
-lrs matrix b vertex = (sort.nub) $ revSearch lexOptimum
+lrs matrix b vertex = (sort.nub) $ revSearchWith (all (== 0) (concat $ toLists b)) lexOptimum
     where
         -- Avis 1999: reverse search must start at the unique lex-optimum
         -- dictionary B*. `getDictionary` builds the dictionary at the

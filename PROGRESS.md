@@ -1,168 +1,132 @@
 # LRS correctness progress
 
-## Current status
+## Current status — 2026-10-05
 
-Mixed-output API checkpoint: **95 pass, 2 fail out of 97**. Newly active
-strip and shifted-quadrant tests expose silent vertex loss in the flat output
-API; these cases require an explicit unsupported-input error.
-Evidence: [mixed-output failures](validation/unbounded-red/stack-test.log).
+**All 97 enabled tests pass.** There are no expected-failure wrappers or skipped
+registered cases. The baseline had 36 enabled tests.
 
+The source is on `fix/lrs-correctness`, reviewed in [draft PR #3](https://github.com/ferzcam/tropical-geometry/pull/3).
+The fixed baseline branch `baseline/lrs-2026-10-05` preserves checkpoint
+`c55eed45f3d3ca431b67a0d0b689669dab691a1e`, including the previously unfinished
+P3/P4 fixtures. The original local branch contained 13 commits beyond the remote
+`upgrade_lts`; the separate PR base preserves that history without updating an
+existing remote branch. Integrating the PR into `upgrade_lts` is a separate step.
 
-Cyclic-polytope and ray-invariance coverage: **all 95 enabled tests pass**.
-C(6,3) and C(8,4) use independently generated exact facet fixtures, while
-cone checks compare oriented directions under row reversal and scaling.
-Evidence: [95-case log](validation/final-coverage/stack-test.log).
+Final evidence: [full test log](validation/final-supported-suite/stack-test.log),
+[command, timing and source hashes](validation/final-supported-suite/metadata.json),
+[enabled test inventory](validation/final-supported-suite/test-inventory.json).
 
-
-Coplanar facet merging: **all 88 enabled tests pass**. Entire same-plane facet
-groups are merged into a correctly oriented planar convex boundary, eliminating
-overlapping polygons and interior points. The independent list1 oracle and
-all restored subdivision/hypersurface cases now pass.
-Evidence: [coplanar-hull log](validation/coplanar-hulls/stack-test.log).
-
-
-Small-hull initialization: **87 pass, 1 fail out of 88**. Four- and
-five-point hulls now bypass an optional six-point ordering heuristic, removing
-the empty-list crashes. The remaining failure retains facet-interior points
-in the list1 hull. Evidence: [small-hull log](validation/small-hulls/stack-test.log).
-
-
-Exact affine-rank validation: **85 pass, 3 fail out of 88**. Both facet APIs
-now reject unsupported lower-dimensional f4/f9-style inputs explicitly instead
-of producing ambient inequalities for the wrong set. All original Newton
-cases still pass. The three remaining failures are in the older 3D hull code.
-Evidence: [facet validation log](validation/facet-dimension-guard/stack-test.log).
-
-
-Independent starting-basis selection: **81 pass, 7 fail out of 88**.
-All cross-polytope, hypersimplex and Birkhoff cases now pass, including
-multiple starting vertices and reversed constraint rows. The existing
-lexicographic dictionary was sufficient; no new perturbation block was added.
-Remaining failures concern hulls (three) and missing facet rejection (four).
-Evidence: [basis log](validation/independent-basis/stack-test.log).
-
-
-Expanded regression checkpoint: **75 pass, 13 fail out of 88 enabled tests**.
-This includes 21 independent bounded-shape cases, eight degenerate-family cases,
-nine input-validation cases and 12 restored/corrected legacy cases.
-All are ordinary tests; known failures are not marked as expected successes.
-
-Failures: five singular-basis cases, two small-hull crashes, one hull retaining
-two facet-interior points, four missing lower-dimensional facet rejections, and
-one insufficiently clear interior-start error. The last already rejects the
-input but lacks the planned diagnostic. Evidence: [expanded log](validation/expanded-red/stack-test.log).
-
-
-P3/P4 were enabled without changing their inputs or LRS in commit `8889243`.
-The full suite then produced **36 passes and 2 failures** (38 cases): both
-permutohedra return only their starting vertex. This is the recorded failing
-regression checkpoint, not a new algorithm change.
-
-Evidence: [activation log](validation/permutohedra-red/stack-test.log) and
-[run metadata](validation/permutohedra-red/metadata.json).
-
-The convention correction now passes all **38 enabled tests**. All handwritten
-inputs use Ax <= b; malformed/infeasible starts are rejected. Ray extraction
-uses the current cobasis and the negative decision-column entries, following
-Avis Proposition 3.2. Pivot and lexicographic ratio logic are unchanged.
-
-Evidence: [fix log](validation/convention-fix/stack-test.log) and
-[metadata](validation/convention-fix/metadata.json). Wider regression coverage
-and degenerate-start basis selection are next.
-
-## Verified baseline — 2026-10-05
-
-- Source checkpoint: `c55eed45f3d3ca431b67a0d0b689669dab691a1e`.
-- Baseline branch: `baseline/lrs-2026-10-05` (keep fixed).
-- Working branch: `fix/lrs-correctness`.
-- Result: **36 enabled tests pass**, including **11 LRS tests**; exit status 0.
-- Environment: Stack 3.1.1, GHC 9.8.4, resolver lts-23.19.
-- Validation used the existing up-to-date build, not a clean environment rebuild.
-- This historical baseline predates the fixes recorded in Current status.
-
-The checkpoint preserves the previously uncommitted P3/P4 fixture definitions exactly.
-The prior local branch contains 13 commits beyond GitHub's `upgrade_lts`. The draft
-PR targets the separate baseline branch so those historical changes are not confused
-with new fixes. Merging that PR will not update `upgrade_lts`; integration into the
-release branch is a separate final step.
-
-Evidence: [test output](validation/baseline-2026-10-05/stack-test.log),
-[test inventory](validation/baseline-2026-10-05/test-inventory.json),
-[run metadata](validation/baseline-2026-10-05/stack-test-metadata.json),
-[environment](validation/baseline-2026-10-05/environment.json).
-
-Reproduce using the existing installed dependencies:
+Validation used Stack 3.1.1, GHC 9.8.4 and lts-23.19 with installed dependencies.
+Changed Haskell modules were rebuilt, but this is not a clean-environment or
+cross-platform reproducibility claim.
 
 ```sh
 stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
-  --jobs 2 --test-arguments='+RTS -N2 -RTS'
+  --jobs 2 --test-arguments='--timeout=30s -j2 +RTS -N2 -RTS'
 ```
 
-## Progress and acceptance criteria
+## Completed changes
 
-| Stage | Status | Acceptance |
-| --- | --- | --- |
-| Preserve checkout and verify baseline | Complete | Backup, checkpoint, saved full log and inventory |
-| Make inequality convention consistent | Complete (38 tests pass) | Document Ax <= b; convert handwritten >= fixtures; validate starting feasibility; P3/P4 return exact 6/24 vertices |
-| Strengthen bounded-polytope regressions | Pending | Multiple starting vertices, row orderings, positive row scaling, transformed polytopes and simplex products; check output feasibility |
-| Audit ray enumeration | Pending | Check cobasic-variable selection, direction sign, feasibility and exact expected rays under the same convention |
-| Audit degenerate vertices | Pending | Independent tight-basis selection and lexicographic behavior; cross-polytopes and additional valid families |
-| Establish lower-dimensional behavior | Pending | Explicit, tested rejection under the current full-dimensional scope, or a separately justified extension |
-| Triage older disabled assertions | Pending | Restore geometrically valid cases; correct invalid expectations from independent geometry |
-| Independent final validation | Pending | All agreed supported cases enabled and passing; unsupported cases tested explicitly; independent fixture/oracle checks |
+1. Enabled P3/P4 unchanged and recorded their failures before fixing them.
+2. Standardized LRS inputs on Ax <= b, matching the dictionary and facet generator.
+   The hand-written >= fixtures were converted by negating both A and b.
+3. Corrected ray extraction to use current cobasic variable IDs and negate the
+   decision-column entries, as specified in Avis Proposition 3.2.
+4. Selected d independent tight rows for the initial basis. The original valid
+   final-d-row basis is retained where possible; redundant rows retain their
+   order and multiplicity. The existing lexicographic block was sufficient.
+5. Added explicit errors for malformed RHS/start data and rank-deficient starts.
+   Both facet APIs reject unsupported lower-dimensional inputs by exact affine rank.
+6. Fixed the four/five-point hull empty-list crash and merged whole coplanar facet
+   groups into correctly oriented convex boundaries, removing facet-interior points.
+7. Rejected unbounded non-homogeneous inputs whose vertices would otherwise be
+   silently lost in the flat vertex/ray output API.
 
-The first repair hypothesis is supported by source algebra, not runtime validation:
-`getDictionary` builds `A*x + slack = b`, matching nonnegative slack for Ax <= b.
-`Facet.checkBranch` explicitly checks <= 1 on centered points. Handwritten LRS
-fixtures instead use >= constraints. Negating both their A and b is the candidate
-conversion; changing the global slack sign previously regressed existing tests.
+## Recorded progression
 
-Do not treat the older “axis-aligned only” explanation as a proven algorithmic
-restriction. Likewise, the extent of missing degeneracy support requires a fresh
-audit: the dictionary already carries an identity-derived block through pivots.
+| Change | Commit | Pass / total | Evidence |
+| --- | --- | --- | --- |
+| Preserved baseline | c55eed4 | 36 / 36 | [log](validation/baseline-2026-10-05/stack-test.log) |
+| Enabled P3/P4 unchanged | 8889243 | 36 / 38 | [failures](validation/permutohedra-red/stack-test.log) |
+| Convention and ray correction | 08ef545 | 38 / 38 | [log](validation/convention-fix/stack-test.log) |
+| Expanded and restored tests | 9eab547 | 75 / 88 | [failures](validation/expanded-red/stack-test.log) |
+| Independent tight basis | c241530 | 81 / 88 | [log](validation/independent-basis/stack-test.log) |
+| Explicit facet dimension guard | 258dca2 | 85 / 88 | [log](validation/facet-dimension-guard/stack-test.log) |
+| Small-hull initialization | 8a12d8f | 87 / 88 | [log](validation/small-hulls/stack-test.log) |
+| Complete coplanar merging | 2d7df36 | 88 / 88 | [log](validation/coplanar-hulls/stack-test.log) |
+| Cyclic polytopes and cone invariance | 0bd16f3 | 95 / 95 | [log](validation/final-coverage/stack-test.log) |
+| Exposed mixed-output limitation | f52352b | 95 / 97 | [failures](validation/unbounded-red/stack-test.log) |
+| Explicit mixed-output rejection | See PR head | 97 / 97 | [log](validation/final-supported-suite/stack-test.log) |
 
-## Enabled and disabled coverage
+## Coverage and historical disabled cases
 
-The enabled LRS cases are the cone, square, cube, tesseract, simplex, and Newton
-polynomials f1, f2, f3, f6, f7 and f8. The other 25 enabled cases cover arithmetic,
-polynomials, hulls, subdivision and hypersurface helpers.
+| Area | Current treatment |
+| --- | --- |
+| P3/P4 | Active; exact 6/24 vertices, all starts, row permutations and positive rational row scaling |
+| Cross-polytopes in 4D/5D | Active; exact 8/10 vertices, all starts and reversed rows |
+| Hypersimplex Delta(2,4), Birkhoff B3 | Active; independent exact expected vertices, all starts and reversed rows |
+| Cyclic C(6,3), C(8,4) | Active; independently generated exact facets, all starts and reversed rows |
+| Simplex products, translated/sheared shapes | Active; independent Cartesian/permutation fixtures |
+| Cone rays | Active; nonzero directions, feasibility, row order/scaling invariance |
+| Newton f1/f2/f3/f6/f7/f8 | Original tests retained and passing |
+| Newton f4/f9-style lifted supports | Active rejection tests through both facet APIs; affine reduction is not implemented |
+| Historical Laurent f5 | Its valid subdivision and tropical rays are active; old duplicate Newton-port notes remain historical |
+| Three disabled 2D hull assertions | Restored as separate active cases |
+| Valid 3D tetrahedron/cube assertions | Restored; additional five-point hull regression |
+| Old list1 projected expectation | Replaced by an independently verified 11-vertex full-hull test; old example retained as a comment |
+| Four projected-coordinate 3D expectations | Historical examples only: they change z coordinates and are not full-hull specifications |
+| Cube adjacent facets | Active unordered facet-membership test |
+| f4/f5 subdivisions and hypersurfaces | Active; ray directions tested independently of display segment length |
+| Malformed/infeasible/interior starts | Active explicit rejection tests |
+| Unbounded strip and shifted quadrant | Active explicit rejection tests for unsupported mixed output |
 
-These omissions are separate from the 36 passing cases:
+The old “axis-aligned only” and “missing perturbation block” diagnoses are
+superseded. Non-axis-aligned and degenerate families now pass; no new perturbation
+block was required.
 
-| Area | Baseline state | Required follow-up |
-| --- | --- | --- |
-| Permutohedra P3/P4 | Complete definitions commented out in `TLRSPol2.hs` | Enable after convention correction; expect 6/24 vertices |
-| Cross-polytopes in 4D/5D | Definitions commented out | Investigate degeneracy; expect 8/10 vertices |
-| Newton f4/f9 | Defined but omitted; coplanar lifted points | Test explicit unsupported-input behavior under current scope |
-| Newton f5 | Present only in stale historical comments | Establish intended case and expected geometry before activation |
-| 2D hull | Three commented assertions | Check intended contract before restoration |
-| 3D hull | Six old commented assertions plus `list1` assertion | Several expectations project/change coordinates and are invalid full-hull expectations; do not enable unchanged |
-| Adjacent facets | Commented case | Determine appropriate order-insensitive comparison |
-| Subdivision f4/f5 | Commented assertions | Verify expectations independently |
-| Full hypersurface f4/f5 | Commented case | Verify expectations independently |
-| Simplex products, hypersimplex, cyclic and Birkhoff families | Planned, not implemented | Add explicit independent fixtures; separate valid supported cases from unsupported inputs |
+Independent fixture checks are reproducible with:
 
-The old `list1` hull expectation includes (0,0,1), although all input points have
-x+y >= 2. It cannot be a full-hull vertex. This assertion was already disabled
-before this baseline; its removal is not a new fix.
+```sh
+python3 test-suite/fixtures/list1_oracle.py
+python3 test-suite/fixtures/tropical-cyclic-oracle.py > /tmp/cyclic-regenerated.hs
+cmp /tmp/cyclic-regenerated.hs test-suite/TGeometry/TLRSCyclic.hs
+```
 
-The Newton tests use `extremalVertices` both upstream and to derive expected
-vertices. Their passing results demonstrate pipeline consistency, not a fully
-independent oracle. Preserve them and add independent expected sets.
+The Newton tests still share `extremalVertices` with their upstream construction;
+the independent polytope fixtures complement, rather than replace, those tests.
 
-## Checkpoint and rollback
+## Boundaries and follow-up work
 
-The external backup on the workstation is
-`~/tropical-geometry-checkpoints/2026-10-05-baseline/`. It contains the original
-HEAD/status, binary working-tree patch, repository bundle, tracked working-tree
-archive and SHA-256 manifest. The original working tree had no untracked files.
+- The checked `lrs` API supports bounded full-dimensional polytopes and pointed
+  cones represented with every RHS bound equal to zero. Other unbounded inputs
+  fail explicitly. A future API should return vertices and rays separately.
+  Even a redundant nonzero bound on an otherwise equivalent cone falls outside
+  the current cone representation contract.
+- Lower-dimensional facet enumeration requires affine reduction/equalities.
+  It is explicitly rejected rather than represented by incorrect offset planes.
+- The legacy subdivision path still assumes triangular cells:
+  `projectionToR2` filters nontriangular faces and hypersurface helpers destructure
+  triples. The restored triangle cases pass; general polygonal subdivisions are
+  separate work. Do not interpret the passing suite as support for them.
+- Invalid projected 3D expectations were not blindly activated. The legacy
+  coplanar fallback is specialized for the polynomial projection path, not a
+  general affine-hull implementation.
+- A clean-environment build, external polymake end-to-end checks and wider
+  performance validation remain future work.
 
-- Keep the baseline branch fixed and do not rewrite or force-push history.
-- Use one focused commit per fix with its regression tests and logged result.
-- Inspect `git status` before any rollback and preserve later uncommitted work.
-- To undo an isolated committed fix, use `git revert <fix-commit>` and rerun the suite.
-- To inspect the original code without disturbing the current checkout, create a
-  separate worktree at the checkpoint:
-  `git worktree add --detach ../tropical-geometry-baseline c55eed45f3d3ca431b67a0d0b689669dab691a1e`.
-- Do not use a hard reset or clean operation to roll back.
-- Update this file with every stage's commit, exact test result and remaining failures.
+## Rollback
+
+The workstation backup is `~/tropical-geometry-checkpoints/2026-10-05-baseline/`.
+It contains the original HEAD/status, binary patch, full repository bundle,
+tracked-source archive and verified SHA-256 manifest.
+
+Keep the baseline branch fixed. Each fix is a separate commit with its validation
+log. Inspect and preserve any uncommitted work first, then use
+`git revert <fix-commit>` to undo a change and rerun the suite. Do not hard-reset,
+clean the checkout, rewrite history or force-push.
+
+For a separate baseline inspection:
+
+```sh
+git worktree add --detach ../tropical-geometry-baseline c55eed45f3d3ca431b67a0d0b689669dab691a1e
+```
