@@ -79,6 +79,94 @@ testSimplex3 = HU.testCase "lrs on R^3 standard simplex enumerates 4 vertices" $
         @?= [[0,0,0],[0,0,1],[0,1,0],[1,0,0]]
 
 -- =============================================================================
+-- Polytope-family tests (disabled: non-axis-aligned tight constraints)
+-- =============================================================================
+-- Permutohedron P_n is simple (each vertex meets exactly n-1 facets) and
+-- full-dim inside Σx_i = n(n+1)/2. Parametrize via (x_1, …, x_{n-1}) with
+-- x_n = n(n+1)/2 - Σ_{i<n} x_i. H-rep: for each non-empty proper subset
+-- S ⊂ {1,…,n}, Σ_{i ∈ S} x_i ≥ |S|(|S|+1)/2 (2^n - 2 facets).
+--
+-- Running these through the current LRS reveals a separate limitation from
+-- cross-polytope degeneracy: lexMinRatio's filter+min combination picks the
+-- wrong leaving variable when stored basic-slack values are < 0 (which is
+-- this code's sign convention, since dictionary = newA <|> identity solves
+-- newA · x + s = newb with stored s = -(actual)). Cube/simplex/tesseract
+-- escape this because their start vertex has A_tight = identity, yielding
+-- one ratio candidate per pivot. Permutohedron P_n has A_tight
+-- lower-triangular, exposing the bug.
+--
+-- Verified: P_3 at (1,2) returns only [(1,2)]; manual trace shows lexMinRatio
+-- picks var 6 (leaving) when var 3 should leave to reach neighbor (2,1).
+-- Naive fix (slack = -identity) breaks 7 Newton polytope tests, so the bug
+-- needs a coordinated audit of sortSystem + getDictionary + lexMinRatio +
+-- pivot against Avis 1999, not a one-line sign flip.
+--
+-- Defs kept in-file (commented) so they're ready to enable once #27 lands.
+{-
+
+permutohedronP4Mat :: Matrix Rational
+permutohedronP4Mat = fromLists
+    [ [ 1, 0, 0]   -- x_1 ≥ 1
+    , [ 0, 1, 0]   -- x_2 ≥ 1
+    , [ 0, 0, 1]   -- x_3 ≥ 1
+    , [-1,-1,-1]   -- x_4 ≥ 1
+    , [ 1, 1, 0]   -- x_1+x_2 ≥ 3
+    , [ 1, 0, 1]   -- x_1+x_3 ≥ 3
+    , [ 0,-1,-1]   -- x_1+x_4 ≥ 3
+    , [ 0, 1, 1]   -- x_2+x_3 ≥ 3
+    , [-1, 0,-1]   -- x_2+x_4 ≥ 3
+    , [-1,-1, 0]   -- x_3+x_4 ≥ 3
+    , [ 1, 1, 1]   -- x_1+x_2+x_3 ≥ 6
+    , [ 0, 0,-1]   -- x_1+x_2+x_4 ≥ 6
+    , [ 0,-1, 0]   -- x_1+x_3+x_4 ≥ 6
+    , [-1, 0, 0]   -- x_2+x_3+x_4 ≥ 6
+    ]
+
+permutohedronP4B :: Matrix Rational
+permutohedronP4B = colFromList [1,1,1,-9, 3,3,-7,3,-7,-7, 6,-4,-4,-4]
+
+permutohedronP4Vertices :: [Vertex]
+permutohedronP4Vertices = sort
+    [ map toRational [a,b,c]
+    | a <- [1..4 :: Integer], b <- [1..4], c <- [1..4]
+    , a /= b, a /= c, b /= c
+    ]
+
+testPermutohedronP4 :: TestTree
+testPermutohedronP4 = HU.testCase "lrs on R^3 permutohedron P_4 enumerates 24 vertices" $
+    lrs permutohedronP4Mat permutohedronP4B [1,2,3]
+        @?= permutohedronP4Vertices
+
+-- Smaller P_3 (2-dim, 6 vertices) helps localize bugs.
+-- Coords (x_1, x_2) with x_3 = 6 - x_1 - x_2.
+permutohedronP3Mat :: Matrix Rational
+permutohedronP3Mat = fromLists
+    [ [ 1, 0]   -- x_1 ≥ 1
+    , [ 0, 1]   -- x_2 ≥ 1
+    , [-1,-1]   -- x_3 ≥ 1
+    , [ 1, 1]   -- x_1+x_2 ≥ 3
+    , [ 0,-1]   -- x_1+x_3 ≥ 3
+    , [-1, 0]   -- x_2+x_3 ≥ 3
+    ]
+
+permutohedronP3B :: Matrix Rational
+permutohedronP3B = colFromList [1,1,-5, 3,-3,-3]
+
+permutohedronP3Vertices :: [Vertex]
+permutohedronP3Vertices = sort
+    [ map toRational [a,b]
+    | a <- [1..3 :: Integer], b <- [1..3], a /= b
+    , let c = 6 - a - b, c >= 1, c /= a, c /= b
+    ]
+
+testPermutohedronP3 :: TestTree
+testPermutohedronP3 = HU.testCase "lrs on R^2 permutohedron P_3 enumerates 6 vertices" $
+    lrs permutohedronP3Mat permutohedronP3B [1,2]
+        @?= permutohedronP3Vertices
+
+-}
+
+-- =============================================================================
 -- Polytope-family tests (disabled: degenerate vertices)
 -- =============================================================================
 -- Cross polytope X_n = { x in R^n : sum |x_i| <= 1 } would be the natural
@@ -182,6 +270,9 @@ testsVertexEnumPol2 :: TestTree
 testsVertexEnumPol2 = testGroup "Tests for LRS vertex enumeration"
     [ testVertexEnum
     , testSquare, testCube, testTesseract, testSimplex3
+    -- permutohedron P_3, P_4 disabled: A_tight ≠ identity at start vertex,
+    -- exposing a sign-convention bug in lexMinRatio that doesn't appear on
+    -- cube/simplex/tesseract (A_tight = identity at origin). See section above.
     -- cross polytope tests disabled — degenerate vertices, see above
     , polyTest "f1" f1
     , polyTest "f2" f2
