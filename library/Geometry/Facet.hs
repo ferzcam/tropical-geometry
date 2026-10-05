@@ -144,10 +144,8 @@ isEmbedded vertices
     checkBranches corresponds to the inner loop
 
  -}
--- Exact affine-rank check: a complete ambient H-representation for a
--- lower-dimensional hull also needs affine-hull equalities. The facet
--- enumerator does not currently construct those, so reject such inputs
--- explicitly rather than returning offset planes that describe another set.
+-- Exact affine-rank check. Lower-dimensional hulls need affine-hull
+-- equalities in addition to their intrinsic supporting inequalities.
 isLowerDimensional :: [IVertex] -> Bool
 isLowerDimensional [] = False
 isLowerDimensional (origin:points) =
@@ -171,8 +169,12 @@ facetEnumeration ::
     [IVertex] ->    -- set of vertices (not centered to origin)
     [(Facet, Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a], a)
 facetEnumeration vertices
-    | isLowerDimensional vertices =
-        error "facetEnumeration: lower-dimensional input requires affine reduction"
+    | null vertices = error "facetEnumeration: empty input"
+    | null (head vertices) = error "facetEnumeration: zero-dimensional ambient space"
+    | any ((/= length (head vertices)) . length) vertices =
+        error "facetEnumeration: inconsistent vertex dimensions"
+    | length (head vertices) == 1 || isLowerDimensional vertices =
+        affineFacetEnumeration vertices
     | otherwise = safeZipWith3 (,,) newFacets cleanedHypers b
     where
         uSet = sort $ toOrigin vertices
@@ -189,22 +191,61 @@ facetEnumeration vertices
 facetEnumeration' :: 
     [IVertex] ->    -- set of vertices (not centered to origin)
     [([IVertex], Vertex, Rational)]       -- set of hyperplanes ([[a]], [a], a)
-facetEnumeration' vertices
-    | isLowerDimensional vertices =
-        error "facetEnumeration': lower-dimensional input requires affine reduction"
-    | otherwise = safeZipWith3 (,,) newFacetsVertex cleanedHypers b
+facetEnumeration' vertices =
+    [(map (\i -> sort vertices !! (i-1)) ids,h,b)
+    | (ids,h,b) <- facetEnumeration vertices]
+
+-- | Ambient H-representation of a lower-dimensional convex hull. Select
+-- independent original coordinates, so projection retains integral input.
+-- Intrinsic facet IDs are remapped into the original sorted input. The final
+-- pairs of inequalities encode affine-hull equalities; their incidence lists
+-- contain every input point, not an intrinsic facet of the hull.
+affineFacetEnumeration :: [IVertex] -> [(Facet, Hyperplane, Rational)]
+affineFacetEnumeration vertices = intrinsic ++ equalities
     where
-        uSet = sort $ toOrigin vertices
-        center = centroid vertices
-        adjacency = adjacencyMatrix uSet
-        dictVertexIndex = MS.fromList $ zip uSet [1..]
-        dictIndexVertex = MS.fromList $ zip [1..] uSet
-        dictIndexOriginalVertex = MS.fromList $ zip [1..] (sort vertices)
-        embedded = isEmbedded vertices
-        (_,newFacets, newHyperplanes) = foldr (checkVertex dictIndexVertex dictVertexIndex embedded) (adjacency,[], []) uSet
-        cleanedHypers = map fromJust $ remove Nothing newHyperplanes
-        b = map (succ . (dot center)) cleanedHypers
-        newFacetsVertex = map (map (\x -> (MS.!) dictIndexOriginalVertex x)) newFacets
+        original = sort vertices
+        origin = map toRational (head original)
+        dim = length origin
+        differences = [zipWith (-) (map toRational v) origin | v <- original]
+        columns = foldl addColumn [] [0..dim-1]
+        addColumn selected j =
+            let candidate = selected ++ [j]
+            in if exactRowRank (map (project candidate) differences) > length selected
+               then candidate else selected
+        project indices row = map (row !!) indices
+        rank = length columns
+        projected = sort . nub $ map (project columns) original
+        liftNormal h = [fromMaybe 0 (lookup j (zip columns h)) | j <- [0..dim-1]]
+        -- Projection is injective on the affine hull, including all original
+        -- support points; use exact incidence to retain duplicate input IDs.
+        incidence h b = [i | (i,v) <- zip [1..] original,
+                            dot h (map toRational v) == b]
+        liftFacet (_,h,b) = let ambient = liftNormal h
+                            in (incidence ambient b, ambient,b)
+        intrinsic
+            | rank == 0 = []
+            | rank == 1 = map liftFacet
+                [([],[-1],negate (toRational (head (head projected)))),
+                 ([],[1],toRational (head (last projected)))]
+            | otherwise = map liftFacet (facetEnumeration (extremalVertices projected))
+        independent = foldl addRow [] differences
+        addRow selected row
+            | exactRowRank (map (project columns) (selected ++ [row])) > length selected = selected ++ [row]
+            | otherwise = selected
+        coefficients j
+            | rank == 0 = []
+            | otherwise = case solveLS (fromLists (map (project columns) independent))
+                                    (V.fromList (map (!! j) independent)) of
+                Just solution -> V.toList solution
+                Nothing -> error "affineFacetEnumeration: independent coordinate solve failed"
+        equation j =
+            let coeffs = coefficients j
+                normal = zipWith (-) [if k == j then 1 else 0 | k <- [0..dim-1]]
+                                     (liftNormal coeffs)
+                rhs = dot normal origin
+                ids = [1..length original]
+            in [(ids,normal,rhs),(ids,map negate normal,negate rhs)]
+        equalities = concatMap equation ([0..dim-1] \\ columns)
 
 
 checkVertex ::
