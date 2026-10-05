@@ -137,8 +137,11 @@ considerExtremes points
                         
 
                     in [xmin,xmax,ymin,ymax,zmin,zmax] ++ tail6
--- | Assume every point is different
+-- | Hull in the original 3D coordinates. Empty input has no hull.
+-- Coplanar input has one boundary face; a segment or point is represented
+-- by a degenerate face containing its endpoints or single point.
 convexHull3 :: [Point3D] -> Maybe ConvexHull
+convexHull3 [] = Nothing
 convexHull3 points
     | length points < 4 = Just $ convexHull2In3 points
     | isNothing tetraHedron = Just $ convexHull2In3 points
@@ -154,9 +157,29 @@ convexHull3 points
 
 
 convexHull2In3 :: [Point3D] -> ConvexHull
-convexHull2In3 points3 = ConvexHull [fromVertices $ map lift2To3 $ convexHull2 points2]
+convexHull2In3 points = ConvexHull [fromVertices boundary]
     where
-        points2 = map project3To2 points3
+        boundary = case computeTriangle points of
+            Just triangle -> planarBoundary triangle points
+            -- Lexicographic extrema are the segment endpoints on any line.
+            -- A singleton retains its original coordinates as a degenerate face.
+            Nothing -> nub [minimum points, maximum points]
+
+-- A nondegenerate coordinate projection is one-to-one on this plane.
+-- Recover original 3D points exactly and preserve the given face orientation.
+-- The first three original points must be noncollinear.
+planarBoundary :: [Point3D] -> [Point3D] -> [Point3D]
+planarBoundary original points = map liftPoint orientedHull
+    where
+        projections = [\(x,y,_) -> (x,y), \(x,_,z) -> (x,z), \(_,y,z) -> (y,z)]
+        project = head [p | p <- projections, orientation (map p original) /= 0]
+        projectedHull = convexHull2 (map project points)
+        orientedHull
+            | orientation projectedHull * orientation (map project original) > 0 = projectedHull
+            | otherwise = reverse projectedHull
+        liftPoint p = fromJust $ lookup p [(project point, point) | point <- points]
+        orientation (a:b:c:_) = determinant (lift2To3 a) (lift2To3 b) (lift2To3 c)
+
 -------------------------------------------------
 
 
@@ -237,18 +260,6 @@ checkCoplanarity facets1 facets2 = mergeCoplanar (facets1 ++ facets2)
                     | otherwise = fromVertices $ planarBoundary original $
                         nub $ concatMap fromFacet (f:coplanar)
 
-        -- A nondegenerate coordinate projection is one-to-one on this plane.
-        -- Recover the original 3D points exactly and preserve facet orientation.
-        planarBoundary original points = map liftPoint orientedHull
-            where
-                projections = [\(x,y,_) -> (x,y), \(x,_,z) -> (x,z), \(_,y,z) -> (y,z)]
-                project = head [p | p <- projections, orientation (map p original) /= 0]
-                projectedHull = convexHull2 (map project points)
-                orientedHull
-                    | orientation projectedHull * orientation (map project original) > 0 = projectedHull
-                    | otherwise = reverse projectedHull
-                liftPoint p = fromJust $ lookup p [(project point, point) | point <- points]
-                orientation (a:b:c:_) = determinant (lift2To3 a) (lift2To3 b) (lift2To3 c)
 
 
 areCoplanarFacets :: Facet -> Facet -> Bool
@@ -393,6 +404,7 @@ inside p convexHull = all (not.flip isInFrontOf p) (facets convexHull)
 
 isCoplanarCH :: Point3D -> ConvexHull -> Bool
 isCoplanarCH p convexHull = any (`isCoplanar` p) (map fromFacet $ facets convexHull)
+
 
 
 
