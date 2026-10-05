@@ -121,16 +121,43 @@ mapRow' f row m
 
 sortSystem :: Matrix Rational -> Col -> Vertex -> (Matrix Rational, Col)
 
-sortSystem mat col vertex = if length meetEq < ncols mat then error "Not enough inequalities" else (,) newMat newCol
+-- Avis 1999, Section 3: the final d constraints must be independent
+-- tight rows. At a degenerate vertex there can be more than d tight rows;
+-- moving all of them to the end can leave a singular initial basis.
+sortSystem mat col vertex
+    | length basisIndices < dimension =
+        error "sortSystem: starting vertex has fewer than d independent tight constraints"
+    | otherwise = (newMat, newCol)
     where
-        matLists = toLists mat
-        bList = concat $ toLists col
-        meetEq = [i | i <- [0..((pred.nrows) mat)], (dot (matLists!!i) vertex) == (col^. elemAt (i,0))]
-        pairs = safeZipWith (,) matLists bList
-        toBeLast = map (pairs !!) meetEq
-        ordered = (pairs \\ toBeLast) ++ (toBeLast)
+        dimension = ncols mat
+        pairs = safeZipWith (,) (toLists mat) (concat $ toLists col)
+        indexedPairs = zip [0..] pairs
+        tightRows = [(i, row) | (i, (row, bound)) <- indexedPairs,
+                               dot row vertex == bound]
+        basisIndices = reverse $ chooseBasis [] (reverse tightRows)
+        -- Identify rows by position, not value: redundant and duplicate
+        -- constraints must retain their multiplicity and relative order.
+        ordered = [pair | (i, pair) <- indexedPairs, i `notElem` basisIndices]
+               ++ [pairs !! i | i <- basisIndices]
         newMat = fromLists $ map fst ordered
         newCol = colFromList $ map snd ordered
+
+        -- Exact Gaussian elimination, preferring the last independent tight
+        -- rows to preserve an already valid final-d-row basis. Restore their
+        -- input order before appending them. Each normalized row is zero at every earlier
+        -- pivot, so eliminating later pivots cannot reintroduce earlier ones.
+        chooseBasis :: [(Int, [Rational])] -> [(Int, [Rational])] -> [Int]
+        chooseBasis basis _ | length basis == dimension = []
+        chooseBasis _ [] = []
+        chooseBasis basis ((i, row):rest) =
+            case findIndex (/= 0) reduced of
+                Nothing -> chooseBasis basis rest
+                Just p -> i : chooseBasis (basis ++ [(p, normalized p)]) rest
+            where
+                reduced = foldl' eliminate row basis
+                eliminate values (p, pivotRow) =
+                    zipWith (\x y -> x - (values !! p) * y) values pivotRow
+                normalized p = map (/ (reduced !! p)) reduced
 
 
 

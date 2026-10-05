@@ -2,6 +2,14 @@
 
 ## Current status
 
+Independent starting-basis selection: **81 pass, 7 fail out of 88**.
+All cross-polytope, hypersimplex and Birkhoff cases now pass, including
+multiple starting vertices and reversed constraint rows. The existing
+lexicographic dictionary was sufficient; no new perturbation block was added.
+Remaining failures concern hulls (three) and missing facet rejection (four).
+Evidence: [basis log](validation/independent-basis/stack-test.log).
+
+
 Expanded regression checkpoint: **75 pass, 13 fail out of 88 enabled tests**.
 This includes 21 independent bounded-shape cases, eight degenerate-family cases,
 nine input-validation cases and 12 restored/corrected legacy cases.
