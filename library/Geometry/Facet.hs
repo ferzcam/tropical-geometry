@@ -144,10 +144,36 @@ isEmbedded vertices
     checkBranches corresponds to the inner loop
 
  -}
+-- Exact affine-rank check: a complete ambient H-representation for a
+-- lower-dimensional hull also needs affine-hull equalities. The facet
+-- enumerator does not currently construct those, so reject such inputs
+-- explicitly rather than returning offset planes that describe another set.
+isLowerDimensional :: [IVertex] -> Bool
+isLowerDimensional [] = False
+isLowerDimensional (origin:points) =
+    exactRowRank [map toRational (zipWith (-) point origin) | point <- points]
+        < length origin
+
+-- Gaussian elimination over Rational avoids tolerance decisions. Unlike
+-- checking only the first d points, it finds independent rows anywhere.
+exactRowRank :: [[Rational]] -> Int
+exactRowRank [] = 0
+exactRowRank rows
+    | null (head rows) = 0
+    | otherwise = case break ((/= 0) . head) rows of
+        (_, []) -> exactRowRank (map tail rows)
+        (before, pivot:after) -> 1 + exactRowRank
+            [zipWith (-) (tail row)
+                (map (* (head row / head pivot)) (tail pivot))
+            | row <- before ++ after]
+
 facetEnumeration :: 
     [IVertex] ->    -- set of vertices (not centered to origin)
     [(Facet, Hyperplane, Rational)]       -- set of hyperplanes ([[a]], [a], a)
-facetEnumeration vertices  =  safeZipWith3 (,,) newFacets cleanedHypers b
+facetEnumeration vertices
+    | isLowerDimensional vertices =
+        error "facetEnumeration: lower-dimensional input requires affine reduction"
+    | otherwise = safeZipWith3 (,,) newFacets cleanedHypers b
     where
         uSet = sort $ toOrigin vertices
         center = centroid vertices
@@ -163,7 +189,10 @@ facetEnumeration vertices  =  safeZipWith3 (,,) newFacets cleanedHypers b
 facetEnumeration' :: 
     [IVertex] ->    -- set of vertices (not centered to origin)
     [([IVertex], Vertex, Rational)]       -- set of hyperplanes ([[a]], [a], a)
-facetEnumeration' vertices  =  safeZipWith3 (,,) newFacetsVertex cleanedHypers b
+facetEnumeration' vertices
+    | isLowerDimensional vertices =
+        error "facetEnumeration': lower-dimensional input requires affine reduction"
+    | otherwise = safeZipWith3 (,,) newFacetsVertex cleanedHypers b
     where
         uSet = sort $ toOrigin vertices
         center = centroid vertices

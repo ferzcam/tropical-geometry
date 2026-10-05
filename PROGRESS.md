@@ -2,6 +2,13 @@
 
 ## Current status
 
+Exact affine-rank validation: **85 pass, 3 fail out of 88**. Both facet APIs
+now reject unsupported lower-dimensional f4/f9-style inputs explicitly instead
+of producing ambient inequalities for the wrong set. All original Newton
+cases still pass. The three remaining failures are in the older 3D hull code.
+Evidence: [facet validation log](validation/facet-dimension-guard/stack-test.log).
+
+
 Independent starting-basis selection: **81 pass, 7 fail out of 88**.
 All cross-polytope, hypersimplex and Birkhoff cases now pass, including
 multiple starting vertices and reversed constraint rows. The existing
