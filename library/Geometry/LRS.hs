@@ -135,7 +135,19 @@ sortSystem mat col vertex = if length meetEq < ncols mat then error "Not enough 
 
 
 getDictionary :: Matrix Rational -> Col -> Vertex -> Dictionary
-getDictionary _A b vertex = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+1)) <|> (p21 <-> p22) <|> (p31 <-> p32))
+-- | Build a dictionary for A*x <= b at a supplied feasible vertex.
+-- Slack variables satisfy A*x + slack = b and must remain nonnegative.
+-- The first d basic rows are unrestricted decision variables; only the
+-- remaining basic slack rows constrain the ratio test.
+getDictionary _A b vertex
+    | nrows b /= nrows _A || ncols b /= 1 =
+        error "getDictionary: right-hand side must be an m-by-1 column matching the constraint rows"
+    | length vertex /= ncols _A =
+        error "getDictionary: starting vertex dimension does not match the constraint matrix"
+    | any (\(row, bound) -> dot row vertex > bound)
+          (zip (toLists _A) (concat $ toLists b)) =
+        error "getDictionary: starting vertex is infeasible for A*x <= b"
+    | otherwise = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+1)) <|> (p21 <-> p22) <|> (p31 <-> p32))
     where
         (newA, newb) = sortSystem _A b vertex
         rows = nrows newA
@@ -143,7 +155,7 @@ getDictionary _A b vertex = Dict [0..rows] [rows+1..rows+cols] ((identity (rows+
         slack = identity rows
         dictionary = newA <|> slack
         -- LRS objective (Avis 1999, eq 3.6): coefficient 1 on each cobasic
-        -- (decision) variable, 0 on basics (slacks). Layout is
+        -- slack variable, 0 on the initial basics. Layout is
         --   [obj | basic_cols (rows of them) | cobasic_cols (cols of them)].
         topRow = rowFromList $ 1 : replicate rows 0 ++ replicate cols 1
         c_B = submatrix' (0,0) (1,rows) topRow
@@ -274,13 +286,21 @@ hasRay dictionary = rays
         dim = cols - rows -1
         cols = numCols dictionary
         nonPositive column = all (<=0) ((concat.toLists) column)
+        -- Columns retain variable IDs after pivots, so inspect the current
+        -- cobasis rather than the original contiguous cobasic columns.
         colsWithRays = if dim+1 == rows then
-                            [dictMatrix^.colAt j | j <- [rows..cols-2]]
-                        else [dictMatrix^.colAt j | j <- [rows..cols-2], nonPositive (submatrix' (dim+1,rows-1) (j,j) dictMatrix )]
-        rays =  map (concat . toLists . (submatrix' (1,dim) (0,0))) colsWithRays
+                            [dictMatrix^.colAt j | j <- dictionary^._N]
+                        else [dictMatrix^.colAt j | j <- dictionary^._N, nonPositive (submatrix' (dim+1,rows-1) (j,j) dictMatrix )]
+        -- x_B = rhs - D_N*x_N: increasing a cobasic slack follows the
+        -- negative decision entries (Avis 1999, Proposition 3.2).
+        rays = map (map negate . concat . toLists . (submatrix' (1,dim) (0,0))) colsWithRays
 
 
 
+-- | Enumerate vertices/ray directions of a full-dimensional polyhedron
+-- given by A*x <= b and a feasible starting vertex. Decision variables are
+-- unrestricted. The caller must supply enough independent tight constraints
+-- for the initial basis.
 lrs :: Matrix Rational -> Col -> Vertex-> [Vertex]
 lrs matrix b vertex = (sort.nub) $ revSearch lexOptimum
     where

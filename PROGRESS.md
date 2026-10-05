@@ -1,5 +1,24 @@
 # LRS correctness progress
 
+## Current status
+
+P3/P4 were enabled without changing their inputs or LRS in commit `8889243`.
+The full suite then produced **36 passes and 2 failures** (38 cases): both
+permutohedra return only their starting vertex. This is the recorded failing
+regression checkpoint, not a new algorithm change.
+
+Evidence: [activation log](validation/permutohedra-red/stack-test.log) and
+[run metadata](validation/permutohedra-red/metadata.json).
+
+The convention correction now passes all **38 enabled tests**. All handwritten
+inputs use Ax <= b; malformed/infeasible starts are rejected. Ray extraction
+uses the current cobasis and the negative decision-column entries, following
+Avis Proposition 3.2. Pivot and lexicographic ratio logic are unchanged.
+
+Evidence: [fix log](validation/convention-fix/stack-test.log) and
+[metadata](validation/convention-fix/metadata.json). Wider regression coverage
+and degenerate-start basis selection are next.
+
 ## Verified baseline — 2026-10-05
 
 - Source checkpoint: `c55eed45f3d3ca431b67a0d0b689669dab691a1e`.
@@ -8,7 +27,7 @@
 - Result: **36 enabled tests pass**, including **11 LRS tests**; exit status 0.
 - Environment: Stack 3.1.1, GHC 9.8.4, resolver lts-23.19.
 - Validation used the existing up-to-date build, not a clean environment rebuild.
-- No algorithm fixes have been applied after the checkpoint.
+- This historical baseline predates the fixes recorded in Current status.
 
 The checkpoint preserves the previously uncommitted P3/P4 fixture definitions exactly.
 The prior local branch contains 13 commits beyond GitHub's `upgrade_lts`. The draft
@@ -33,7 +52,7 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
 | Stage | Status | Acceptance |
 | --- | --- | --- |
 | Preserve checkout and verify baseline | Complete | Backup, checkpoint, saved full log and inventory |
-| Make inequality convention consistent | Pending | Document Ax <= b; convert handwritten >= fixtures; validate starting feasibility; P3/P4 return exact 6/24 vertices |
+| Make inequality convention consistent | Complete (38 tests pass) | Document Ax <= b; convert handwritten >= fixtures; validate starting feasibility; P3/P4 return exact 6/24 vertices |
 | Strengthen bounded-polytope regressions | Pending | Multiple starting vertices, row orderings, positive row scaling, transformed polytopes and simplex products; check output feasibility |
 | Audit ray enumeration | Pending | Check cobasic-variable selection, direction sign, feasibility and exact expected rays under the same convention |
 | Audit degenerate vertices | Pending | Independent tight-basis selection and lexicographic behavior; cross-polytopes and additional valid families |
