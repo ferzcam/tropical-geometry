@@ -26,10 +26,13 @@ testNormalVector = HU.testCase "Tests for normal vector" $ do
 testNormalCone :: TestTree
 testNormalCone = HU.testCase "Tests for normal cone" $
     normalCone (Vertex (4,4,4)) [facet1, facet2, facet3] @?= [(256,0,0),(0,256,0),(0,0,256)]
--- WORKS BUT THE RESULT IS WRONG BECAUSE ORDER NOT ALWAYS MATCHES
--- testAdjacentFacets :: TestTree
--- testAdjacentFacets = HU.testCase "Tests for adjacent facets" $ do
---     adjacentFacets (4,4,4) cube @?= facetsPoint444
+-- At (4,4,4), exactly the cube faces x=4, y=4 and z=4 meet.
+-- Compare facet membership independent of edge/list order. This assertion
+-- does not specify the clockwise/counterclockwise ordering contract.
+testAdjacentFacets :: TestTree
+testAdjacentFacets = HU.testCase "Cube vertex belongs to exactly three facets" $
+    sort (map (sort . fromFacet) (adjacentFacets (4,4,4) cube))
+        @?= sort (map (sort . fromFacet) facetsPoint444)
 
 testsPolyhedral :: TestTree
-testsPolyhedral = testGroup "Test for computing polyhedral algorithms" [testNormalVector, testNormalCone]
+testsPolyhedral = testGroup "Test for computing polyhedral algorithms" [testNormalVector, testNormalCone, testAdjacentFacets]

@@ -62,12 +62,33 @@ testVerticesNormals = HU.testCase "Test for vertices and their normals" $ do
         (verticesNormals f4) @?= MS.fromList [((0,0), sw)]
         (verticesNormals f5) @?= MS.fromList [((0,4), sw)]
         
+-- Historical unit-length drawing examples, retained below. The public output
+-- uses finite segments to draw unbounded rays; compare their starting points
+-- and primitive directions, without imposing a display length of one.
 -- testHypersurface :: TestTree
 -- testHypersurface = HU.testCase "Compute hypersurface of polynomials" $ do
 --         (sort $ hypersurface f4) @?= sort [((0,0), (0,1)), ((0,0), (1,0)), ((0,0), (-1,-1))]
 --         (sort $ hypersurface f5) @?= sort [((0,4), (0,5)), ((0,4), (1,4)), ((0,4), (-1, 3))]
 
 
-testsHypersurface :: TestTree
-testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticesNormals] 
+-- Only used for these single-vertex fans, whose every edge is an unbounded
+-- ray. A zero-length segment retains direction (0,0), so it fails the oracle.
+primitiveRay :: ((Int,Int), (Int,Int)) -> ((Int,Int), (Int,Int))
+primitiveRay (p@(x,y), (u,v)) =
+    let dx = u-x; dy = v-y; divisor = gcd dx dy
+    in (p, if divisor == 0 then (0,0) else (dx `div` divisor, dy `div` divisor))
 
+testHypersurfaceF4 :: TestTree
+testHypersurfaceF4 = HU.testCase "Zero-coefficient cubic has three tropical rays" $
+    sort (map primitiveRay (hypersurface f4))
+        @?= sort [((0,0),(0,1)),((0,0),(1,0)),((0,0),(-1,-1))]
+
+-- f5 is min(2+x-y, 2-y, -2). Its three equal terms meet at (0,4);
+-- pairwise ties attaining the minimum extend north, east and southwest.
+testHypersurfaceF5 :: TestTree
+testHypersurfaceF5 = HU.testCase "Laurent triangle has three translated tropical rays" $
+    sort (map primitiveRay (hypersurface f5))
+        @?= sort [((0,4),(0,1)),((0,4),(1,0)),((0,4),(-1,-1))]
+
+testsHypersurface :: TestTree
+testsHypersurface = testGroup "Test for Computing Hypersurfaces" [testMapTermPoint, testFindFanVertex, testInnerNormals, testVerticesNormals, testHypersurfaceF4, testHypersurfaceF5]

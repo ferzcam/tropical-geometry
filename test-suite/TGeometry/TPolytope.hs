@@ -31,13 +31,20 @@ testProjectionToR2 :: TestTree
 testProjectionToR2 =   HU.testCase "Project 2D ConvexHull to produce 2D subdivision" $ do
         normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF1) @?= normalizeSubdivision subdivisionF1
         normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF2) @?= normalizeSubdivision subdivisionF2
-        --normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF4) @?= normalizeSubdivision subdivisionF4
-        --normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF5) @?= normalizeSubdivision subdivisionF5
+
+-- All lifted f4 points are coplanar; their projected extreme triangle is
+-- (0,0),(3,0),(0,3). f5 consists of exactly three noncollinear lifted points.
+testCoplanarSubdivision :: TestTree
+testCoplanarSubdivision = HU.testCase "Subdivision of coplanar lifted triangle" $
+    normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF4)
+        @?= normalizeSubdivision subdivisionF4
+
+testThreePointSubdivision :: TestTree
+testThreePointSubdivision = HU.testCase "Subdivision of three lifted points" $
+    normalizeSubdivision (projectionToR2 $ fromJust $ convexHull3 newF5)
+        @?= normalizeSubdivision subdivisionF5
 
 
 
 testsPolytope :: TestTree
-testsPolytope = testGroup "Test for polytopes" [testProjectionToR2]
-
-
-
+testsPolytope = testGroup "Test for polytopes" [testProjectionToR2, testCoplanarSubdivision, testThreePointSubdivision]

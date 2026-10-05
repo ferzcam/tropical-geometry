@@ -2,6 +2,17 @@
 
 ## Current status
 
+Expanded regression checkpoint: **75 pass, 13 fail out of 88 enabled tests**.
+This includes 21 independent bounded-shape cases, eight degenerate-family cases,
+nine input-validation cases and 12 restored/corrected legacy cases.
+All are ordinary tests; known failures are not marked as expected successes.
+
+Failures: five singular-basis cases, two small-hull crashes, one hull retaining
+two facet-interior points, four missing lower-dimensional facet rejections, and
+one insufficiently clear interior-start error. The last already rejects the
+input but lacks the planned diagnostic. Evidence: [expanded log](validation/expanded-red/stack-test.log).
+
+
 P3/P4 were enabled without changing their inputs or LRS in commit `8889243`.
 The full suite then produced **36 passes and 2 failures** (38 cases): both
 permutohedra return only their starting vertex. This is the recorded failing

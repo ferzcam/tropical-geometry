@@ -82,7 +82,10 @@ test-suite tropical-geometry-test-suite
       TArithmetic.TNumbers
       TGeometry.TConvexHull2
       TGeometry.TConvexHull3
+      TGeometry.TLRSDegenerate
+      TGeometry.TLRSInputValidation
       TGeometry.TLRSPol2
+      TGeometry.TLRSRegression
       TGeometry.TPolyhedral
       TGeometry.TPolytope
       TPolynomial.THypersurface
