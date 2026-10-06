@@ -18,6 +18,7 @@ extra-source-files:
     comparison/run.py
     comparison/verify.py
     comparison/README.md
+    comparison/RESULTS.md
     package.yaml
     README.md
     stack.yaml

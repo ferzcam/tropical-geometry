@@ -73,3 +73,10 @@ nonintegral fan vertices. The new `Geometry.TropicalCurve` API and browser viewe
 retain exact rational coordinates, including fractional vertices. Affine
 reconstruction and LRS use rational arithmetic; intrinsic extreme-point filtering
 still uses the existing GLPK backend.
+
+## Solver comparisons
+
+See the [correctness and timing results](comparison/RESULTS.md) for comparisons
+between the tailored hull algorithms, direct exact tropical solvers, and Haskell
+LRS in two and three dimensions. The [reproduction protocol](comparison/README.md)
+includes the supported domains and the three-variable graph-skeleton contract.
