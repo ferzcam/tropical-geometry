@@ -6,13 +6,14 @@ const $ = id => document.getElementById(id);
 const palette = ['#157768', '#bc6534', '#6558a5', '#367eb0', '#ad4776', '#7b842b'];
 const examples = {
   line: [[0, 0, '0'], [1, 0, '0'], [0, 1, '0']],
+  cubic: [[0, 0, '0'], [1, 0, '1'], [0, 1, '1'], [2, 0, '4'], [1, 1, '3'], [0, 2, '4'], [3, 0, '9'], [2, 1, '7'], [1, 2, '7'], [0, 3, '9']],
   fractional: [[0, 0, '0'], [2, 0, '-1'], [0, 2, '-1']],
   square: [[0, 0, '0'], [1, 0, '0'], [1, 1, '0'], [0, 1, '0']],
   hexagon: [[0, 0, '0'], [1, 0, '0'], [2, 1, '0'], [2, 2, '0'], [1, 2, '0'], [0, 1, '0']],
   mixed: [[0, 0, '0'], [1, 0, '0'], [1, 1, '0'], [0, 1, '0'], [2, 0, '1']],
   parallel: [[0, 0, '0'], [1, 0, '-1'], [2, 0, '0']]
 };
-let boards = {}, bounds = {}, groups = [], selected = null, requestId = 0, controller, result;
+let boards = {}, bounds = {}, groups = [], selected = null, requestId = 0, importId = 0, controller, result;
 const defaultSelection = 'Hover over geometry or select an item below. Matching colors connect the two views.';
 
 function status(message, kind = '') { $('status').textContent = message; $('status').className = kind; }
@@ -47,14 +48,71 @@ function renumber() {
     row.querySelector('button').setAttribute('aria-label', `Remove term ${i + 1}`);
   });
 }
+// Keep these file/editor limits aligned with serve.py's validate_request.
+const coefficientPattern = /^-?[0-9]{1,18}(?:\/[1-9][0-9]{0,17})?$/;
+function hasKeys(value, keys) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === keys.length
+    && keys.every(key => Object.prototype.hasOwnProperty.call(value, key));
+}
+function validatePolynomial(value) {
+  if (!hasKeys(value, ['terms'])) throw new Error('Expected an object containing "terms".');
+  if (!Array.isArray(value.terms) || value.terms.length < 1 || value.terms.length > 32) throw new Error('Provide between 1 and 32 terms.');
+  value.terms.forEach((term, i) => {
+    if (!hasKeys(term, ['x', 'y', 'coefficient'])) throw new Error(`Term ${i + 1}: each term needs x, y, and coefficient.`);
+    if (![term.x, term.y].every(n => Number.isInteger(n) && Math.abs(n) <= 100)) throw new Error(`Term ${i + 1}: exponents must be integers between -100 and 100.`);
+    // JS $ also matches before a final newline; require the complete string.
+    if (typeof term.coefficient !== 'string' || coefficientPattern.exec(term.coefficient)?.[0] !== term.coefficient) throw new Error(`Term ${i + 1}: coefficients must be integer or fraction strings, with at most 18 digits per part and a positive denominator.`);
+  });
+  return value.terms;
+}
 function readTerms() {
   const terms = [...$('terms').children].map((row, i) => {
     const values = [...row.querySelectorAll('input')].map(input => input.value.trim());
     if (!values.slice(0, 2).every(v => /^[+-]?\d+$/.test(v) && Number.isSafeInteger(Number(v)))) throw new Error(`Term ${i + 1}: exponents must be integers in the supported range.`);
     return { x: Number(values[0]), y: Number(values[1]), coefficient: values[2] };
   });
-  if (!terms.length) throw new Error('Add at least one term.');
-  return terms;
+  return validatePolynomial({ terms });
+}
+function fileStatus(message, kind = '') {
+  $('file-status').textContent = message;
+  $('file-status').className = `hint ${kind}`;
+}
+async function importPolynomial() {
+  const file = $('polynomial-file').files[0];
+  $('polynomial-file').value = ''; // Allow selecting the same file again.
+  if (!file) return;
+  const id = ++importId, revision = requestId;
+  try {
+    if (file.size > 32768) throw new Error('Polynomial files must be at most 32768 bytes.');
+    const content = await file.text();
+    if (id !== importId || revision !== requestId) return;
+    let value;
+    try { value = JSON.parse(content); }
+    catch { throw new Error('The file must contain valid JSON.'); }
+    const terms = validatePolynomial(value);
+    // Only a fully validated replacement may invalidate the previous drawing.
+    $('terms').replaceChildren();
+    terms.forEach(term => addRow([term.x, term.y, term.coefficient]));
+    $('example').value = 'custom';
+    fileStatus(`Imported ${file.name}.`);
+    compute();
+  } catch (error) {
+    if (id !== importId || revision !== requestId) return;
+    fileStatus(`Could not import polynomial: ${error.message}`, 'error');
+  }
+}
+function exportPolynomial() {
+  try {
+    const terms = readTerms();
+    const url = URL.createObjectURL(new Blob([JSON.stringify({ terms }, null, 2) + '\n'], { type: 'application/json' }));
+    const anchor = document.createElement('a');
+    anchor.href = url; anchor.download = 'tropical-polynomial.json'; anchor.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    fileStatus('Exported tropical-polynomial.json.');
+  } catch (error) {
+    fileStatus(`Could not export polynomial: ${error.message}`, 'error');
+  }
 }
 function number(value) {
   const parts = String(value).split('/'), n = Number(parts[0]) / (parts.length === 2 ? Number(parts[1]) : 1);
@@ -183,9 +241,12 @@ function exportSvg(name) {
   const anchor = document.createElement('a'); anchor.href = url; anchor.download = `tropical-${name}.svg`; anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+$('import-polynomial').addEventListener('click', () => $('polynomial-file').click());
+$('polynomial-file').addEventListener('change', importPolynomial);
+$('export-polynomial').addEventListener('click', exportPolynomial);
 $('add-term').addEventListener('click', () => { addRow(); invalidate(); });
 $('polynomial-form').addEventListener('submit', compute);
-$('example').addEventListener('change', () => { $('terms').replaceChildren(); examples[$('example').value].forEach(addRow); compute(); });
+$('example').addEventListener('change', () => { if (!examples[$('example').value]) return; fileStatus(''); $('terms').replaceChildren(); examples[$('example').value].forEach(addRow); compute(); });
 $('clear-selection').addEventListener('click', () => { selected = null; highlight(null); });
 for (const name of ['curve', 'newton']) {
   $(`reset-${name}`).addEventListener('click', () => boards[name]?.setBoundingBox(bounds[name], true));

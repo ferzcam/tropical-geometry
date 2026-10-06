@@ -42,6 +42,22 @@ use browser floating-point arithmetic; labels and exported metadata retain fract
 Single monomials have an empty root locus. Collinear exponent supports can
 produce complete parallel lines, rather than vertices with outgoing rays.
 
+## Import and save polynomials
+
+Use **Import polynomial** to open a JSON file; a valid file fills the editor and
+draws the curve automatically. **Export JSON** downloads the current terms,
+preserving coefficient strings such as `1/3`. Files use the same `terms`
+format as the API example below. Malformed or unsupported files leave the
+existing polynomial intact.
+
+Try [the genus-1 cubic](examples/genus-1-cubic.json), also available from the
+viewer as a download and a built-in example. Its coefficients are a² + a*b + b²
+for all nonnegative exponent pairs with a+b at most 3. Its tropical curve has one
+bounded hexagonal cycle near (-3,-3), visibly exhibiting genus 1.
+
+Files must be JSON objects containing only `terms`, up to 32 KiB in size,
+and meet the same term/exponent/coefficient limits as the local API.
+
 ## Exact geometry and API
 
 `Geometry.TropicalCurve.tropicalCurve` accepts `Term` values with integer

@@ -25,6 +25,7 @@ extra-source-files:
 - viewer/package.json
 - viewer/package-lock.json
 - viewer/tests/*.js
+- viewer/examples/*.json
 - viewer/vendor/*
 
 ghc-options: -Wall

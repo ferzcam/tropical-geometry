@@ -14,7 +14,7 @@ from urllib.parse import urlsplit, unquote
 MAX_BODY = 32768
 MAX_TERMS = 32
 COEFFICIENT = re.compile(r"-?[0-9]{1,18}(?:/[1-9][0-9]{0,17})?\Z")
-ASSETS = {"/": "index.html", "/index.html": "index.html", "/app.js": "app.js", "/style.css": "style.css"}
+ASSETS = {"/": "index.html", "/index.html": "index.html", "/app.js": "app.js", "/style.css": "style.css", "/examples/genus-1-cubic.json": "examples/genus-1-cubic.json"}
 
 
 def validate_request(value):

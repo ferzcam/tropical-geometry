@@ -29,6 +29,7 @@ extra-source-files:
     viewer/package.json
     viewer/package-lock.json
     viewer/tests/viewer.spec.js
+    viewer/examples/genus-1-cubic.json
     viewer/vendor/jsxgraph.css
     viewer/vendor/jsxgraphcore.js
     viewer/vendor/jsxgraphcore.js.LICENSE.txt

@@ -5,8 +5,8 @@ Haskell library for tropical algebra and computational geometry.
 ## Interactive tropical curves
 
 The browser viewer displays a tropical curve beside its Newton subdivision,
-with linked selection, exact fraction labels, editable coefficients, pan/zoom,
-and SVG export. JSXGraph is bundled locally; the running viewer needs no internet.
+with linked selection, exact fraction labels, editable coefficients, JSON file
+import/export, pan/zoom, and SVG export. A genus-1 cubic example shows a bounded cycle. JSXGraph is bundled locally; the running viewer needs no internet.
 
 Build the geometry executable, then launch the local viewer:
 
