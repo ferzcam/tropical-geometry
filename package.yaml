@@ -13,6 +13,8 @@ maintainer: "Fernando Zhapa"
 
 extra-source-files:
 - CHANGELOG.md
+- comparison/*.py
+- comparison/*.md
 #- LICENSE.md
 - package.yaml
 - README.md
@@ -45,6 +47,7 @@ library:
   - Geometry.Vertex
   - Geometry.Facet
   - Geometry.LRS
+  - Geometry.LRSHull
   - Geometry.TropicalCurve
   - Geometry.TropicalSlice
   - Graphics.Drawings
@@ -70,6 +73,12 @@ library:
 
 
 executables:
+  solver-comparison:
+    source-dirs: comparison
+    main: Main.hs
+    other-modules: [Methods, Skeleton3, HullSkeleton3, HistoricalRegression]
+    dependencies: [base, tropical-geometry, aeson, bytestring, text, containers, matrix, deepseq, sized]
+    ghc-options: [-O2, -rtsopts, -threaded]
   tropical-viewer-geometry:
     source-dirs: executable
     main: ViewerMain.hs

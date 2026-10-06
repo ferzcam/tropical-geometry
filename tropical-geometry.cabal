@@ -15,6 +15,9 @@ license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     CHANGELOG.md
+    comparison/run.py
+    comparison/verify.py
+    comparison/README.md
     package.yaml
     README.md
     stack.yaml
@@ -61,6 +64,7 @@ library
       Geometry.Vertex
       Geometry.Facet
       Geometry.LRS
+      Geometry.LRSHull
       Geometry.TropicalCurve
       Geometry.TropicalSlice
       Graphics.Drawings
@@ -86,6 +90,28 @@ library
     , sized
     , type-natural
     , vector
+  default-language: Haskell2010
+
+executable solver-comparison
+  main-is: Main.hs
+  other-modules:
+      Methods
+      Skeleton3
+      HullSkeleton3
+      HistoricalRegression
+  hs-source-dirs:
+      comparison
+  ghc-options: -Wall -O2 -rtsopts -threaded
+  build-depends:
+      aeson
+    , base
+    , bytestring
+    , containers
+    , deepseq
+    , matrix
+    , sized
+    , text
+    , tropical-geometry
   default-language: Haskell2010
 
 executable tropical-geometry
@@ -122,6 +148,7 @@ test-suite tropical-geometry-test-suite
       TGeometry.TLRSCone
       TGeometry.TLRSCyclic
       TGeometry.TLRSDegenerate
+      TGeometry.TLRSHull
       TGeometry.TLRSInputValidation
       TGeometry.TLRSPol2
       TGeometry.TLRSRegression

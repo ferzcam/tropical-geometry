@@ -18,6 +18,7 @@ import TGeometry.TLRSPol2
 import TGeometry.TLRSRegression
 import TGeometry.TLRSCyclic
 import TGeometry.TLRSCone
+import TGeometry.TLRSHull
 import TGeometry.TLRSDegenerate
 import TGeometry.TTropicalCurve
 import TGeometry.TTropicalSlice
@@ -44,6 +45,7 @@ allTests = testGroup "Tasty tests" [
             testsLRSRegression,
             testsLRSCyclic,
             testsLRSCone,
+            testsLRSHull,
             testsLRSDegenerate,
             testsLRSInputValidation,
             testsTropicalCurve,

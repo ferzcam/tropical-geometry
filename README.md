@@ -37,7 +37,7 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
   --jobs 2 --test-arguments='--timeout=30s -j2 +RTS -N2 -RTS'
 ```
 
-The verified suite has **159 enabled, passing cases**, including independent
+The verified suite has **169 enabled, passing cases**, including independent
 polytope fixtures, restored geometry cases and explicit invalid-input tests.
 This verification used an existing environment, not a fresh dependency installation.
 The suite includes affine hulls, degenerate polytopes, coplanar hulls, and polygonal
