@@ -25,3 +25,14 @@ cabal.project.local~
 *.txt~
 *_bench.txt
 *.pdf
+
+# Internal work notes and local validation output
+[Pp][Rr][Oo][Gg][Rr][Ee][Ss][Ss]*.[Mm][Dd]
+/validation/
+/.agent-work/
+/.claude/
+/.codex/
+
+# Locally built executables
+/tropical-geometry
+/tropical-geometry-threaded

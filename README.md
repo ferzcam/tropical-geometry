@@ -22,9 +22,9 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
 
 The verified suite has **133 enabled, passing cases**, including independent
 polytope fixtures, restored geometry cases and explicit invalid-input tests.
-See [PROGRESS.md](PROGRESS.md) for validation logs, coverage, known limits and
-checkpoint/rollback instructions. This verification used an existing environment,
-not a fresh dependency installation.
+This verification used an existing environment, not a fresh dependency installation.
+The suite includes affine hulls, degenerate polytopes, coplanar hulls, and polygonal
+subdivisions; current API limitations are described below.
 
 ## LRS input contract
 
