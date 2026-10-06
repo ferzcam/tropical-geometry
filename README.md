@@ -37,7 +37,7 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
   --jobs 2 --test-arguments='--timeout=30s -j2 +RTS -N2 -RTS'
 ```
 
-The verified suite has **159 enabled, passing cases**, including independent
+The verified suite has **169 enabled, passing cases**, including independent
 polytope fixtures, restored geometry cases and explicit invalid-input tests.
 This verification used an existing environment, not a fresh dependency installation.
 The suite includes affine hulls, degenerate polytopes, coplanar hulls, and polygonal
@@ -73,3 +73,10 @@ nonintegral fan vertices. The new `Geometry.TropicalCurve` API and browser viewe
 retain exact rational coordinates, including fractional vertices. Affine
 reconstruction and LRS use rational arithmetic; intrinsic extreme-point filtering
 still uses the existing GLPK backend.
+
+## Solver comparisons
+
+See the [correctness and timing results](comparison/RESULTS.md) for comparisons
+between the tailored hull algorithms, direct exact tropical solvers, and Haskell
+LRS in two and three dimensions. The [reproduction protocol](comparison/README.md)
+includes the supported domains and the three-variable graph-skeleton contract.
