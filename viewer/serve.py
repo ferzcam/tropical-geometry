@@ -13,22 +13,35 @@ from urllib.parse import urlsplit, unquote
 
 MAX_BODY = 32768
 MAX_TERMS = 32
-COEFFICIENT = re.compile(r"-?[0-9]{1,18}(?:/[1-9][0-9]{0,17})?\Z")
-ASSETS = {"/": "index.html", "/index.html": "index.html", "/app.js": "app.js", "/style.css": "style.css", "/examples/genus-1-cubic.json": "examples/genus-1-cubic.json"}
+RATIONAL = re.compile(r"-?[0-9]{1,18}(?:/[1-9][0-9]{0,17})?\Z")
+ASSETS = {
+    "/": "index.html", "/index.html": "index.html",
+    "/slices.html": "slices.html", "/slices.js": "slices.js",
+    "/slices.css": "slices.css", "/app.js": "app.js",
+    "/style.css": "style.css",
+    "/examples/genus-1-cubic.json": "examples/genus-1-cubic.json",
+}
 
 
-def validate_request(value):
-    if not isinstance(value, dict) or set(value) != {"terms"}:
+def validate_request(value, slice_request=False):
+    expected = {"terms", "height"} if slice_request else {"terms"}
+    if not isinstance(value, dict) or set(value) != expected:
+        if slice_request:
+            raise ValueError('Expected an object containing "terms" and "height".')
         raise ValueError('Expected an object containing "terms".')
+    if slice_request and (not isinstance(value["height"], str) or not RATIONAL.fullmatch(value["height"])):
+        raise ValueError("Height must be an integer or fraction string, with at most 18 digits per part and a positive denominator.")
     terms = value["terms"]
     if not isinstance(terms, list) or not 1 <= len(terms) <= MAX_TERMS:
         raise ValueError(f"Provide between 1 and {MAX_TERMS} terms.")
+    required = {"x", "y", "z", "coefficient"} if slice_request else {"x", "y", "coefficient"}
+    exponents = ("x", "y", "z") if slice_request else ("x", "y")
     for term in terms:
-        if not isinstance(term, dict) or set(term) != {"x", "y", "coefficient"}:
-            raise ValueError("Each term needs x, y, and coefficient.")
-        if any(type(term[k]) is not int or abs(term[k]) > 100 for k in ("x", "y")):
+        if not isinstance(term, dict) or set(term) != required:
+            raise ValueError("Each slice term needs x, y, z, and coefficient." if slice_request else "Each term needs x, y, and coefficient.")
+        if any(type(term[k]) is not int or abs(term[k]) > 100 for k in exponents):
             raise ValueError("Exponents must be integers between -100 and 100.")
-        if not isinstance(term["coefficient"], str) or not COEFFICIENT.fullmatch(term["coefficient"]):
+        if not isinstance(term["coefficient"], str) or not RATIONAL.fullmatch(term["coefficient"]):
             raise ValueError("Coefficients must be integer or fraction strings, with at most 18 digits per part and a positive denominator.")
     return value
 
@@ -91,9 +104,10 @@ class ViewerHandler(BaseHTTPRequestHandler):
         if not self.trusted_request():
             self.json_response(403, {"error": "Cross-origin requests are not allowed."})
             return
-        if self.path != "/api/curve":
+        if self.path not in ("/api/curve", "/api/slice"):
             self.json_response(404, {"error": "Not found."})
             return
+        is_slice = self.path == "/api/slice"
         if self.headers.get("Content-Type", "").split(";", 1)[0].strip() != "application/json":
             self.json_response(415, {"error": "Use application/json."})
             return
@@ -101,9 +115,9 @@ class ViewerHandler(BaseHTTPRequestHandler):
             length = int(self.headers.get("Content-Length", "0"))
             if not 0 < length <= MAX_BODY:
                 raise ValueError("Request body is empty or too large.")
-            request = validate_request(json.loads(self.rfile.read(length)))
+            request = validate_request(json.loads(self.rfile.read(length)), is_slice)
         except (ValueError, UnicodeError):
-            self.json_response(400, {"error": "Invalid request: provide 1–32 terms, integer exponents within ±100, and integer/fraction coefficient strings (18 digits per part)."})
+            self.json_response(400, {"error": "Invalid request: provide 1–32 terms, integer exponents within ±100, and integer/fraction coefficient and height strings (18 digits per part)." if is_slice else "Invalid request: provide 1–32 terms, integer exponents within ±100, and integer/fraction coefficient strings (18 digits per part)."})
             return
         if not self.server.backend_lock.acquire(blocking=False):
             self.json_response(503, {"error": "Geometry backend is busy; try again."})

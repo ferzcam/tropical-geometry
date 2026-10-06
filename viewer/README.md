@@ -42,6 +42,32 @@ use browser floating-point arithmetic; labels and exported metadata retain fract
 Single monomials have an empty root locus. Collinear exponent supports can
 produce complete parallel lines, rather than vertices with outgoing rays.
 
+## Horizontal slices of three-variable polynomials
+
+Open **Explore 3D slices** or visit `/slices.html`. Choose one of the
+demonstrations and move the height slider or enter an exact rational height.
+The graph stays in the x-y plane while z is fixed at the selected height.
+The cubic example has a loop at z=0, which collapses at z=1.
+
+The page shows the actual intersection with the original tropical hypersurface.
+At special heights, distinct three-variable monomials may become identical
+affine functions of x and y. Their joint minimum can occupy a filled region,
+not just a curve. Such regions are shaded and clipped to the current viewport.
+For example, `min(0,x,y,z)` at z=0 includes the nonnegative quadrant;
+`min(0,z)` at z=0 includes the entire plane and at other heights is empty.
+
+The curve skeleton and its subdivision are computed after specialization.
+The additional shaded regions retain the original three-dimensional term
+identities. This is a horizontal-section viewer, not a full 3D surface renderer.
+
+POST `/api/slice` with `terms` containing integer `x`, `y`, and `z`
+exponents, rational-string `coefficient`, and a rational-string `height`.
+The existing limits apply to each exponent, coefficient, and height.
+The response includes the specialized curve, canonical `height`,
+normalized `sourceTerms`, and candidate `regions` as exact inequalities
+`a*x + b*y <= bound`. A candidate can be empty or lower-dimensional;
+the page fills only its visible positive-area intersection with the viewport.
+
 ## Import and save polynomials
 
 Use **Import polynomial** to open a JSON file; a valid file fills the editor and
@@ -103,7 +129,7 @@ npm test
 
 Browser tests require the viewer running at http://127.0.0.1:8765. Set
 `VIEWER_URL` to test a different port. Without `TROPICAL_BACKEND`, the Python
-suite skips its two real-backend integration tests.
+suite skips its real-backend integration tests.
 Geometry tests check exact fractional vertices, polygonal duality, minimum
 attainment, weighted balancing, degenerate supports, and normalization.
 

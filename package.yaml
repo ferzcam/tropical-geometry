@@ -46,6 +46,7 @@ library:
   - Geometry.Facet
   - Geometry.LRS
   - Geometry.TropicalCurve
+  - Geometry.TropicalSlice
   - Graphics.Drawings
   - Util
   - Core

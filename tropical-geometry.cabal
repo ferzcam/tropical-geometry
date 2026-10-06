@@ -22,12 +22,18 @@ extra-source-files:
     viewer/serve.py
     viewer/test_geometry_cli.py
     viewer/test_server.py
+    viewer/test_slice_cli.py
     viewer/index.html
+    viewer/slices.html
     viewer/app.js
     viewer/playwright.config.js
+    viewer/slices.js
+    viewer/slices.css
     viewer/style.css
     viewer/package.json
     viewer/package-lock.json
+    viewer/tests/import.spec.js
+    viewer/tests/slices.spec.js
     viewer/tests/viewer.spec.js
     viewer/examples/genus-1-cubic.json
     viewer/vendor/jsxgraph.css
@@ -56,6 +62,7 @@ library
       Geometry.Facet
       Geometry.LRS
       Geometry.TropicalCurve
+      Geometry.TropicalSlice
       Graphics.Drawings
       Util
       Core
@@ -121,6 +128,7 @@ test-suite tropical-geometry-test-suite
       TGeometry.TPolyhedral
       TGeometry.TPolytope
       TGeometry.TTropicalCurve
+      TGeometry.TTropicalSlice
       TPolynomial.THypersurface
       TPolynomial.TMonomial
       TPolynomial.TPrelude
