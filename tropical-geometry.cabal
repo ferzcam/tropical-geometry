@@ -18,6 +18,22 @@ extra-source-files:
     package.yaml
     README.md
     stack.yaml
+    viewer/README.md
+    viewer/serve.py
+    viewer/test_geometry_cli.py
+    viewer/test_server.py
+    viewer/index.html
+    viewer/app.js
+    viewer/playwright.config.js
+    viewer/style.css
+    viewer/package.json
+    viewer/package-lock.json
+    viewer/tests/viewer.spec.js
+    viewer/vendor/jsxgraph.css
+    viewer/vendor/jsxgraphcore.js
+    viewer/vendor/jsxgraphcore.js.LICENSE.txt
+    viewer/vendor/LICENSE.MIT
+    viewer/vendor/manifest.json
 
 source-repository head
   type: git
@@ -28,6 +44,7 @@ library
       Polynomial.Monomial
       Polynomial.Prelude
       Polynomial.Hypersurface
+      Polynomial.Curve
       Arithmetic.Numbers
       Arithmetic.Matrix
       Geometry.ConvexHull2
@@ -37,6 +54,7 @@ library
       Geometry.Vertex
       Geometry.Facet
       Geometry.LRS
+      Geometry.TropicalCurve
       Graphics.Drawings
       Util
       Core
@@ -64,13 +82,24 @@ library
 
 executable tropical-geometry
   main-is: Main.hs
-  other-modules:
-      Paths_tropical_geometry
   hs-source-dirs:
       executable
   ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N -freverse-errors
   build-depends:
       base
+    , tropical-geometry
+  default-language: Haskell2010
+
+executable tropical-viewer-geometry
+  main-is: ViewerMain.hs
+  hs-source-dirs:
+      executable
+  ghc-options: -Wall -rtsopts -threaded
+  build-depends:
+      aeson
+    , base
+    , bytestring
+    , text
     , tropical-geometry
   default-language: Haskell2010
 
@@ -90,6 +119,7 @@ test-suite tropical-geometry-test-suite
       TGeometry.TLRSRegression
       TGeometry.TPolyhedral
       TGeometry.TPolytope
+      TGeometry.TTropicalCurve
       TPolynomial.THypersurface
       TPolynomial.TMonomial
       TPolynomial.TPrelude

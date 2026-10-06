@@ -36,3 +36,11 @@ cabal.project.local~
 # Locally built executables
 /tropical-geometry
 /tropical-geometry-threaded
+CLAUDE.md
+AGENTS.md
+README.html
+node_modules/
+__pycache__/
+*.pyc
+/viewer/test-results/
+/viewer/playwright-report/

@@ -1,0 +1,12 @@
+{
+  "package": "jsxgraph",
+  "version": "1.14.0",
+  "source": "https://registry.npmjs.org/jsxgraph/-/jsxgraph-1.14.0.tgz",
+  "integrity": "sha512-BXdiVqmSKDKNuLvux6lvio0dY4rQy0G0c+ZAhP2YSuCqobczlzRwOzUn6USmIiJQs6+hvPyrbUeQaeg0d0gbXg==",
+  "sha256": {
+    "jsxgraphcore.js": "72481cfa439d74c4eb517dbc1c7e948ecbfcfafa07a69bb116f38c04065fa56b",
+    "jsxgraph.css": "ec20cf945b24635586faf6eea865cf2d0ab23e7156f3c08b37abf70a501bb375",
+    "LICENSE.MIT": "43e325001487de7f09745fbe086b054bb1b70d4ab58060e87153849365b23ff1",
+    "jsxgraphcore.js.LICENSE.txt": "7f15c10b7ed23971076d2eae092f817ff481e14cfe9fd9ecf61be5345e9981ca"
+  }
+}

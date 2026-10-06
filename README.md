@@ -2,6 +2,22 @@
 
 Haskell library for tropical algebra and computational geometry.
 
+## Interactive tropical curves
+
+The browser viewer displays a tropical curve beside its Newton subdivision,
+with linked selection, exact fraction labels, editable coefficients, pan/zoom,
+and SVG export. JSXGraph is bundled locally; the running viewer needs no internet.
+
+Build the geometry executable, then launch the local viewer:
+
+```sh
+stack build
+python3 viewer/serve.py
+```
+
+Open <http://127.0.0.1:8765>. See [the viewer guide](viewer/README.md)
+for examples, the JSON API, tests, and input limits.
+
 ## Dependencies
 
 The project pins Stack resolver `lts-23.19` in `stack.yaml`. Its existing system
@@ -20,7 +36,7 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
   --jobs 2 --test-arguments='--timeout=30s -j2 +RTS -N2 -RTS'
 ```
 
-The verified suite has **133 enabled, passing cases**, including independent
+The verified suite has **153 enabled, passing cases**, including independent
 polytope fixtures, restored geometry cases and explicit invalid-input tests.
 This verification used an existing environment, not a fresh dependency installation.
 The suite includes affine hulls, degenerate polytopes, coplanar hulls, and polygonal
@@ -51,7 +67,8 @@ and adds paired inequalities for affine-hull equalities. These equality pairs
 contain all input vertex IDs, rather than identifying intrinsic facets.
 
 Subdivision and hypersurface construction preserve convex polygonal cells,
-including squares and hexagons. The plotting API still stores `Int` coordinates:
-nonintegral fan vertices are explicitly rejected instead of rounded. Affine
+including squares and hexagons. The legacy Gloss plotting API still stores `Int` coordinates and rejects
+nonintegral fan vertices. The new `Geometry.TropicalCurve` API and browser viewer
+retain exact rational coordinates, including fractional vertices. Affine
 reconstruction and LRS use rational arithmetic; intrinsic extreme-point filtering
 still uses the existing GLPK backend.

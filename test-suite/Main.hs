@@ -19,6 +19,7 @@ import TGeometry.TLRSRegression
 import TGeometry.TLRSCyclic
 import TGeometry.TLRSCone
 import TGeometry.TLRSDegenerate
+import TGeometry.TTropicalCurve
 import TGeometry.TLRSInputValidation
 import TPolynomial.THypersurface
 
@@ -44,5 +45,6 @@ allTests = testGroup "Tasty tests" [
             testsLRSCone,
             testsLRSDegenerate,
             testsLRSInputValidation,
+            testsTropicalCurve,
             testsHypersurface]
     ]
