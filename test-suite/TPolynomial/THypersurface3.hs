@@ -12,6 +12,7 @@ import Prelude (Integer, ($), (.))
 import Test.Tasty
 import Test.Tasty.HUnit as HU
 import Data.List
+import Data.Ratio ((%))
 import Core
 import Data.Maybe
 import Numeric.Algebra
@@ -28,6 +29,9 @@ f2 = x + y + z + 1
 
 f3 = 1*y^2 + (-1)*x^2 + (-1)*z^2 + (-1)*x^3
 
+-- The shared 2-face normals have opposite directions but unequal scales.
+f4 = x*z + y*z + z + 1 + 1*z^3
+
 
 testVertices3 :: TestTree
 testVertices3 = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
@@ -41,6 +45,29 @@ testVertices3 = HU.testCase "Test for vertices of tropical hypersurfaces" $ do
         MS.map (sort . nub ) (verticesWithRaysIndexed f2) @?=  MS.map (sort) (verticesWithRaysGraph f2)
         MS.map (sort . nub ) (verticesWithRaysIndexed f3) @?=  MS.map (sort) (verticesWithRaysGraph f3)
 
+testWrapperRegressions :: TestTree
+testWrapperRegressions = testGroup "Historical wrapper regressions"
+        [testRayDirectionsAreNotVertices, testScaledFacetNormals]
+
+testRayDirectionsAreNotVertices :: TestTree
+testRayDirectionsAreNotVertices = HU.testCase "Ray directions are not reported as vertices" $ do
+        let (_, simplex) = hypersurface f2
+        sort (vertHyp simplex) @?= [[1,1,1]]
+        sort (MS.findWithDefault [] [1,1,1] (rays simplex)) @?=
+            sort [[1,0,0],[0,1,0],[0,0,1],[-1,-1,-1]]
+
+testScaledFacetNormals :: TestTree
+testScaledFacetNormals = HU.testCase "Opposite facet normals with unequal scales identify one bounded edge" $ do
+        let (_, unequal) = hypersurface f4
+        sort (vertHyp unequal) @?= sort [[0,0,(-1) % 2],[0,0,1]]
+        case [edge | edge <- edHyp unequal, isInternal edge] of
+            [Internal (a,b)] -> sort [a,b] @?= sort [[0,0,(-1) % 2],[0,0,1]]
+            _ -> HU.assertFailure "Expected exactly one bounded edge between the two tropical vertices"
+        sort (MS.findWithDefault [] [0,0,(-1) % 2] (rays unequal)) @?=
+            sort [[1,0,0],[0,1,0],[-2,-2,-1]]
+        sort (MS.findWithDefault [] [0,0,1] (rays unequal)) @?=
+            sort [[1,0,0],[0,1,0],[-1,-1,1]]
+
 testsHypersurface3 :: TestTree
-testsHypersurface3 = testGroup "Test for Computing Hypersurfaces 3" [testVertices3] 
+testsHypersurface3 = testGroup "Test for Computing Hypersurfaces 3" [testVertices3, testWrapperRegressions]
 
