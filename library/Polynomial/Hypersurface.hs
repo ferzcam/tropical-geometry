@@ -244,7 +244,7 @@ graphHypersurface dictionary = MS.foldrWithKey analyzeCell [] dictionary
                     | length adjacent == 0 = findEdges xs c
                     | otherwise = error "graphHypersurface.analyzeCell.findEdges: adjacent cells have only ONE hyperplane in common."
                         where
-                            adjacent = [(h1, h2) | h1 <- c, h2 <- c2, (sort.fst) h1 == (sort.fst) h2, snd h1 == ((map negate).snd) h2]
+                            adjacent = [(h1, h2) | h1 <- c, h2 <- c2, (sort.fst) h1 == (sort.fst) h2, standard (snd h1) == standard (map negate (snd h2))]
 
 onlyRays :: 
         [(Vertex,[IVertex])]    -- | Dictionary with vertices and their corresponding locally emanating rays
@@ -320,4 +320,4 @@ isInternal (External _ ) = False
 
 fromEdgeHyper :: EdgeHypersurface -> [Vertex]
 fromEdgeHyper (Internal (ini, out)) = [ini]++[out]
-fromEdgeHyper (External (vert, ray)) = [vert] ++ [map toRational ray]
+fromEdgeHyper (External (vert, _ray)) = [vert]
