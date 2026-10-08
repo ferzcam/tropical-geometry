@@ -22,6 +22,7 @@ header {
   padding-top:27px;
   padding-bottom:24px
 }
+.companion-nav {display:flex;gap:22px;flex-wrap:wrap}
 .back-link {
   display:inline-block;
   color:var(--green);

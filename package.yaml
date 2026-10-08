@@ -52,6 +52,7 @@ library:
   - Geometry.TropicalCurve
   - Geometry.TropicalHull2
   - Geometry.TropicalSlice
+  - Geometry.TropicalSlice4
   - Geometry.TropicalSkeleton3
   - Geometry.TropicalGraph3
   - Geometry.TropicalHull3

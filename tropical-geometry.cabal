@@ -28,15 +28,19 @@ extra-source-files:
     viewer/test_graph3_cli.py
     viewer/test_server.py
     viewer/test_slice_cli.py
+    viewer/test_slice4_cli.py
     viewer/graph3.html
     viewer/index.html
     viewer/slices.html
+    viewer/slices4.html
     viewer/app.js
     viewer/graph3.js
     viewer/playwright.config.js
     viewer/slices.js
+    viewer/slices4.js
     viewer/graph3.css
     viewer/slices.css
+    viewer/slices4.css
     viewer/style.css
     viewer/package.json
     viewer/package-lock.json
@@ -81,6 +85,7 @@ library
       Geometry.TropicalCurve
       Geometry.TropicalHull2
       Geometry.TropicalSlice
+      Geometry.TropicalSlice4
       Geometry.TropicalSkeleton3
       Geometry.TropicalGraph3
       Geometry.TropicalHull3

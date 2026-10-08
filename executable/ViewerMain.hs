@@ -16,6 +16,7 @@ import Geometry.TropicalHull2 (hullTropicalCurve)
 import Geometry.TropicalHull3 (hullGraph3)
 import Geometry.TropicalSkeleton3 (Edge3(..))
 import Geometry.TropicalSlice
+import Geometry.TropicalSlice4
 import Text.Read (readMaybe)
 
 -- | Every request names its algorithm explicitly. The direct solver is the
@@ -27,6 +28,7 @@ data Request
     = CurveRequest Method [Term]
     | SliceRequest [Term3] Rational
     | Graph3Request Method [Term3]
+    | Slice4Request [Term4] Rational
 
 instance FromJSON Request where
   parseJSON = withObject "request" $ \o -> do
@@ -44,9 +46,18 @@ instance FromJSON Request where
             h <- case parseRational heightText of
               Nothing -> fail "Height must be an integer or fraction string, with at most 18 digits per part."
               Just q -> pure q
-            ts <- o .: "terms" >>= mapM parseTerm3
-            checkCount ts
-            pure (SliceRequest ts h)
+            values <- o .: "terms"
+            let isFour = case values of
+                  (Object term : _) -> KeyMap.member "w" term
+                  _ -> False
+            if isFour then do
+              ts <- mapM parseTerm4 values
+              checkCount ts
+              pure (Slice4Request ts h)
+            else do
+              ts <- mapM parseTerm3 values
+              checkCount ts
+              pure (SliceRequest ts h)
         | otherwise -> do
             method <- parseMethod o
             ts <- o .: "terms" >>= mapM parseTerm
@@ -91,6 +102,17 @@ parseTerm3 = withObject "term" $ \o -> do
   checkExponents [x,y,z]
   coefficient <- parseCoefficient c
   pure (Term3 x y z coefficient)
+
+parseTerm4 :: Value -> Parser Term4
+parseTerm4 = withObject "term" $ \o -> do
+  x <- o .: "x"
+  y <- o .: "y"
+  z <- o .: "z"
+  w <- o .: "w"
+  c <- o .: "coefficient"
+  checkExponents [x,y,z,w]
+  coefficient <- parseCoefficient c
+  pure (Term4 x y z w coefficient)
 
 checkExponents :: [Integer] -> Parser ()
 checkExponents exponents
@@ -163,6 +185,27 @@ regionJSON region = object
       , "bound" .= rationalText (inequalityBound inequality)
       ]
 
+term4JSON :: Term4 -> Value
+term4JSON t = object
+  [ "x" .= term4X t, "y" .= term4Y t, "z" .= term4Z t, "w" .= term4W t
+  , "coefficient" .= rationalText (term4Coefficient t)
+  ]
+patch4JSON :: Slice3Patch -> Value
+patch4JSON patch = object
+  [ "terms" .= let (a,b) = patchTerms patch in [a,b]
+  , "equality" .= planeJSON (patchEquality patch)
+  , "inequalities" .= map planeJSON (patchInequalities patch)
+  ]
+  where
+    planeJSON (a,b,c,bound) = object
+      [ "a" .= a, "b" .= b, "c" .= c, "bound" .= rationalText bound ]
+slice4JSON :: Slice4Result -> Value
+slice4JSON result = object
+  [ "height" .= rationalText (slice4Height result)
+  , "sourceTerms" .= map term4JSON (slice4SourceTerms result)
+  , "patches" .= map patch4JSON (slice4Patches result)
+  ]
+
 sliceJSON :: SliceResult -> Value
 sliceJSON result = object $
   curveFields (sliceCurve result) ++
@@ -228,6 +271,7 @@ respond input = encode $ case eitherDecode input of
   Right (CurveRequest method ts) -> either failure (curveJSON method) (curveRoute method ts)
   Right (SliceRequest ts height) -> either failure sliceJSON (tropicalSlice ts height)
   Right (Graph3Request method ts) -> either failure (graph3JSON method) (graph3Route method ts)
+  Right (Slice4Request ts height) -> either failure slice4JSON (tropicalSlice4 ts height)
   where
     failure err = object ["error" .= err]
 

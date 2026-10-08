@@ -19,7 +19,7 @@ Open <http://127.0.0.1:8765>. The [3D graph explorer](http://127.0.0.1:8765/grap
 renders the exact one-skeleton (vertices and edges, not the two-dimensional
 sheets) of a three-variable tropical surface beside its dual Newton
 subdivision in two linked three.js views. The [3D slice explorer](http://127.0.0.1:8765/slices.html)
-shows horizontal sections of three-variable tropical hypersurfaces as the height changes.
+shows horizontal sections of three-variable tropical hypersurfaces as the height changes. The [4D slice explorer](http://127.0.0.1:8765/slices4.html) fixes the fourth variable and rotates the resulting three-dimensional tie patches.
 On the 2D and 3D graph pages a **Method** control selects the direct solver,
 the tailored convex-hull route, or the Haskell LRS route; each runs as named
 and reports inputs outside its contract (the hull routes need integer

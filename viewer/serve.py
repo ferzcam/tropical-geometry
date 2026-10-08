@@ -18,10 +18,11 @@ RATIONAL = re.compile(r"-?[0-9]{1,18}(?:/[1-9][0-9]{0,17})?\Z")
 # exactly the requested route and reports its own unsupported-input errors;
 # there is no fallback to another method.
 METHODS = ("direct", "hull", "lrs")
-ROUTES = {"/api/curve": "curve", "/api/slice": "slice", "/api/graph3": "graph3"}
+ROUTES = {"/api/curve": "curve", "/api/slice": "slice", "/api/graph3": "graph3", "/api/slice4": "slice4"}
 ASSETS = {
     "/": "index.html", "/index.html": "index.html",
     "/slices.html": "slices.html", "/slices.js": "slices.js",
+    "/slices4.html": "slices4.html", "/slices4.js": "slices4.js", "/slices4.css": "slices4.css",
     "/slices.css": "slices.css", "/app.js": "app.js",
     "/style.css": "style.css",
     "/graph3.html": "graph3.html", "/graph3.js": "graph3.js",
@@ -32,6 +33,7 @@ ASSETS = {
 }
 INVALID = {
     "curve": "Invalid request: provide 1–32 terms, integer exponents within ±100, integer/fraction coefficient strings (18 digits per part), and an optional method of direct, hull, or lrs.",
+    "slice4": "Invalid 4D slice request: provide 1–32 terms with x, y, z, w exponents within ±100, integer/fraction coefficient strings and an exact height.",
     "slice": "Invalid request: provide 1–32 terms, integer exponents within ±100, and integer/fraction coefficient and height strings (18 digits per part).",
     "graph3": "Invalid request: provide 1–32 terms with x, y, z exponents within ±100, integer/fraction coefficient strings (18 digits per part), and an optional method of direct, hull, or lrs.",
 }
@@ -40,31 +42,36 @@ INVALID = {
 def validate_request(value, kind="curve"):
     if kind not in ROUTES.values():
         raise ValueError("Unknown request kind.")
-    required = {"terms", "height"} if kind == "slice" else {"terms"}
-    optional = set() if kind == "slice" else {"method"}
+    is_slice = kind in ("slice", "slice4")
+    required = {"terms", "height"} if is_slice else {"terms"}
+    optional = set() if is_slice else {"method"}
     if not isinstance(value, dict) or not required <= set(value) or not set(value) <= required | optional:
-        if kind == "slice":
+        if is_slice:
             raise ValueError('Expected an object containing "terms" and "height".')
         raise ValueError('Expected an object containing "terms" and optionally "method".')
     if "method" in value and (not isinstance(value["method"], str) or value["method"] not in METHODS):
         raise ValueError("Method must be one of direct, hull, or lrs.")
-    if kind == "slice" and (not isinstance(value["height"], str) or not RATIONAL.fullmatch(value["height"])):
+    if is_slice and (not isinstance(value["height"], str) or not RATIONAL.fullmatch(value["height"])):
         raise ValueError("Height must be an integer or fraction string, with at most 18 digits per part and a positive denominator.")
     terms = value["terms"]
     if not isinstance(terms, list) or not 1 <= len(terms) <= MAX_TERMS:
         raise ValueError(f"Provide between 1 and {MAX_TERMS} terms.")
+    four = kind == "slice4"
     three = kind in ("slice", "graph3")
-    required_keys = {"x", "y", "z", "coefficient"} if three else {"x", "y", "coefficient"}
-    exponents = ("x", "y", "z") if three else ("x", "y")
+    required_keys = ({"x", "y", "z", "w", "coefficient"} if four else
+                     {"x", "y", "z", "coefficient"} if three else
+                     {"x", "y", "coefficient"})
+    exponents = ("x", "y", "z", "w") if four else (("x", "y", "z") if three else ("x", "y"))
     for term in terms:
         if not isinstance(term, dict) or set(term) != required_keys:
+            if four:
+                raise ValueError("Each 4D slice term needs x, y, z, w, and coefficient.")
             raise ValueError("Each term needs x, y, z, and coefficient." if three else "Each term needs x, y, and coefficient.")
         if any(type(term[k]) is not int or abs(term[k]) > 100 for k in exponents):
             raise ValueError("Exponents must be integers between -100 and 100.")
         if not isinstance(term["coefficient"], str) or not RATIONAL.fullmatch(term["coefficient"]):
             raise ValueError("Coefficients must be integer or fraction strings, with at most 18 digits per part and a positive denominator.")
     return value
-
 
 def backend_request(value, kind):
     """The backend selects its computation by an explicit kind marker."""

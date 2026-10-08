@@ -79,6 +79,11 @@ produce complete parallel lines, rather than vertices with outgoing rays.
 
 ## Horizontal slices of three-variable polynomials
 
+## Three-dimensional slices of four-variable polynomials
+
+Open /slices4.html. Choose a built-in example or paste JSON term objects with x, y, z, w, and coefficient fields. The exact backend fixes w and returns each pairwise tie patch as one equality plane plus exact half-space constraints. The browser clips these patches to a display cube and draws them in a rotatable 3D canvas. The cube limits only the view; it does not alter the exact returned constraints.
+
+
 Open **Explore 3D slices** or visit `/slices.html`. Choose one of the
 demonstrations and move the height slider or enter an exact rational height.
 The graph stays in the x-y plane while z is fixed at the selected height.
