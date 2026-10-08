@@ -1,0 +1,11 @@
+header nav{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px}header nav a{color:var(--green);font-size:12px;font-weight:650;text-decoration:none}header nav a:hover{text-decoration:underline}
+.editor label+label{margin-top:10px}#method-help{margin-top:6px}
+.contract{font-size:12px;line-height:1.55;color:#344a40;background:#eef5f0;border-left:3px solid var(--green);border-radius:4px;padding:10px 13px;margin:0 0 14px}
+.view{position:relative;height:420px;width:100%;border:1px solid var(--border);border-radius:8px;margin-top:15px;overflow:hidden;background:#fff;touch-action:none}
+.view canvas{display:block;width:100%!important;height:100%!important}
+.stale .view{opacity:.25;pointer-events:none}
+.inspector p{min-height:62px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:11px;color:#65756c;margin-top:14px}.legend span{display:flex;align-items:center;gap:6px}
+.swatch{display:inline-block;width:12px;height:12px;border-radius:3px}.vertex-swatch{background:#157768}.edge-swatch{background:#6558a5}
+@media(max-width:1150px){.view{height:360px}}
+@media(max-width:650px){.view{height:320px}header nav{gap:12px}}

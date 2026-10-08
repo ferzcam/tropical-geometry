@@ -13,6 +13,8 @@ const examples = {
   mixed: [[0, 0, '0'], [1, 0, '0'], [1, 1, '0'], [0, 1, '0'], [2, 0, '1']],
   parallel: [[0, 0, '0'], [1, 0, '-1'], [2, 0, '0']]
 };
+// Each option names the library route the backend runs; see viewer/README.md.
+const methodLabels = { direct: 'direct solver', hull: 'tailored hull', lrs: 'LRS' };
 let boards = {}, bounds = {}, groups = [], selected = null, requestId = 0, importId = 0, controller, result;
 const defaultSelection = 'Hover over geometry or select an item below. Matching colors connect the two views.';
 
@@ -213,14 +215,14 @@ async function compute(event) {
   event?.preventDefault();
   invalidate(); const id = requestId; controller = new AbortController();
   try {
-    const terms = readTerms(); status('Computing exact geometry…', 'pending');
-    const response = await fetch('/api/curve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ terms }), signal: controller.signal });
+    const terms = readTerms(), method = $('method').value; status(`Computing exact geometry with the ${methodLabels[method] || method}…`, 'pending');
+    const response = await fetch('/api/curve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ terms, method }), signal: controller.signal });
     const data = await response.json();
     if (id !== requestId) return;
     if (!response.ok) throw new Error(data.error || `Geometry request failed (${response.status}).`);
     render(data);
     const normalized = data.terms.length !== terms.length ? ' Repeated exponents were combined; plot labels use the normalized terms below.' : '';
-    status(`${data.vertices.length} vertices · ${data.edges.length} edges · ${data.cells.length} cells.${normalized}${data.edges.length ? '' : ' The tropical curve is empty.'}`);
+    status(`${data.vertices.length} vertices · ${data.edges.length} edges · ${data.cells.length} cells · ${methodLabels[data.method] || data.method}.${normalized}${data.edges.length ? '' : ' The tropical curve is empty.'}`);
   } catch (error) {
     if (id !== requestId || error.name === 'AbortError') return;
     status(error.message || 'Could not compute geometry.', 'error');
@@ -247,6 +249,7 @@ $('export-polynomial').addEventListener('click', exportPolynomial);
 $('add-term').addEventListener('click', () => { addRow(); invalidate(); });
 $('polynomial-form').addEventListener('submit', compute);
 $('example').addEventListener('change', () => { if (!examples[$('example').value]) return; fileStatus(''); $('terms').replaceChildren(); examples[$('example').value].forEach(addRow); compute(); });
+$('method').addEventListener('change', () => compute());
 $('clear-selection').addEventListener('click', () => { selected = null; highlight(null); });
 for (const name of ['curve', 'newton']) {
   $(`reset-${name}`).addEventListener('click', () => boards[name]?.setBoundingBox(bounds[name], true));

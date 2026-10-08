@@ -25,6 +25,20 @@ hexagonTerms = [Term x y 0 | (x,y) <- [(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0)]]
 mixedTerms :: [Term]
 mixedTerms = squareTerms ++ [Term 2 0 1]
 
+-- Degree-two support whose rational lift pushes every edge midpoint strictly
+-- below its chord, so the lower hull is the unimodular triangulation into four
+-- triangles. Lower-hull planes: middle triangle w = -17/60+x/30+y/12 and corner
+-- triangle w = -x/4-y/5 leave all other lifted points strictly above them.
+rationalConicTerms :: [Term]
+rationalConicTerms = [Term 0 0 0,Term 2 0 (1%2),Term 0 2 (1%3),
+                      Term 1 0 ((-1)%4),Term 0 1 ((-1)%5),Term 1 1 ((-1)%6)]
+
+-- Paraboloid lift of the 3x3 grid. Unit squares are co-circular, so the lower
+-- hull consists of four nonsimplicial unit squares with rational dual vertices
+-- at -(2i+1)/3 in each coordinate.
+rationalGridTerms :: [Term]
+rationalGridTerms = [Term x y ((x*x+y*y)%3) | x <- [0..2],y <- [0..2]]
+
 withCurve :: [Term] -> (Curve -> Assertion) -> Assertion
 withCurve terms action = case tropicalCurve terms of
     Left err -> assertFailure err
@@ -113,6 +127,52 @@ testsTropicalCurve = testGroup "Exact tropical curve"
         assertBool "empty input" (isLeft (tropicalCurve []))
     , testCase "input work limit is checked before normalization" $
         assertBool "too many terms" (isLeft (tropicalCurve (replicate 65 (Term 0 0 0))))
+    , testCase "LRS route returns the same full exact curve record" $
+        forM_ [lineTerms,squareTerms,hexagonTerms,mixedTerms,
+               [Term 0 0 0,Term 2 0 1,Term 0 1 0],
+               [Term 0 0 0,Term 2 0 0,Term 0 2 0]] $ \terms ->
+            assertEqual "exact vertices, IDs, weighted edges, and cells"
+                (tropicalCurve terms) (lrsTropicalCurve terms)
+    , testCase "LRS route rejects rank-deficient support and enforces work limit" $ do
+        assertBool "rank one support" (isLeft (lrsTropicalCurve [Term 0 0 0,Term 1 0 0]))
+        assertBool "more than 64 raw terms" (isLeft (lrsTropicalCurve (replicate 65 (Term 0 0 0))))
+    , testCase "LRS normalization preserves stable source-term IDs" $
+        assertEqual "duplicate exponent minimum" (tropicalCurve lineTerms)
+            (lrsTropicalCurve (Term 1 0 4 : lineTerms))
+    , testCase "duplicate exponent keeps a later, smaller coefficient on both routes" $ do
+        let later = lineTerms ++ [Term 1 0 (-2)]
+            expected = tropicalCurve [Term 0 0 0,Term 1 0 (-2),Term 0 1 0]
+        assertEqual "direct route" expected (tropicalCurve later)
+        assertEqual "LRS route" expected (lrsTropicalCurve later)
+        withCurve later $ \curve -> do
+            assertEqual "normalized terms" [Term 0 0 0,Term 0 1 0,Term 1 0 (-2)] (curveTerms curve)
+            assertEqual "shifted vertex" [(2,0)] (map vertexPoint (curveVertices curve))
+    , testCase "rational subdivided supports agree on both routes and satisfy invariants" $
+        forM_ [rationalConicTerms,rationalGridTerms] $ \terms -> do
+            assertEqual "full exact curve record" (tropicalCurve terms) (lrsTropicalCurve terms)
+            withCurve terms checkCurve
+    , testCase "rational conic lift is the four-triangle unimodular subdivision" $
+        withCurve rationalConicTerms $ \curve -> do
+            assertEqual "four triangles" [3,3,3,3] (map (length . cellBoundary) (curveCells curve))
+            -- Negated gradients of the four lower planes: corner (0,0) is
+            -- w=-x/4-y/5, corner (2,0) is w=-1+3x/4+y/12, corner (0,2) is
+            -- w=-11/15+x/30+8y/15, and the middle triangle is w=-17/60+x/30+y/12.
+            assertEqual "dual vertices" (sort [(1%4,1%5),((-3)%4,(-1)%12),((-1)%30,(-8)%15),((-1)%30,(-1)%12)])
+                (sort (map vertexPoint (curveVertices curve)))
+            assertEqual "three bounded edges" 3
+                (length [() | e <- curveEdges curve, Segment _ _ <- [edgeGeometry e]])
+            assertEqual "six rays" 6
+                (length [() | e <- curveEdges curve, Ray _ _ <- [edgeGeometry e]])
+            assertEqual "unimodular edges have weight one" [1,1,1,1,1,1,1,1,1] (map edgeWeight (curveEdges curve))
+    , testCase "rational grid lift has four nonsimplicial square cells" $
+        withCurve rationalGridTerms $ \curve -> do
+            assertEqual "four squares" [4,4,4,4] (map (length . cellBoundary) (curveCells curve))
+            assertEqual "dual vertices" [(-1,-1),(-1,(-1)%3),((-1)%3,-1),((-1)%3,(-1)%3)]
+                (map vertexPoint (curveVertices curve))
+            assertEqual "four bounded edges" 4
+                (length [() | e <- curveEdges curve, Segment _ _ <- [edgeGeometry e]])
+            assertEqual "eight rays" 8
+                (length [() | e <- curveEdges curve, Ray _ _ <- [edgeGeometry e]])
     ]
   where
     isLeft (Left _) = True

@@ -22,6 +22,9 @@ import TGeometry.TLRSHull
 import TGeometry.TLRSDegenerate
 import TGeometry.TTropicalCurve
 import TGeometry.TTropicalSlice
+import TGeometry.TTropicalSkeleton3
+import TGeometry.TTropicalGraph3
+import TGeometry.TTropicalHull2
 import TGeometry.TLRSInputValidation
 import TPolynomial.THypersurface
 
@@ -50,5 +53,8 @@ allTests = testGroup "Tasty tests" [
             testsLRSInputValidation,
             testsTropicalCurve,
             testsTropicalSlice,
+            testsTropicalSkeleton3,
+            testsTropicalGraph3,
+            testsTropicalHull2,
             testsHypersurface]
     ]

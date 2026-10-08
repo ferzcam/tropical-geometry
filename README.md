@@ -2,11 +2,11 @@
 
 Haskell library for tropical algebra and computational geometry.
 
-## Interactive tropical curves
+## Interactive tropical curves and surfaces
 
 The browser viewer displays a tropical curve beside its Newton subdivision,
 with linked selection, exact fraction labels, editable coefficients, JSON file
-import/export, pan/zoom, and SVG export. A genus-1 cubic example shows a bounded cycle. JSXGraph is bundled locally; the running viewer needs no internet.
+import/export, pan/zoom, and SVG export. A genus-1 cubic example shows a bounded cycle. JSXGraph and three.js are bundled locally; the running viewer needs no internet.
 
 Build the geometry executable, then launch the local viewer:
 
@@ -15,9 +15,17 @@ stack build
 python3 viewer/serve.py
 ```
 
-Open <http://127.0.0.1:8765>. The [3D slice explorer](http://127.0.0.1:8765/slices.html)
-shows horizontal sections of three-variable tropical hypersurfaces as the height changes. See [the viewer guide](viewer/README.md)
-for examples, the JSON API, tests, and input limits.
+Open <http://127.0.0.1:8765>. The [3D graph explorer](http://127.0.0.1:8765/graph3.html)
+renders the exact one-skeleton (vertices and edges, not the two-dimensional
+sheets) of a three-variable tropical surface beside its dual Newton
+subdivision in two linked three.js views. The [3D slice explorer](http://127.0.0.1:8765/slices.html)
+shows horizontal sections of three-variable tropical hypersurfaces as the height changes.
+On the 2D and 3D graph pages a **Method** control selects the direct solver,
+the tailored convex-hull route, or the Haskell LRS route; each runs as named
+and reports inputs outside its contract (the hull routes need integer
+coefficients, and the 3D hull route refuses subdivisions its legacy facet
+enumeration leaves incomplete) instead of substituting another method. See [the viewer guide](viewer/README.md)
+for examples, the JSON API, method contracts, tests, and input limits.
 
 ## Dependencies
 
@@ -37,8 +45,9 @@ stack test --no-terminal --no-install-ghc --only-locals --no-prefetch \
   --jobs 2 --test-arguments='--timeout=30s -j2 +RTS -N2 -RTS'
 ```
 
-The verified suite has **169 enabled, passing cases**, including independent
-polytope fixtures, restored geometry cases and explicit invalid-input tests.
+The verified suite has **199 enabled, passing cases**, including independent
+polytope fixtures, restored geometry cases, explicit invalid-input tests, and
+cross-method checks of the three-variable graph one-skeleton with its dual cells.
 This verification used an existing environment, not a fresh dependency installation.
 The suite includes affine hulls, degenerate polytopes, coplanar hulls, and polygonal
 subdivisions; current API limitations are described below.
@@ -73,6 +82,17 @@ nonintegral fan vertices. The new `Geometry.TropicalCurve` API and browser viewe
 retain exact rational coordinates, including fractional vertices. Affine
 reconstruction and LRS use rational arithmetic; intrinsic extreme-point filtering
 still uses the existing GLPK backend.
+
+`Geometry.TropicalGraph3` returns the exact one-skeleton of a three-variable
+tropical hypersurface together with the dual three-dimensional cells and
+two-dimensional faces of its Newton subdivision (`exactGraph3`, `lrsGraph3`),
+and `Geometry.TropicalHull3.hullGraph3` feeds the legacy GLPK/Yang hull
+pipeline into the same exact assembly. This is not the full two-dimensional
+surface. The exponent support must have affine rank three and inputs are
+limited to 32 terms. The legacy Yang facet enumeration is known to miss a
+lower facet on the lifted genus-one cubic (see
+[the comparison results](comparison/RESULTS.md)); the library route reports
+that case as an error rather than returning partial geometry.
 
 ## Solver comparisons
 

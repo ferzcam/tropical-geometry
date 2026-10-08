@@ -14,36 +14,64 @@ from urllib.parse import urlsplit, unquote
 MAX_BODY = 32768
 MAX_TERMS = 32
 RATIONAL = re.compile(r"-?[0-9]{1,18}(?:/[1-9][0-9]{0,17})?\Z")
+# Named algorithms accepted by /api/curve and /api/graph3. The backend runs
+# exactly the requested route and reports its own unsupported-input errors;
+# there is no fallback to another method.
+METHODS = ("direct", "hull", "lrs")
+ROUTES = {"/api/curve": "curve", "/api/slice": "slice", "/api/graph3": "graph3"}
 ASSETS = {
     "/": "index.html", "/index.html": "index.html",
     "/slices.html": "slices.html", "/slices.js": "slices.js",
     "/slices.css": "slices.css", "/app.js": "app.js",
     "/style.css": "style.css",
+    "/graph3.html": "graph3.html", "/graph3.js": "graph3.js",
+    "/graph3.css": "graph3.css",
     "/examples/genus-1-cubic.json": "examples/genus-1-cubic.json",
+    "/examples/lifted-cubic-3d.json": "examples/lifted-cubic-3d.json",
+    "/examples/split-quadratic-3d.json": "examples/split-quadratic-3d.json",
+}
+INVALID = {
+    "curve": "Invalid request: provide 1–32 terms, integer exponents within ±100, integer/fraction coefficient strings (18 digits per part), and an optional method of direct, hull, or lrs.",
+    "slice": "Invalid request: provide 1–32 terms, integer exponents within ±100, and integer/fraction coefficient and height strings (18 digits per part).",
+    "graph3": "Invalid request: provide 1–32 terms with x, y, z exponents within ±100, integer/fraction coefficient strings (18 digits per part), and an optional method of direct, hull, or lrs.",
 }
 
 
-def validate_request(value, slice_request=False):
-    expected = {"terms", "height"} if slice_request else {"terms"}
-    if not isinstance(value, dict) or set(value) != expected:
-        if slice_request:
+def validate_request(value, kind="curve"):
+    if kind not in ROUTES.values():
+        raise ValueError("Unknown request kind.")
+    required = {"terms", "height"} if kind == "slice" else {"terms"}
+    optional = set() if kind == "slice" else {"method"}
+    if not isinstance(value, dict) or not required <= set(value) or not set(value) <= required | optional:
+        if kind == "slice":
             raise ValueError('Expected an object containing "terms" and "height".')
-        raise ValueError('Expected an object containing "terms".')
-    if slice_request and (not isinstance(value["height"], str) or not RATIONAL.fullmatch(value["height"])):
+        raise ValueError('Expected an object containing "terms" and optionally "method".')
+    if "method" in value and (not isinstance(value["method"], str) or value["method"] not in METHODS):
+        raise ValueError("Method must be one of direct, hull, or lrs.")
+    if kind == "slice" and (not isinstance(value["height"], str) or not RATIONAL.fullmatch(value["height"])):
         raise ValueError("Height must be an integer or fraction string, with at most 18 digits per part and a positive denominator.")
     terms = value["terms"]
     if not isinstance(terms, list) or not 1 <= len(terms) <= MAX_TERMS:
         raise ValueError(f"Provide between 1 and {MAX_TERMS} terms.")
-    required = {"x", "y", "z", "coefficient"} if slice_request else {"x", "y", "coefficient"}
-    exponents = ("x", "y", "z") if slice_request else ("x", "y")
+    three = kind in ("slice", "graph3")
+    required_keys = {"x", "y", "z", "coefficient"} if three else {"x", "y", "coefficient"}
+    exponents = ("x", "y", "z") if three else ("x", "y")
     for term in terms:
-        if not isinstance(term, dict) or set(term) != required:
-            raise ValueError("Each slice term needs x, y, z, and coefficient." if slice_request else "Each term needs x, y, and coefficient.")
+        if not isinstance(term, dict) or set(term) != required_keys:
+            raise ValueError("Each term needs x, y, z, and coefficient." if three else "Each term needs x, y, and coefficient.")
         if any(type(term[k]) is not int or abs(term[k]) > 100 for k in exponents):
             raise ValueError("Exponents must be integers between -100 and 100.")
         if not isinstance(term["coefficient"], str) or not RATIONAL.fullmatch(term["coefficient"]):
             raise ValueError("Coefficients must be integer or fraction strings, with at most 18 digits per part and a positive denominator.")
     return value
+
+
+def backend_request(value, kind):
+    """The backend selects its computation by an explicit kind marker."""
+    request = dict(value)
+    if kind == "graph3":
+        request["kind"] = "graph3"
+    return request
 
 
 class ViewerServer(ThreadingHTTPServer):
@@ -104,10 +132,10 @@ class ViewerHandler(BaseHTTPRequestHandler):
         if not self.trusted_request():
             self.json_response(403, {"error": "Cross-origin requests are not allowed."})
             return
-        if self.path not in ("/api/curve", "/api/slice"):
+        kind = ROUTES.get(self.path)
+        if kind is None:
             self.json_response(404, {"error": "Not found."})
             return
-        is_slice = self.path == "/api/slice"
         if self.headers.get("Content-Type", "").split(";", 1)[0].strip() != "application/json":
             self.json_response(415, {"error": "Use application/json."})
             return
@@ -115,15 +143,15 @@ class ViewerHandler(BaseHTTPRequestHandler):
             length = int(self.headers.get("Content-Length", "0"))
             if not 0 < length <= MAX_BODY:
                 raise ValueError("Request body is empty or too large.")
-            request = validate_request(json.loads(self.rfile.read(length)), is_slice)
+            request = validate_request(json.loads(self.rfile.read(length)), kind)
         except (ValueError, UnicodeError):
-            self.json_response(400, {"error": "Invalid request: provide 1–32 terms, integer exponents within ±100, and integer/fraction coefficient and height strings (18 digits per part)." if is_slice else "Invalid request: provide 1–32 terms, integer exponents within ±100, and integer/fraction coefficient strings (18 digits per part)."})
+            self.json_response(400, {"error": INVALID[kind]})
             return
         if not self.server.backend_lock.acquire(blocking=False):
             self.json_response(503, {"error": "Geometry backend is busy; try again."})
             return
         try:
-            result = subprocess.run([self.server.backend], input=json.dumps(request), text=True,
+            result = subprocess.run([self.server.backend], input=json.dumps(backend_request(request, kind)), text=True,
                                     capture_output=True, timeout=self.server.backend_timeout, check=False)
             try:
                 value = json.loads(result.stdout)

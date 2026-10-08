@@ -8,14 +8,32 @@ import unittest
 from unittest.mock import patch
 import subprocess
 
-from serve import ViewerServer, validate_request
+from serve import ViewerServer, backend_request, validate_request
 
 TERM = {"x": 0, "y": 0, "coefficient": "-1/2"}
+TERM3 = {"x": 0, "y": 0, "z": 1, "coefficient": "-1/2"}
 
 
 class RequestValidation(unittest.TestCase):
     def test_exact_fraction(self):
         self.assertEqual(validate_request({"terms": [TERM]}), {"terms": [TERM]})
+
+    def test_named_methods_and_graph3_requests(self):
+        for method in ("direct", "hull", "lrs"):
+            self.assertEqual(validate_request({"terms": [TERM], "method": method}), {"terms": [TERM], "method": method})
+            self.assertEqual(validate_request({"terms": [TERM3], "method": method}, "graph3"), {"terms": [TERM3], "method": method})
+        self.assertEqual(validate_request({"terms": [TERM3]}, "graph3"), {"terms": [TERM3]})
+        self.assertEqual(backend_request({"terms": [TERM3], "method": "lrs"}, "graph3"), {"terms": [TERM3], "method": "lrs", "kind": "graph3"})
+        self.assertEqual(backend_request({"terms": [TERM], "method": "hull"}, "curve"), {"terms": [TERM], "method": "hull"})
+        self.assertEqual(backend_request({"terms": [TERM3], "height": "1"}, "slice"), {"terms": [TERM3], "height": "1"})
+        invalid = [({"terms": [TERM], "method": "other"}, "curve"), ({"terms": [TERM], "method": 1}, "curve"),
+                   ({"terms": [TERM], "kind": "graph3"}, "curve"), ({"terms": [TERM3]}, "curve"),
+                   ({"terms": [TERM]}, "graph3"), ({"terms": [TERM3], "height": "0"}, "graph3"),
+                   ({"terms": [TERM3], "method": "nope"}, "graph3"), ({"terms": [TERM3], "height": "0", "method": "lrs"}, "slice"),
+                   ({"terms": [TERM3]}, "other")]
+        for value, kind in invalid:
+            with self.subTest(value=value, kind=kind), self.assertRaises(ValueError):
+                validate_request(value, kind)
 
     def test_invalid_values(self):
         invalid = [[], {}, {"terms": []}, {"terms": [TERM] * 33},
@@ -73,6 +91,26 @@ class ServiceContract(unittest.TestCase):
         self.assertEqual(json.loads(content), curve)
         self.assertEqual(json.loads(run.call_args.kwargs["input"]), {"terms": [TERM]})
         self.assertEqual(run.call_args.args[0], ["/unused/backend"])
+
+    @patch("serve.subprocess.run")
+    def test_graph3_and_method_requests_reach_the_backend_as_named(self, run):
+        graph = {"kind": "graph3", "method": "lrs", "vertices": []}
+        run.return_value = subprocess.CompletedProcess([], 0, json.dumps(graph), "")
+        status, content = self.request(path="/api/graph3", body=json.dumps({"terms": [TERM3], "method": "lrs"}))
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(content), graph)
+        self.assertEqual(json.loads(run.call_args.kwargs["input"]), {"terms": [TERM3], "method": "lrs", "kind": "graph3"})
+        run.return_value = subprocess.CompletedProcess([], 0, '{"method":"hull","vertices":[]}', "")
+        self.assertEqual(self.request(body=json.dumps({"terms": [TERM], "method": "hull"}))[0], 200)
+        self.assertEqual(json.loads(run.call_args.kwargs["input"]), {"terms": [TERM], "method": "hull"})
+        run.reset_mock()
+        for path, body in [("/api/graph3", {"terms": [TERM3], "method": "other"}), ("/api/graph3", {"terms": [TERM]}),
+                           ("/api/curve", {"terms": [TERM], "method": "other"}), ("/api/slice", {"terms": [TERM3], "height": "0", "method": "lrs"})]:
+            with self.subTest(path=path, body=body):
+                status, content = self.request(path=path, body=json.dumps(body))
+                self.assertEqual(status, 400)
+                self.assertIn("direct, hull, or lrs" if path != "/api/slice" else "height", json.loads(content)["error"])
+        run.assert_not_called()
 
     @patch("serve.subprocess.run")
     def test_backend_errors(self, run):

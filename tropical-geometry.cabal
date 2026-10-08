@@ -25,26 +25,38 @@ extra-source-files:
     viewer/README.md
     viewer/serve.py
     viewer/test_geometry_cli.py
+    viewer/test_graph3_cli.py
     viewer/test_server.py
     viewer/test_slice_cli.py
+    viewer/graph3.html
     viewer/index.html
     viewer/slices.html
     viewer/app.js
+    viewer/graph3.js
     viewer/playwright.config.js
     viewer/slices.js
+    viewer/graph3.css
     viewer/slices.css
     viewer/style.css
     viewer/package.json
     viewer/package-lock.json
+    viewer/tests/graph3.spec.js
     viewer/tests/import.spec.js
     viewer/tests/slices.spec.js
     viewer/tests/viewer.spec.js
     viewer/examples/genus-1-cubic.json
+    viewer/examples/lifted-cubic-3d.json
+    viewer/examples/split-quadratic-3d.json
     viewer/vendor/jsxgraph.css
     viewer/vendor/jsxgraphcore.js
     viewer/vendor/jsxgraphcore.js.LICENSE.txt
     viewer/vendor/LICENSE.MIT
     viewer/vendor/manifest.json
+    viewer/vendor/three/LICENSE.MIT
+    viewer/vendor/three/manifest.json
+    viewer/vendor/three/OrbitControls.js
+    viewer/vendor/three/three.core.js
+    viewer/vendor/three/three.module.js
 
 source-repository head
   type: git
@@ -67,7 +79,11 @@ library
       Geometry.LRS
       Geometry.LRSHull
       Geometry.TropicalCurve
+      Geometry.TropicalHull2
       Geometry.TropicalSlice
+      Geometry.TropicalSkeleton3
+      Geometry.TropicalGraph3
+      Geometry.TropicalHull3
       Graphics.Drawings
       Util
       Core
@@ -156,6 +172,9 @@ test-suite tropical-geometry-test-suite
       TGeometry.TPolyhedral
       TGeometry.TPolytope
       TGeometry.TTropicalCurve
+      TGeometry.TTropicalGraph3
+      TGeometry.TTropicalHull2
+      TGeometry.TTropicalSkeleton3
       TGeometry.TTropicalSlice
       TPolynomial.THypersurface
       TPolynomial.TMonomial

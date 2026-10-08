@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tropical graph explorer · three variables</title>
+  <link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/graph3.css">
+  <script type="importmap">{"imports":{"three":"/vendor/three/three.module.js"}}</script>
+  <script type="module" src="/graph3.js"></script>
+</head>
+<body>
+<header><nav><a href="/">← 2D curves</a><a href="/slices.html">Horizontal slices →</a></nav><div class="eyebrow">TROPICAL GEOMETRY · THREE VARIABLES</div><h1>One polynomial. Two 3D perspectives.</h1><p>Explore the vertices and edges where three or more terms tie for the minimum, and how they connect to the cells and faces of the dual Newton subdivision.</p></header>
+<main>
+  <section class="editor" aria-labelledby="polynomial-title">
+    <div class="section-heading"><h2 id="polynomial-title">Your polynomial</h2><label>Example <select id="example"><option value="plane">Tropical plane</option><option value="fractional">Fractional vertex</option><option value="split">Split quadratic</option><option value="cubic">Lifted genus-1 cubic</option><option value="cubes">Paraboloid 3×3×3 grid</option><option value="custom" disabled>Imported polynomial</option></select></label></div>
+    <label>Method <select id="method" aria-describedby="method-help"><option value="direct">Direct solver (equality-line clipping)</option><option value="hull">Tailored hull (GLPK/Yang facets)</option><option value="lrs">LRS (polar lifted hull)</option></select></label>
+    <p id="method-help" class="hint">The selected algorithm runs as named. Inputs outside its contract are reported as errors; no other method is substituted. The tailored hull needs integer coefficients.</p>
+    <p class="hint">Each row contributes c + a·x + b·y + d·z. Coefficients accept integers or fractions such as 1/3. Use up to 32 terms, with exponents from −100 to 100 spanning all three directions.</p>
+    <div class="actions file-actions"><button type="button" id="import-polynomial">Import polynomial</button><button type="button" id="export-polynomial">Export JSON</button></div>
+    <input type="file" id="polynomial-file" accept=".json,application/json" aria-label="Polynomial JSON file" hidden>
+    <p class="hint">Import a JSON file, or download <a href="/examples/split-quadratic-3d.json" download>the split quadratic</a> or <a href="/examples/lifted-cubic-3d.json" download>the lifted cubic</a> to try it. Export saves your current terms.</p>
+    <p id="file-status" class="hint" role="status" aria-live="polite"></p>
+    <form id="polynomial-form"><div class="table-wrap"><table><thead><tr><th scope="col">Term</th><th scope="col">a</th><th scope="col">b</th><th scope="col">d</th><th scope="col">c</th><th scope="col"><span class="sr-only">Remove</span></th></tr></thead><tbody id="terms"></tbody></table></div>
+    <div class="actions"><button type="button" id="add-term">+ Add term</button><button type="submit" class="primary" id="compute">Draw polynomial</button></div></form>
+    <p id="formula" class="formula"></p><p class="hint">Plot term numbers follow the normalized polynomial; see “Term labels in the plots” below.</p><p id="status" role="status" aria-live="polite">Loading geometry…</p>
+  </section>
+  <section class="explorer" aria-label="Linked 3D geometry views">
+    <p class="contract" id="contract"><strong>What is shown:</strong> the one-skeleton of the tropical surface, that is, its vertices and edges (dual to the three- and two-dimensional cells of the Newton subdivision). The surface's two-dimensional sheets, dual to subdivision edges, are not computed or drawn.</p>
+    <div class="plots">
+      <article class="plot-panel"><div class="section-heading"><h2>Tropical graph (one-skeleton)</h2><div class="plot-actions"><button id="reset-graph" type="button">Reset view</button><button id="export-graph" type="button" disabled>Export PNG</button></div></div><div id="graph-view" class="view" aria-label="Three-dimensional tropical graph" role="img"></div><p class="hint">Spheres are vertices; tubes are bounded edges; tubes ending in a cone are unbounded rays. The minimum is attained by at least three distinct terms along every edge.</p></article>
+      <article class="plot-panel"><div class="section-heading"><h2>Dual Newton subdivision</h2><div class="plot-actions"><button id="reset-newton" type="button">Reset view</button><button id="export-newton" type="button" disabled>Export PNG</button></div></div><div id="newton-view" class="view" aria-label="Three-dimensional Newton subdivision" role="img"></div><p class="hint">Polygons are the two-dimensional faces of the lower subdivision cells, drawn with their true boundaries. A graph vertex corresponds to a cell; a graph edge corresponds to a face.</p></article>
+    </div>
+    <div class="legend" aria-label="Legend"><span><i class="swatch vertex-swatch"></i>Vertex ↔ cell (vertex color tints the cell's faces)</span><span><i class="swatch edge-swatch"></i>Edge ↔ face (shared color)</span></div>
+    <div class="inspector"><div><h2>Explore the correspondence</h2><p id="selection" aria-live="polite">Hover over geometry or select an item below. Matching colors connect the two views.</p></div><button id="clear-selection" type="button">Clear selection</button></div>
+    <div id="features" class="features" aria-label="Geometry objects"></div>
+    <details><summary>Term labels in the plots</summary><p id="normalized-terms" class="hint"></p></details>
+    <p class="hint navigation">Drag to orbit, right-drag or two-finger drag to pan, scroll or pinch to zoom. Click an object to keep it highlighted. Coordinates listed below are exact; the display rounds them to floating point only when drawing.</p>
+  </section>
+</main>
+<footer>Min-plus convention · Exact rational geometry · Displayed with three.js</footer>
+</body>
+</html>

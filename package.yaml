@@ -29,6 +29,7 @@ extra-source-files:
 - viewer/tests/*.js
 - viewer/examples/*.json
 - viewer/vendor/*
+- viewer/vendor/three/*
 
 ghc-options: -Wall
 
@@ -49,7 +50,11 @@ library:
   - Geometry.LRS
   - Geometry.LRSHull
   - Geometry.TropicalCurve
+  - Geometry.TropicalHull2
   - Geometry.TropicalSlice
+  - Geometry.TropicalSkeleton3
+  - Geometry.TropicalGraph3
+  - Geometry.TropicalHull3
   - Graphics.Drawings
   - Util
   - Core

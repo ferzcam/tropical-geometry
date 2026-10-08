@@ -27,6 +27,25 @@ test('examples, exact fractions, linked selection, coefficient editing and SVG e
   await page.click('#compute'); await expect(page.locator('#features')).toContainText('(1/3, 1/3)');
   await page.click('#reset-curve'); await page.click('#reset-newton'); expect(errors).toEqual([]);
 });
+test('2D methods run as named: LRS and hull agree with the direct solver, hull rejects fractions', async ({ page }) => {
+  await page.goto('/'); await expect(page.locator('#status')).toContainText('1 vertices · 3 edges · 1 cells · direct solver');
+  const requests = [];
+  page.on('request', request => { if (request.url().endsWith('/api/curve')) requests.push(request.postDataJSON().method); });
+  await page.selectOption('#example', 'mixed'); await expect(page.locator('#status')).toContainText('6 edges · 2 cells · direct solver');
+  await page.selectOption('#method', 'lrs'); await expect(page.locator('#status')).toContainText('2 vertices · 6 edges · 2 cells · LRS');
+  await page.selectOption('#method', 'hull'); await expect(page.locator('#status')).toContainText('2 vertices · 6 edges · 2 cells · tailored hull');
+  // The fractional-vertex example has integer coefficients, so the hull route accepts it.
+  await page.selectOption('#example', 'fractional'); await expect(page.locator('#features')).toContainText('(1/2, 1/2)');
+  await expect(page.locator('#status')).toContainText('tailored hull');
+  await page.getByLabel('Term 1 c', { exact: true }).fill('1/3'); await page.click('#compute');
+  await expect(page.locator('#status')).toHaveClass('error');
+  await expect(page.locator('#status')).toContainText('integral coefficients');
+  await expect(page.locator('.explorer')).toHaveClass(/stale/); await expect(page.locator('#export-curve')).toBeDisabled();
+  await page.selectOption('#method', 'direct'); await expect(page.locator('#features')).toContainText('(2/3, 2/3)');
+  await page.selectOption('#method', 'lrs'); await expect(page.locator('#features')).toContainText('(2/3, 2/3)');
+  await expect(page.locator('#status')).toContainText('LRS');
+  expect(requests).toEqual(['direct', 'lrs', 'hull', 'hull', 'hull', 'direct', 'lrs']);
+});
 test('invalid input cannot leave an apparently current plot or export', async ({ page }) => {
   await page.goto('/'); await expect(page.locator('#status')).toContainText('3 edges');
   await page.getByLabel('Term 1 c', { exact: true }).fill('1/0'); await page.click('#compute');

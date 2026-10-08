@@ -11,25 +11,62 @@ import Data.Int (Int64)
 import Data.Ratio ((%), numerator, denominator)
 import qualified Data.Text as T
 import Geometry.TropicalCurve
+import Geometry.TropicalGraph3
+import Geometry.TropicalHull2 (hullTropicalCurve)
+import Geometry.TropicalHull3 (hullGraph3)
+import Geometry.TropicalSkeleton3 (Edge3(..))
 import Geometry.TropicalSlice
 import Text.Read (readMaybe)
 
-data Request = CurveRequest [Term] | SliceRequest [Term3] Rational
+-- | Every request names its algorithm explicitly. The direct solver is the
+-- default for curves and 3D graphs when "method" is absent, so the original
+-- request contract is unchanged; slices always use the direct solver.
+data Method = Direct | Hull | LRS deriving (Eq, Show)
+
+data Request
+    = CurveRequest Method [Term]
+    | SliceRequest [Term3] Rational
+    | Graph3Request Method [Term3]
 
 instance FromJSON Request where
   parseJSON = withObject "request" $ \o -> do
-    if KeyMap.member "height" o then do
-      heightText <- o .: "height"
-      h <- case parseRational heightText of
-        Nothing -> fail "Height must be an integer or fraction string, with at most 18 digits per part."
-        Just q -> pure q
-      ts <- o .: "terms" >>= mapM parseTerm3
-      checkCount ts
-      pure (SliceRequest ts h)
-    else do
-      ts <- o .: "terms" >>= mapM parseTerm
-      checkCount ts
-      pure (CurveRequest ts)
+    kind <- o .:? "kind" :: Parser (Maybe String)
+    case kind of
+      Just "graph3" -> do
+        method <- parseMethod o
+        ts <- o .: "terms" >>= mapM parseTerm3
+        checkCount ts
+        pure (Graph3Request method ts)
+      Just other -> fail ("Unknown request kind: " ++ other ++ ".")
+      Nothing
+        | KeyMap.member "height" o -> do
+            heightText <- o .: "height"
+            h <- case parseRational heightText of
+              Nothing -> fail "Height must be an integer or fraction string, with at most 18 digits per part."
+              Just q -> pure q
+            ts <- o .: "terms" >>= mapM parseTerm3
+            checkCount ts
+            pure (SliceRequest ts h)
+        | otherwise -> do
+            method <- parseMethod o
+            ts <- o .: "terms" >>= mapM parseTerm
+            checkCount ts
+            pure (CurveRequest method ts)
+
+parseMethod :: Object -> Parser Method
+parseMethod o = do
+  name <- o .:? "method" :: Parser (Maybe String)
+  case name of
+    Nothing -> pure Direct
+    Just "direct" -> pure Direct
+    Just "hull" -> pure Hull
+    Just "lrs" -> pure LRS
+    Just other -> fail ("Unknown method: " ++ other ++ ". Use direct, hull, or lrs.")
+
+methodName :: Method -> String
+methodName Direct = "direct"
+methodName Hull = "hull"
+methodName LRS = "lrs"
 
 checkCount :: [a] -> Parser ()
 checkCount ts
@@ -105,8 +142,8 @@ cellJSON c = object ["id" .= cellId c, "vertex" .= cellVertexId c, "terms" .= ce
 curveFields :: Curve -> [Pair]
 curveFields c = ["terms" .= map termJSON (curveTerms c), "vertices" .= map vertexJSON (curveVertices c), "edges" .= map edgeJSON (curveEdges c), "cells" .= map cellJSON (curveCells c)]
 
-curveJSON :: Curve -> Value
-curveJSON = object . curveFields
+curveJSON :: Method -> Curve -> Value
+curveJSON method c = object (("method" .= methodName method) : curveFields c)
 
 sourceTermJSON :: Int -> Term3 -> Value
 sourceTermJSON i t = object
@@ -134,11 +171,65 @@ sliceJSON result = object $
   , "regions" .= map regionJSON (sliceRegions result)
   ]
 
+point3JSON :: [Rational] -> Value
+point3JSON = toJSON . map rationalText
+
+vertex3JSON :: GraphVertex3 -> Value
+vertex3JSON v = object
+  [ "id" .= vertex3Id v, "point" .= point3JSON (vertex3Point v)
+  , "terms" .= vertex3Terms v, "cell" .= vertex3Cell v ]
+
+edge3JSON :: GraphEdge3 -> Value
+edge3JSON e = object $
+  [ "id" .= edge3Id e, "terms" .= edge3Terms e, "face" .= edge3Face e
+  , "vertices" .= edge3Vertices e ] ++ shape (edge3Geometry e)
+  where
+    shape (Segment3 a b) = ["kind" .= ("segment" :: T.Text), "start" .= point3JSON a, "end" .= point3JSON b]
+    shape (Ray3 a d) = ["kind" .= ("ray" :: T.Text), "start" .= point3JSON a, "direction" .= map show d]
+    shape (Line3 a d) = ["kind" .= ("line" :: T.Text), "start" .= point3JSON a, "direction" .= map show d]
+
+cell3JSON :: SubdivisionCell3 -> Value
+cell3JSON c = object
+  [ "id" .= cell3Id c, "vertex" .= cell3Vertex c, "terms" .= cell3Terms c
+  , "faces" .= cell3Faces c ]
+
+face3JSON :: SubdivisionFace3 -> Value
+face3JSON f = object
+  [ "id" .= face3Id f, "terms" .= face3Terms f, "boundary" .= face3Boundary f
+  , "cells" .= face3Cells f, "edge" .= face3Edge f ]
+
+-- The "contract" field states what this geometry is: the graph one-skeleton
+-- (vertices and edges) with its dual cells and faces, not the full surface.
+graph3JSON :: Method -> Graph3 -> Value
+graph3JSON method g = object
+  [ "kind" .= ("graph3" :: T.Text)
+  , "contract" .= ("one-skeleton" :: T.Text)
+  , "method" .= methodName method
+  , "terms" .= zipWith sourceTermJSON [0..] (graph3Terms g)
+  , "vertices" .= map vertex3JSON (graph3Vertices g)
+  , "edges" .= map edge3JSON (graph3Edges g)
+  , "cells" .= map cell3JSON (graph3Cells g)
+  , "faces" .= map face3JSON (graph3Faces g)
+  ]
+
+curveRoute :: Method -> [Term] -> Either String Curve
+curveRoute Direct = tropicalCurve
+curveRoute Hull = hullTropicalCurve
+curveRoute LRS = lrsTropicalCurve
+
+graph3Route :: Method -> [Term3] -> Either String Graph3
+graph3Route Direct = exactGraph3
+graph3Route Hull = hullGraph3
+graph3Route LRS = lrsGraph3
+
 respond :: B.ByteString -> B.ByteString
 respond input = encode $ case eitherDecode input of
   Left err -> object ["error" .= err]
-  Right (CurveRequest ts) -> either (\err -> object ["error" .= err]) curveJSON (tropicalCurve ts)
-  Right (SliceRequest ts height) -> either (\err -> object ["error" .= err]) sliceJSON (tropicalSlice ts height)
+  Right (CurveRequest method ts) -> either failure (curveJSON method) (curveRoute method ts)
+  Right (SliceRequest ts height) -> either failure sliceJSON (tropicalSlice ts height)
+  Right (Graph3Request method ts) -> either failure (graph3JSON method) (graph3Route method ts)
+  where
+    failure err = object ["error" .= err]
 
 main :: IO ()
 main = do
