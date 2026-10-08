@@ -4,19 +4,20 @@
 -- This is the one-skeleton only, not a representation of the full tropical
 -- surface. The original adapter follows that branch's extremalVertices ->
 -- facetEnumeration' lifted-hull pipeline, reconstructed against current
--- fixed-arity modules (not a call to the old-branch executable); both routes
--- share only exact dual assembly. The LRS adapter independently uses
--- Geometry.LRSHull for lifted-hull and projected-cell facet enumeration.
+-- fixed-arity modules (not a call to the old-branch executable). The LRS
+-- adapter delegates to the promoted Geometry.TropicalSkeleton3 API.
 module HullSkeleton3
-    ( originalSkeleton3, lrsSkeleton3 ) where
+    ( originalSkeleton3, lrsSkeleton3, hullParityChecks3 ) where
 
 import Data.List (foldl', groupBy, nub, sort, sortOn)
-import Data.Ratio (denominator, numerator)
+import Data.Ratio (denominator, numerator, (%))
 import Geometry.Facet (facetEnumeration')
-import qualified Geometry.LRSHull as LRSHull
+import Geometry.TropicalGraph3 (skeleton3Of)
+import Geometry.TropicalHull3 (hullGraph3)
+import qualified Geometry.TropicalSkeleton3 as PublicSkeleton
 import Geometry.TropicalSlice (Term3(..))
 import Geometry.Vertex (extremalVertices)
-import Skeleton3 (Edge3(..), Skeleton3, canonicalSkeleton3)
+import Skeleton3 (Edge3(..), Skeleton3(..), canonicalSkeleton3)
 
 -- A projected exponent point, and its lifted coefficient point.
 type Point3 = [Integer]
@@ -55,9 +56,6 @@ termCoordinates term = [term3X term, term3Y term, term3Z term]
 lifted :: Term3 -> Point4
 lifted term = termCoordinates term ++ [numerator (term3Coefficient term)]
 
-liftedRational :: Term3 -> [Rational]
-liftedRational term = map fromInteger (termCoordinates term) ++ [term3Coefficient term]
-
 -- The legacy pipeline computes lower facets using the same exact incidence
 -- convention as the generalized branch: a lower support has outward normal
 -- with negative coefficient-coordinate component.
@@ -94,29 +92,6 @@ orientPlane points (face, rawNormal, rawBound)
     | otherwise = do
         plane <- orientSupport points (rawNormal,rawBound)
         pure (face,plane)
-
--- LRS polar enumeration is independent of the Yang/GLPK route above.
-lrsCells :: [Term3] -> Either String [Cell]
-lrsCells terms
-    | rank (differences exponents) /= 3 =
-        Left "The LRS graph adapter requires full-dimensional exponent support."
-    | affineRank (map liftedRational terms) == 3 = Right [exponents]
-    | affineRank (map liftedRational terms) /= 4 =
-        Left "Lifted support has unexpected affine dimension."
-    | otherwise = do
-        let liftedPoints = map liftedRational terms
-        facets <- LRSHull.lrsHull liftedPoints
-        let extreme = [p | p <- liftedPoints,
-                           rank [normal | (normal,bound) <- facets,
-                                          dot normal p == bound] == 4]
-            lower = [(normal,bound) | (normal,bound) <- facets, last normal < 0]
-            cells = [ [map numerator (init p) | p <- extreme, dot normal p == bound]
-                    | (normal,bound) <- lower ]
-        if null cells
-            then Left "LRS found no lower lifted facets."
-            else Right (sort . nub $ map (sort . nub) cells)
-  where
-    exponents = map termCoordinates terms
 
 -- Turn each lower cell into a tropical vertex and the rays dual to its
 -- projected 3D facet normals. Matching facet incidence gives bounded edges.
@@ -201,27 +176,6 @@ orientCellFacet allPoints (face,normal,bound)
             then Left "Projected-cell facet incidence does not lie on its reported plane."
             else pure (sort . nub $ face,h,b)
 
--- Independent LRS projected-cell facet route. Determine the actual cell
--- corners by requiring three independent active outward facet normals, then
--- match subdivision faces by their corner sets rather than all tied support.
-lrsCellFacets :: Cell -> Either String [(Cell,[Rational])]
-lrsCellFacets cell
-    | rank (differences cell) /= 3 = Left "LRS projected-cell facet enumeration requires dimension three."
-    | otherwise = do
-        planes <- LRSHull.lrsHull (map (map fromInteger) cell)
-        let extreme = [p | p <- cell,
-                           rank [normal | (normal,bound) <- planes,
-                                   dot normal (map fromInteger p) == bound] == 3]
-        if length extreme < 4 then Left "LRS found too few projected-cell vertices." else pure ()
-        traverse (oneFacet extreme) planes
-  where
-    oneFacet extreme plane@(normal,bound) = do
-        (h,b) <- orientSupport cell plane
-        let corners = [p | p <- extreme, dot h (map fromInteger p) == b]
-        if length corners < 3
-            then Left "LRS projected-cell facet has fewer than three extreme corners."
-            else Right (sort (nub corners),h)
-
 orientSupport :: [[Integer]] -> Plane -> Either String Plane
 orientSupport points (normal,bound)
     | any (> 0) sides && any (< 0) sides =
@@ -256,10 +210,6 @@ differences :: [[Integer]] -> [[Rational]]
 differences [] = []
 differences (origin:points) =
     [zipWith (\x y -> fromInteger (y-x)) origin point | point <- points]
-
-affineRank :: [[Rational]] -> Int
-affineRank [] = 0
-affineRank (origin:points) = rank (map (zipWith (-) origin) points)
 
 rank :: [[Rational]] -> Int
 rank [] = 0
@@ -304,6 +254,45 @@ originalSkeleton3 input = do
     assemble originalCells legacyCellFacets terms
 
 lrsSkeleton3 :: [Term3] -> Either String Skeleton3
-lrsSkeleton3 input = do
-    terms <- normalize input
-    assemble lrsCells lrsCellFacets terms
+lrsSkeleton3 = PublicSkeleton.lrsTropicalSkeleton3
+
+-- | Parity between this reconstructed adapter and the promoted library route
+-- 'Geometry.TropicalHull3.hullGraph3' used by the viewer: same one-skeleton on
+-- supported fixtures, and the same integral-coefficient rejection.
+hullParityChecks3 :: [(String,Bool)]
+hullParityChecks3 =
+    [ ("Library hull route matches the reconstructed adapter: " ++ name,
+       (skeleton3Of <$> hullGraph3 terms) == originalSkeleton3 terms && isRight (originalSkeleton3 terms))
+    | (name,terms) <- fixtures ] ++
+    [ ("Library hull route rejects fractional coefficients like the adapter",
+       isLeft (hullGraph3 fractional) && isLeft (originalSkeleton3 fractional))
+    -- On the lifted genus-one cubic the Yang/GLPK facet enumeration misses the
+    -- lower facet {(0,0,0),(0,1,0),(1,0,0),(1,1,1)}. This adapter returns a
+    -- three-cell graph with a spurious ray; the library route's exact assembly
+    -- detects the gap and reports an error instead of mislabeled geometry.
+    , ("Adapter misses a lifted-cubic cell that direct/LRS find; library hull route reports it",
+       fmap (length . vertices3) (originalSkeleton3 liftedCubic) == Right 3
+       && fmap (length . vertices3) (PublicSkeleton.exactSkeleton3 liftedCubic) == Right 4
+       && PublicSkeleton.lrsTropicalSkeleton3 liftedCubic == PublicSkeleton.exactSkeleton3 liftedCubic
+       && either ("missed a lower cell" `isInfixOf'`) (const False) (hullGraph3 liftedCubic)) ]
+  where
+    fixtures =
+        [ ("simplex", [Term3 0 0 0 0,Term3 1 0 0 0,Term3 0 1 0 0,Term3 0 0 1 0])
+        , ("scaled simplex", [Term3 0 0 0 0,Term3 2 0 0 (-1),Term3 0 3 0 (-2),Term3 0 0 4 (-3)])
+        , ("quadratic", [Term3 x y z 0 | x <- [0..2],y <- [0..2],z <- [0..2],x+y+z <= 2])
+        , ("split quadratic", [Term3 0 0 0 0,Term3 1 0 0 (-1),Term3 2 0 0 0,Term3 0 1 0 0,Term3 0 0 1 0])
+        , ("unequal heights", [Term3 0 0 1 0,Term3 1 0 1 0,Term3 0 1 1 0,Term3 0 0 0 1,Term3 0 0 3 1])
+        , ("integer paraboloid cube grid", [Term3 x y z (fromInteger (x*x+y*y+z*z)) | x <- [0..2],y <- [0..2],z <- [0..2]])
+        ]
+    liftedCubic = [Term3 0 0 0 0,Term3 1 0 0 1,Term3 0 1 0 1,Term3 2 0 0 4,Term3 1 1 1 3,
+                   Term3 0 2 0 4,Term3 3 0 0 9,Term3 2 1 0 7,Term3 1 2 0 7,Term3 0 3 0 9]
+    fractional = [Term3 0 0 0 0,Term3 1 0 0 ((-1)%2),Term3 0 1 0 0,Term3 0 0 1 0]
+    isInfixOf' needle haystack = any (needle `prefixOf`) (tails' haystack)
+    prefixOf [] _ = True
+    prefixOf _ [] = False
+    prefixOf (a:as) (b:bs) = a == b && prefixOf as bs
+    tails' [] = [[]]
+    tails' s@(_:rest) = s : tails' rest
+    isLeft (Left _) = True
+    isLeft _ = False
+    isRight = not . isLeft

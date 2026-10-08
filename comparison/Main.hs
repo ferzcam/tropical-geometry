@@ -20,12 +20,12 @@ import GHC.Clock (getMonotonicTimeNSec)
 import Geometry.LRSHull (HullFacet)
 import Geometry.TropicalCurve (EdgeGeometry(..), Term(..))
 import Geometry.TropicalSlice (Term3(..))
-import HullSkeleton3 (lrsSkeleton3, originalSkeleton3)
+import HullSkeleton3 (hullParityChecks3, lrsSkeleton3, originalSkeleton3)
 import HistoricalRegression (historicalChecks)
 import Methods
     ( CanonicalCurve(..), LegacySegment, exactCurve, lrsCurve, lrsHull
     , tailoredCurve, tailoredHull2, tailoredHull3
-    , originalLegacyCurve
+    , originalLegacyCurve, hullParityChecks2
     )
 import Skeleton3 (Edge3(..), Skeleton3(..), exactSkeleton3, skeleton3Checks)
 import System.CPUTime (getCPUTime)
@@ -332,7 +332,7 @@ rationalText value
 
 runSelfTest :: IO ()
 runSelfTest = do
-    let checks = skeleton3Checks ++ historicalChecks
+    let checks = skeleton3Checks ++ historicalChecks ++ hullParityChecks2 ++ hullParityChecks3
     mapM_ (\(name,passed) -> putStrLn (name ++ ": " ++ if passed then "PASS" else "FAIL")) checks
     if all snd checks
         then putStrLn ("Skeleton3 self-tests passed (" ++ show (length checks) ++ " checks).")

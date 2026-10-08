@@ -8,19 +8,20 @@ module Methods
     ( CanonicalCurve(..), LegacySegment, HullFacet
     , exactCurve, tailoredCurve, lrsCurve
     , tailoredHull2, tailoredHull3, lrsHull
-    , originalLegacyCurve, legacyDrawnEdges
+    , originalLegacyCurve, legacyDrawnEdges, hullParityChecks2
     ) where
 
 import Data.List (foldl', groupBy, nub, sort, sortOn)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)
-import Data.Ratio (denominator, numerator)
+import Data.Ratio (denominator, numerator, (%))
 import Geometry.ConvexHull2 (convexHull2)
 import Geometry.ConvexHull3 (ConvexHull(..), Point3D, convexHull3, fromFacet)
 import Geometry.LRSHull (HullFacet)
 import qualified Geometry.LRSHull as LRSHull
 import Geometry.Polytope (projectionToR2)
-import Geometry.TropicalCurve
+import Geometry.TropicalCurve hiding (normalizeTerms)
+import Geometry.TropicalHull2 (hullTropicalCurve)
 import Polynomial.Hypersurface (hypersurface)
 import Polynomial.Monomial (Lex, toMonomial)
 import Polynomial.Prelude (Polynomial(..))
@@ -70,7 +71,7 @@ canonicalGeometry geometry = geometry
 
 -- | Historical tailored route: convexHull3 on integer (x,y,coefficient)
 -- points, then lower-face projection. The dual curve is reconstructed from
--- those cells using exact Rational arithmetic common to this adapter and LRS.
+-- those cells using exact Rational arithmetic in the comparison adapter.
 tailoredCurve :: [Term] -> Either String CanonicalCurve
 tailoredCurve input = do
     terms <- requirePlanarSupport input
@@ -79,39 +80,35 @@ tailoredCurve input = do
     let cells = map (map (\(x,y) -> (toInteger x,toInteger y))) (projectionToR2 hull)
     dualizeCells terms cells
 
+-- | Parity between this comparison adapter and the promoted library route
+-- 'Geometry.TropicalHull2.hullTropicalCurve' used by the viewer: identical
+-- canonical output on supported fixtures and the same fractional rejection.
+hullParityChecks2 :: [(String,Bool)]
+hullParityChecks2 =
+    [ ("Library hull curve matches the tailored adapter: " ++ name,
+       (canonicalFromCurve <$> hullTropicalCurve terms) == tailoredCurve terms
+       && either (const False) (const True) (tailoredCurve terms))
+    | (name,terms) <- fixtures ] ++
+    [ ("Library hull curve rejects fractional coefficients like the adapter",
+       isLeft (hullTropicalCurve fractional) && isLeft (tailoredCurve fractional)) ]
+  where
+    fixtures =
+        [ ("line", [Term 0 0 0,Term 1 0 0,Term 0 1 0])
+        , ("square", [Term 0 0 0,Term 1 0 0,Term 0 1 0,Term 1 1 0])
+        , ("hexagon", [Term x y 0 | (x,y) <- [(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0)]])
+        , ("square and triangle", [Term 0 0 0,Term 1 0 0,Term 0 1 0,Term 1 1 0,Term 2 0 1])
+        , ("fractional vertex", [Term 0 0 0,Term 2 0 1,Term 0 1 0])
+        , ("genus-one cubic", [Term x y (fromInteger (x*x+x*y+y*y)) | x <- [0..3],y <- [0..3],x+y <= 3])
+        , ("integer paraboloid grid", [Term x y (fromInteger (x*x+y*y)) | x <- [0..2],y <- [0..2]])
+        ]
+    fractional = [Term 0 0 0,Term 1 0 (1 % 3),Term 0 1 0]
+    isLeft (Left _) = True
+    isLeft _ = False
+
 -- | Independent LRS route: polar H-to-V enumeration of the lifted point set,
--- followed by its lower supporting facets and the same exact cell dualizer.
+-- followed by its lower facets and independent exact dualization through the public LRS API.
 lrsCurve :: [Term] -> Either String CanonicalCurve
-lrsCurve input = do
-    terms <- requirePlanarSupport input
-    let points = map liftedRational terms
-    case affineRank points of
-        2 -> do
-            -- A flat lift induces one cell: recover its actual corners from
-            -- the independent LRS hull of the exponent support. Rank two
-            -- active outward normals identify vertices without a tailored
-            -- hull or fallback to the exact solver.
-            let exponentPoints =
-                    [[fromInteger (termX t),fromInteger (termY t)] | t <- terms]
-            exponentFacets <- LRSHull.lrsHull exponentPoints
-            let corners =
-                    [ (termX t,termY t)
-                    | (t,p) <- zip terms exponentPoints
-                    , rank [normal | (normal,bound) <- exponentFacets,
-                                     dot normal p == bound] == 2
-                    ]
-            if length corners < 3
-                then Left "lrsCurve: flat lift has fewer than three exponent-hull vertices."
-                else dualizeCells terms [corners]
-        3 -> do
-            facets <- LRSHull.lrsHull points
-            let lower = [(normal,bound) | (normal,bound) <- facets, normal !! 2 < 0]
-                cells =
-                    [ [(termX t,termY t) | (t,p) <- zip terms points, dot normal p == bound]
-                    | (normal,bound) <- lower
-                    ]
-            dualizeCells terms cells
-        _ -> Left "lrsCurve: lifted support must have affine dimension two or three."
+lrsCurve input = canonicalFromCurve <$> lrsTropicalCurve input
 
 requirePlanarSupport :: [Term] -> Either String [Term]
 requirePlanarSupport input
@@ -133,19 +130,11 @@ integerLift term = do
         else Left "The tailored hull route requires integral coefficients."
     pure (x,y,coefficient)
 
-affineRank :: [[Rational]] -> Int
-affineRank [] = 0
-affineRank (origin:points) = rank (map (zipWith (-) origin) points)
-
 boundedInt :: String -> Integer -> Either String Int
 boundedInt label value
     | value < toInteger (minBound :: Int) || value > toInteger (maxBound :: Int) =
         Left (label ++ " is outside the legacy Int range.")
     | otherwise = Right (fromInteger value)
-
-liftedRational :: Term -> [Rational]
-liftedRational term =
-    [fromInteger (termX term), fromInteger (termY term), termCoefficient term]
 
 -- | Reconstruct the original bivariate hull API's outward normalized facet
 -- inequalities from its 2D boundary vertices.
